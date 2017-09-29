@@ -52,7 +52,6 @@ public class XmlAddressBookStorageTest {
 
     @Test
     public void read_notXmlFormat_exceptionThrown() throws Exception {
-
         thrown.expect(DataConversionException.class);
         readAddressBook("NotXmlFormatAddressBook.xml");
 
@@ -84,7 +83,27 @@ public class XmlAddressBookStorageTest {
         xmlAddressBookStorage.saveAddressBook(original); //file path not specified
         readBack = xmlAddressBookStorage.readAddressBook().get(); //file path not specified
         assertEquals(original, new AddressBook(readBack));
+    }
 
+    @Test
+    public void readAndSaveBackupAddressBook_allInOrder_success() throws Exception {
+        String filePath = testFolder.getRoot().getPath() + "TempAddressBook.xml";
+        AddressBook original = getTypicalAddressBook();
+        XmlAddressBookStorage xmlAddressBookStorage = new XmlAddressBookStorage(filePath);
+
+        //Save in new backup and read back
+        xmlAddressBookStorage.saveAddressBook(original, filePath);
+        xmlAddressBookStorage.backupAddressBook(original);
+        ReadOnlyAddressBook readBack = xmlAddressBookStorage.readBackupAddressBook().get();
+        assertEquals(original, new AddressBook(readBack));
+
+        //Modify data, overwrite exiting backup file, and read back
+        original.addPerson(new Person(HOON));
+        original.removePerson(new Person(ALICE));
+        xmlAddressBookStorage.saveAddressBook(original, filePath);
+        xmlAddressBookStorage.backupAddressBook(original);
+        readBack = xmlAddressBookStorage.readBackupAddressBook().get();
+        assertEquals(original, new AddressBook(readBack));
     }
 
     @Test
