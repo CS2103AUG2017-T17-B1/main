@@ -14,6 +14,7 @@ import seedu.address.commons.core.Config;
 import seedu.address.commons.core.EventsCenter;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.Version;
+import seedu.address.commons.events.storage.DataSavingExceptionEvent;
 import seedu.address.commons.events.ui.ExitAppRequestEvent;
 import seedu.address.commons.exceptions.DataConversionException;
 import seedu.address.commons.util.ConfigUtil;
@@ -185,6 +186,22 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         logger.info("Starting AddressBook " + MainApp.VERSION);
         ui.start(primaryStage);
+        try {
+            Optional<ReadOnlyAddressBook> addressBookOptional;
+            ReadOnlyAddressBook initialData;
+            addressBookOptional = storage.readAddressBook();
+            if (!addressBookOptional.isPresent()) {
+                logger.info("Data file not found. No backup will be made");
+            }
+            else {
+                initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+                storage.backupAddressBook(initialData);
+            }
+        } catch (DataConversionException e) {
+            logger.warning("Data file not in the correct format. No backup will be made");
+        } catch (IOException e) {
+            logger.warning("Problem while reading from the file. No backup will be made");
+        }
     }
 
     @Override
