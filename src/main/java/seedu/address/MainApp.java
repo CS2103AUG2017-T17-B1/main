@@ -14,7 +14,6 @@ import seedu.address.commons.core.Config;
 import seedu.address.commons.core.EventsCenter;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.Version;
-import seedu.address.commons.events.storage.DataSavingExceptionEvent;
 import seedu.address.commons.events.ui.ExitAppRequestEvent;
 import seedu.address.commons.exceptions.DataConversionException;
 import seedu.address.commons.util.ConfigUtil;
@@ -69,6 +68,8 @@ public class MainApp extends Application {
 
         model = initModelManager(storage, userPrefs);
 
+        backupAddressBook(storage);
+
         logic = new LogicManager(model);
 
         ui = new UiManager(logic, config, userPrefs);
@@ -83,24 +84,41 @@ public class MainApp extends Application {
 
     /**
      * Returns a {@code ModelManager} with the data from {@code storage}'s address book and {@code userPrefs}. <br>
-     * The data from the sample address book will be used instead if {@code storage}'s address book is not found,
-     * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
+     * If {@code storage}'s address book is not found, or if errors occur when reading {@code storage}'s address book,
+     * data from {@code storage}'s backup address book will be used instead. If {@code storage}'s backup address book
+     * is not found, the data from the sample address book will be used instead. If errors occer when reading
+     * {@code storage}'s backup code, an empty address book will be used instead.
      */
     private Model initModelManager(Storage storage, UserPrefs userPrefs) {
         Optional<ReadOnlyAddressBook> addressBookOptional;
-        ReadOnlyAddressBook initialData;
+        ReadOnlyAddressBook initialData = null;
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
-                logger.info("Data file not found. Will be starting with a sample AddressBook");
+                logger.info("Data file not found");
             }
-            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataConversionException e) {
-            logger.warning("Data file not in the correct format. Will be starting with an empty AddressBook");
-            initialData = new AddressBook();
+            logger.warning("Data file not in the correct format");
         } catch (IOException e) {
-            logger.warning("Problem while reading from the file. Will be starting with an empty AddressBook");
-            initialData = new AddressBook();
+            logger.warning("Problem while reading from the file");
+        }
+        if(initialData == null) {
+            try{
+                addressBookOptional = storage.readBackupAddressBook();
+                if (addressBookOptional.isPresent()) {
+                    logger.info("Backup data file found. Will be starting with a backup");
+                }
+                else {
+                    logger.info("Backup data file not found. Will be starting with a sample AddressBook");
+                }
+                initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+            } catch (DataConversionException e) {
+                logger.warning("Backup data file not in the correct format. Will be starting with an empty AddressBook");
+                initialData = new AddressBook();
+            } catch (IOException e) {
+                logger.warning("Problem while reading from the backup file. Will be starting with an empty AddressBook");
+                initialData = new AddressBook();
+            }
         }
 
         return new ModelManager(initialData, userPrefs);
@@ -108,6 +126,28 @@ public class MainApp extends Application {
 
     private void initLogging(Config config) {
         LogsCenter.init(config);
+    }
+
+    /**
+     * Saves a backup of {@code storage}'s address book, if it exists and can be read without error.
+     */
+    private void backupAddressBook(Storage storage) {
+        try {
+            Optional<ReadOnlyAddressBook> addressBookOptional;
+            ReadOnlyAddressBook initialData;
+            addressBookOptional = storage.readAddressBook();
+            if (!addressBookOptional.isPresent()) {
+                logger.info("No backup will be made as data file does not exist");
+            }
+            else {
+                initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+                storage.backupAddressBook(initialData);
+            }
+        } catch (DataConversionException e) {
+            logger.info("No backup will be made due to data file being in incorrect format");
+        } catch (IOException e) {
+            logger.info("No backup will be made due to problems while reading from file");
+        }
     }
 
     /**
@@ -186,22 +226,6 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         logger.info("Starting AddressBook " + MainApp.VERSION);
         ui.start(primaryStage);
-        try {
-            Optional<ReadOnlyAddressBook> addressBookOptional;
-            ReadOnlyAddressBook initialData;
-            addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Data file not found. No backup will be made");
-            }
-            else {
-                initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
-                storage.backupAddressBook(initialData);
-            }
-        } catch (DataConversionException e) {
-            logger.warning("Data file not in the correct format. No backup will be made");
-        } catch (IOException e) {
-            logger.warning("Problem while reading from the file. No backup will be made");
-        }
     }
 
     @Override
