@@ -98,8 +98,7 @@ public class MainApp extends Application {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
                 logger.info("Data file not found");
-            }
-            else {
+            } else {
                 dataFileIsOkay = true;
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
@@ -109,21 +108,22 @@ public class MainApp extends Application {
             logger.warning("Problem while reading from the file");
         }
 
-        if(!dataFileIsOkay) {
-            try{
+        if (!dataFileIsOkay) {
+            try {
                 addressBookOptional = storage.readBackupAddressBook();
                 if (addressBookOptional.isPresent()) {
                     logger.info("Backup data file found. Will be starting with a backup");
-                }
-                else {
+                } else {
                     logger.info("Backup data file not found. Will be starting with a sample AddressBook");
                 }
                 initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
             } catch (DataConversionException e) {
-                logger.warning("Backup data file not in the correct format. Will be starting with an empty AddressBook");
+                logger.warning("Backup data file not in the correct format. Will be starting with an empty " +
+                        "AddressBook");
                 initialData = new AddressBook();
             } catch (IOException e) {
-                logger.warning("Problem while reading from the backup file. Will be starting with an empty AddressBook");
+                logger.warning("Problem while reading from the backup file. Will be starting with an empty " +
+                        "AddressBook");
                 initialData = new AddressBook();
             }
         }
@@ -146,8 +146,7 @@ public class MainApp extends Application {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
                 logger.info("No backup will be made as data file does not exist");
-            }
-            else {
+            } else {
                 initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
                 storage.backupAddressBook(initialData);
             }

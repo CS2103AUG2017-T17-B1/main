@@ -56,7 +56,9 @@ public class StorageManager extends ComponentManager implements Storage {
     }
 
     @Override
-    public String getBackupAddressBookFilePath() { return addressBookStorage.getBackupAddressBookFilePath();}
+    public String getBackupAddressBookFilePath() {
+        return addressBookStorage.getBackupAddressBookFilePath();
+    }
 
     @Override
     public Optional<ReadOnlyAddressBook> readAddressBook() throws DataConversionException, IOException {
