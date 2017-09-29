@@ -86,23 +86,30 @@ public class MainApp extends Application {
      * Returns a {@code ModelManager} with the data from {@code storage}'s address book and {@code userPrefs}. <br>
      * If {@code storage}'s address book is not found, or if errors occur when reading {@code storage}'s address book,
      * data from {@code storage}'s backup address book will be used instead. If {@code storage}'s backup address book
-     * is not found, the data from the sample address book will be used instead. If errors occer when reading
+     * is not found, the data from the sample address book will be used instead. If errors occur when reading
      * {@code storage}'s backup code, an empty address book will be used instead.
      */
     private Model initModelManager(Storage storage, UserPrefs userPrefs) {
         Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData = null;
+        boolean dataFileIsOkay = false;
+
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
                 logger.info("Data file not found");
             }
+            else {
+                dataFileIsOkay = true;
+            }
+            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataConversionException e) {
             logger.warning("Data file not in the correct format");
         } catch (IOException e) {
             logger.warning("Problem while reading from the file");
         }
-        if(initialData == null) {
+
+        if(!dataFileIsOkay) {
             try{
                 addressBookOptional = storage.readBackupAddressBook();
                 if (addressBookOptional.isPresent()) {
@@ -129,7 +136,8 @@ public class MainApp extends Application {
     }
 
     /**
-     * Saves a backup of {@code storage}'s address book, if it exists and can be read without error.
+     * Saves a backup of {@code storage}'s address book, if it exists in the correct format and can be read without
+     * error.
      */
     private void backupAddressBook(Storage storage) {
         try {
