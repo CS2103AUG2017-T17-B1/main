@@ -96,10 +96,10 @@ public class MainApp extends Application {
 
         try {
             addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Data file not found");
-            } else {
+            if (addressBookOptional.isPresent()) {
                 dataFileIsOkay = true;
+            } else {
+                logger.info("Data file not found");
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataConversionException e) {
@@ -118,12 +118,12 @@ public class MainApp extends Application {
                 }
                 initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
             } catch (DataConversionException e) {
-                logger.warning("Backup data file not in the correct format. Will be starting with an empty " +
-                        "AddressBook");
+                logger.warning("Backup data file not in the correct format. Will be starting with an empty "
+                        + "AddressBook");
                 initialData = new AddressBook();
             } catch (IOException e) {
-                logger.warning("Problem while reading from the backup file. Will be starting with an empty " +
-                        "AddressBook");
+                logger.warning("Problem while reading from the backup file. Will be starting with an empty "
+                        + "AddressBook");
                 initialData = new AddressBook();
             }
         }
