@@ -17,6 +17,7 @@ import seedu.address.commons.events.storage.DataSavingExceptionEvent;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Address;
 import seedu.address.ui.testutil.EventsCollectorRule;
 
 public class StorageManagerTest {
@@ -55,6 +56,11 @@ public class StorageManagerTest {
     }
 
     @Test
+    public void getUserPrefsFilePath() {
+        assertNotNull(storageManager.getUserPrefsFilePath());
+    }
+
+    @Test
     public void addressBookReadSave() throws Exception {
         /*
          * Note: This is an integration test that verifies the StorageManager is properly wired to the
@@ -68,6 +74,15 @@ public class StorageManagerTest {
     }
 
     @Test
+    public void backupAddressBookReadSave() throws  Exception {
+        AddressBook original = getTypicalAddressBook();
+        storageManager.saveAddressBook(original);
+        storageManager.backupAddressBook();
+        ReadOnlyAddressBook retrieved = storageManager.readBackupAddressBook().get();
+        assertEquals(original, new AddressBook(retrieved));
+    }
+
+    @Test
     public void getAddressBookFilePath() {
         assertNotNull(storageManager.getAddressBookFilePath());
     }
@@ -75,6 +90,7 @@ public class StorageManagerTest {
     @Test
     public void getBackupAddressBookFilePath() {
         assertNotNull(storageManager.getBackupAddressBookFilePath());
+
     }
 
     @Test
