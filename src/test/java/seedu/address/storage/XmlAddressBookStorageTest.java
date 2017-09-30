@@ -147,17 +147,6 @@ public class XmlAddressBookStorageTest {
                 xmlAddressBookStorage.getBestAvailableAddressBook());
         xmlAddressBookStorage.saveAddressBook(original, filePath);
         xmlAddressBookStorage.backupAddressBook();
-
-        // Scenario 3: Main data fails due to error in reading, use backup
-//        xmlAddressBookStorage.saveAddressBook(original, filePath);
-//        mainAddressBook = new File(xmlAddressBookStorage.getAddressBookFilePath());
-//        System.out.println(mainAddressBook.setReadable(false)); //should print true if successful
-//        assertEquals(new AddressBook(xmlAddressBookStorage.readBackupAddressBook().get()),
-//                new AddressBook(xmlAddressBookStorage.getBestAvailableAddressBook()));
-
-        // Other scenarios: main fails from IOException, backup fails
-        //                  main fails from DataConversionException, backup works
-        //                  main fails from DataConversionException, backup fails
     }
 
     @Test

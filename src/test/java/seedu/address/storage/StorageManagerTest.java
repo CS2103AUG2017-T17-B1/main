@@ -17,7 +17,6 @@ import seedu.address.commons.events.storage.DataSavingExceptionEvent;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Address;
 import seedu.address.ui.testutil.EventsCollectorRule;
 
 public class StorageManagerTest {
