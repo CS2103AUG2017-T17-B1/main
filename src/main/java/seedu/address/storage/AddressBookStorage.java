@@ -55,10 +55,16 @@ public interface AddressBookStorage {
     void saveAddressBook(ReadOnlyAddressBook addressBook, String filePath) throws IOException;
 
     /**
-     * Backs up the given (@link ReadOnlyAddressBook).
-     * @param addressBook cannot be null.
+     * Backs up the address book data, if available without errors.
      * @throws IOException if there was any problem writing to the file.
      */
-    void backupAddressBook(ReadOnlyAddressBook addressBook) throws IOException;
+    void backupAddressBook() throws IOException;
+
+    /**
+     * Retrieves address book data, if available and readable, or backup address book data if it is not.
+     * If both are unavailable, a sample address book is returned. If backup address book is in the wrong format
+     * or is unreadable, an empty address book is returned.
+     */
+    ReadOnlyAddressBook getBestAvailableAddressBook();
 
 }

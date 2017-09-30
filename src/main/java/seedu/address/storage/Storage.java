@@ -35,10 +35,18 @@ public interface Storage extends AddressBookStorage, UserPrefsStorage {
     @Override
     Optional<ReadOnlyAddressBook> readBackupAddressBook() throws DataConversionException, IOException;
 
+    @Override
+    void backupAddressBook() throws IOException;
+
+    @Override
+    ReadOnlyAddressBook getBestAvailableAddressBook();
+
     /**
      * Saves the current version of the Address Book to the hard disk.
      *   Creates the data file if it is missing.
      * Raises {@link DataSavingExceptionEvent} if there was an error during saving.
      */
     void handleAddressBookChangedEvent(AddressBookChangedEvent abce);
+
+
 }
