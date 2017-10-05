@@ -5,20 +5,20 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>AddressBook Level 4 - Developer Guide</title>
+<title>Codii - Developer Guide</title>
 <link rel="stylesheet" href="stylesheets/gh-pages.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="stylesheets/coderay-asciidoctor.css">
 </head>
 <body class="article">
 <div id="header">
-<h1>AddressBook Level 4 - Developer Guide</h1>
+<h1>Codii - Developer Guide</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>By: <code>Team SE-EDU</code>      Since: <code>Jun 2016</code>      Licence: <code>MIT</code></p>
+<p>By: <code>CS2103Aug2017 T17-B1</code>      Since: <code>Sep 2017</code>      Licence: <code>MIT</code></p>
 </div>
 </div>
 <div id="toc" class="toc">
@@ -1715,12 +1715,6 @@ for <code>RemarkCommandParser</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">to have the ability to create favourite lists</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">view my most important contacts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">add a new person</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -1744,15 +1738,81 @@ for <code>RemarkCommandParser</code>.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user with many social circles</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">add tags to my contacts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">group them by how they are related to me</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">group them by other classifications as I prefer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filter my contacts by tags</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">easily see only contacts that are tagged with the tag of interest</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">save multiple phone numbers to one contact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have multiple ways of contacting a contact</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indicate and update amount owed by a debtor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">see how much a debtor owes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sort my contacts by the amount owed</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a list of people who have cleared their debts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">refer to their recorded info when they require my services again</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have <a href="#critical">critical</a> lists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quickly view which debtors require immediate attention</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a <a href="#blacklist">blacklist</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">know who not to lend money to</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a list of debtors whose debts are overdue</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have an automated interest calculator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have my debtors' debts updated automatically</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">group my debtors by location</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">plan my visit schedules easily</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a password protection to my account</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have some security over confidential information</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have <a href="#wishlist">wishlist</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">let my contacts can know what to buy me for my birthday without telling them</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have an automated journey scheduler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maximise my efficiency</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
@@ -2301,12 +2361,20 @@ for <code>RemarkCommandParser</code>.</p>
 <pre>A contact detail that is not meant to be shared with others</pre>
 </div>
 </div>
-<div id="wishlist" class="paragraph">
-<p>Wishlist</p>
+<div id="critical" class="paragraph">
+<p>Critical</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>A list of desirables wanted or needed by a contact for his or her birthday</pre>
+<pre>Requiring immediate attention</pre>
+</div>
+</div>
+<div id="blacklist" class="paragraph">
+<p>Blacklist</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A list of people who are banned from borrowing</pre>
 </div>
 </div>
 <div id="bookmark" class="paragraph">
@@ -2458,7 +2526,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-05 10:17:30 +00:00
+Last updated 2017-10-05 15:14:16 +00:00
 </div>
 </div>
 </body>
