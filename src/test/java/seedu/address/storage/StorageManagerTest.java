@@ -72,6 +72,7 @@ public class StorageManagerTest {
         assertEquals(original, new AddressBook(retrieved));
     }
 
+    //@@author khooroko
     @Test
     public void backupAddressBookReadSave() throws  Exception {
         AddressBook original = getTypicalAddressBook();
@@ -91,6 +92,7 @@ public class StorageManagerTest {
         assertNotNull(storageManager.getBackupAddressBookFilePath());
     }
 
+    //@@author
     @Test
     public void handleAddressBookChangedEvent_exceptionThrown_eventRaised() {
         // Create a StorageManager while injecting a stub that  throws an exception when the save method is called
