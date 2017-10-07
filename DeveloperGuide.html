@@ -18,7 +18,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>By: <code>CS2103Aug2017 T17-B1</code>      Since: <code>Sep 2017</code>      Licence: <code>MIT</code></p>
+<p>By: <code>CS2103AUG2017 T17-B1</code>      Since: <code>Sep 2017</code>      Licence: <code>MIT</code></p>
 </div>
 </div>
 <div id="toc" class="toc">
@@ -1794,7 +1794,7 @@ for <code>RemarkCommandParser</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">have an automated interest calculator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have my debtors' debts updated automatically</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have my debtors' debts updated automatically every month</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
@@ -1803,7 +1803,7 @@ for <code>RemarkCommandParser</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">plan my visit schedules easily</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">have a password protection to my account</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">have some security over confidential information</p></td>
@@ -1829,7 +1829,7 @@ for <code>RemarkCommandParser</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">new user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have a guided installation/no installaion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a guided installation/no installation</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">easily start using it</p></td>
 </tr>
 <tr>
@@ -1867,12 +1867,6 @@ for <code>RemarkCommandParser</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">be able to <a href="#bookmark">bookmark</a> contacts</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">access important contacts much faster</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have a password required log-in</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have more privacy</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
@@ -1990,9 +1984,6 @@ for <code>RemarkCommandParser</code>.</p>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>{More to be added}</p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -2057,10 +2048,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>User requests to add tag to a person</p>
-</li>
-<li>
-<p>User keys in tag name</p>
+<p>User requests to add a new tag to a person</p>
 </li>
 <li>
 <p>AddressBook adds the tag to the person</p>
@@ -2078,9 +2066,6 @@ for <code>RemarkCommandParser</code>.</p>
 <ol class="arabic">
 <li>
 <p>User requests to sort AddressBook by name of persons</p>
-</li>
-<li>
-<p>AddressBook sorts itself</p>
 </li>
 <li>
 <p>AddressBook shows a sorted list of persons</p>
@@ -2127,12 +2112,6 @@ for <code>RemarkCommandParser</code>.</p>
 <li>
 <p>AddressBook shows a list of favourite contacts</p>
 </li>
-<li>
-<p>User requests to delete a specific person in the favourite list</p>
-</li>
-<li>
-<p>AddressBook removes the person in the favourite list and shows a list of persons in favourite list</p>
-</li>
 </ol>
 </div>
 <div class="paragraph">
@@ -2157,25 +2136,6 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 </li>
 </ul>
-</div>
-</li>
-<li>
-<p>7a. The given index is invalid.</p>
-<div class="ulist none">
-<ul class="none">
-<li>
-<p>7a1. AddressBook shows an error message.</p>
-<div class="paragraph">
-<p>Use case resumes at step 7.</p>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>8a. The list is empty.</p>
-<div class="paragraph">
-<p>Use case ends.</p>
 </div>
 </li>
 </ul>
@@ -2390,143 +2350,116 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="sect1">
 <h2 id="product-survey"><a class="link" href="#product-survey">Appendix F: Product Survey</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><strong>Address Book</strong></p>
-</div>
-<div class="paragraph">
-<p>Author: Deleatha C Jones</p>
-</div>
-<div class="paragraph">
-<p>Pros:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Easy to use</p>
-</li>
-<li>
-<p>Has all contact information fields</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Cons:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Can only enter one phone number</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Address book - Placebook</strong></p>
-</div>
-<div class="paragraph">
-<p>Author: M Kenneally</p>
-</div>
-<div class="paragraph">
-<p>Pros:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Simple to use</p>
-</li>
-<li>
-<p>Search address function is brilliant - fast and intuitive</p>
-</li>
-<li>
-<p>GPS location</p>
-</li>
-<li>
-<p>Nice clean interface</p>
-</li>
-<li>
-<p>No ads</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Cons:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Cannot import from Google contacts</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Address Book and Contacts</strong></p>
-</div>
-<div class="paragraph">
-<p>Author: Jessica Ryans, Leslie Murray</p>
-</div>
-<div class="paragraph">
-<p>Pros:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>It categorizes contacts into groups</p>
-</li>
-<li>
-<p>Simple to use</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Cons:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Can&#8217;t edit groups once formed</p>
-</li>
-<li>
-<p>Does not have enough fields</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Address Book</strong></p>
-</div>
-<div class="paragraph">
-<p>Authors: Becca Malard &amp; Susan Starrett</p>
-</div>
-<div class="paragraph">
-<p>Pros:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Shows map of user location</p>
-</li>
-<li>
-<p>Easy to use</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Cons:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Doesn&#8217;t open all the time</p>
-</li>
-<li>
-<p>Very slow</p>
-</li>
-</ul>
-</div>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<caption class="title">Table 1. <strong>Address Book</strong>, reviewed by Deleatha C Jones</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pros</th>
+<th class="tableblock halign-left valign-top">Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Easy to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can only enter one phone number</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Has all contact information fields</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<caption class="title">Table 2. <strong>Address book - Placebook</strong>, reviewed by M Kenneally</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pros</th>
+<th class="tableblock halign-left valign-top">Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simple to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cannot import from Google contacts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Search address function is brilliant - fast and intuitive</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GPS location</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nice clean interface</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No ads</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<caption class="title">Table 3. <strong>Address Book and Contacts</strong>, reviewed by Jessica Ryans &amp; Leslie Murray</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pros</th>
+<th class="tableblock halign-left valign-top">Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Simple to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can&#8217;t edit groups once formed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It categorizes contacts into groups</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does not have enough fields</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<caption class="title">Table 4. <strong>Address Book</strong>, reviewed by Becca Malard &amp; Susan Starrett</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Pros</th>
+<th class="tableblock halign-left valign-top">Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shows map of user location</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Doesn&#8217;t open all the time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Easy to use</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Very slow</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-05 16:34:17 +00:00
+Last updated 2017-10-07 13:33:36 +00:00
 </div>
 </div>
 </body>
