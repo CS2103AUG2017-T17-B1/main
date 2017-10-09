@@ -10,8 +10,8 @@ import static java.util.Objects.requireNonNull;
 public class DisplayPostalCode {
 
     public static final String DISPLAY_POSTAL_CODE_VALIDATION_REGEX = "^S\\d{6}";
-    public static final String MESSAGE_DISPLAY_POSTAL_CODE_CONSTRAINTS = "Display postal code must be an S followed" +
-            "by 6 digits";
+    public static final String MESSAGE_DISPLAY_POSTAL_CODE_CONSTRAINTS = "Display postal code must be an S followed"
+            + "by 6 digits";
     public static final String DISPLAY_PREFIX_POSTAL_CODE = "S";
 
     public final String value;
