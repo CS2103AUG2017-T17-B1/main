@@ -3,6 +3,10 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 
 //@@author khooroko
+/**
+ * Represents a displayable version of a Person's postal code in the address book.
+ * Guarantees: immutable; is valid as declared in {@link #isValidDisplayPostalCode(String)}
+ */
 public class DisplayPostalCode {
 
     public static final String DISPLAY_POSTAL_CODE_VALIDATION_REGEX = "^S\\d{6}";
@@ -18,7 +22,7 @@ public class DisplayPostalCode {
     public DisplayPostalCode(PostalCode postalCode) {
         requireNonNull(postalCode);
         String displayPostalCode = DISPLAY_PREFIX_POSTAL_CODE + postalCode.toString();
-        if (!displayPostalCode.matches(DISPLAY_POSTAL_CODE_VALIDATION_REGEX)) {
+        if (isValidDisplayPostalCode(displayPostalCode)) {
             throw new AssertionError(MESSAGE_DISPLAY_POSTAL_CODE_CONSTRAINTS);
         }
         this.value = displayPostalCode;
