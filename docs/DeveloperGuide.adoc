@@ -401,6 +401,7 @@ This is because the above mentioned constructor was meant to make a copy of the 
 **Pros:** Implementation is very simple as the developer could just follow current coding style to create a new field. +
 **Cons:** Such an implementation would not be as user-friendly as the first alternative. Currently the amount of fields for the user to key in
 is rather high. Implementing alternative 2 would be more tedious on the user's side.
+// end::datestoring[]
 
 === Logging
 
