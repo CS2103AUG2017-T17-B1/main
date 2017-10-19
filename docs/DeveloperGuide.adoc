@@ -364,7 +364,7 @@ public class Person implements ReadOnlyPerson {
     private ObjectProperty<Interest> interest;
     private ObjectProperty<DateBorrow> dateBorrow;
 ----
- Such an implementation doesn't allow for errors when creating the field as there is no room for mistakes on the user's side. When the `Person` instance is created, the following line is called:
+Such an implementation doesn't allow for errors when creating the field as there is no room for mistakes on the user's side. When the `Person` instance is created, the following line is called: +
 [source,java]
 ----
     this.dateBorrow = new SimpleObjectProperty<>(new DateBorrow());
