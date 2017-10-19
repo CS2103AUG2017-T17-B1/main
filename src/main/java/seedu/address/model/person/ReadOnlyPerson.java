@@ -26,8 +26,6 @@ public interface ReadOnlyPerson {
     Cluster getCluster();
     ObjectProperty<Debt> debtProperty();
     Debt getDebt();
-    ObjectProperty<Interest> interestProperty();
-    Interest getInterest();
     ObjectProperty<DateBorrow> dateBorrowProperty();
     DateBorrow getDateBorrow();
     ObjectProperty<Deadline> deadlineProperty();
@@ -36,23 +34,6 @@ public interface ReadOnlyPerson {
     DateRepaid getDateRepaid();
     ObjectProperty<UniqueTagList> tagProperty();
     Set<Tag> getTags();
-
-    /**
-     * Returns true if person is blacklisted.
-     */
-    boolean getIsBlacklisted();
-
-    /**
-     * Accepts {@code boolean} as parameter.
-     *
-     * Sets {@code boolean} variable as the value of {@param isBlacklisted}
-     */
-    void setIsBlacklisted(boolean isBlacklisted);
-
-    /**
-     * Returns true if both are in same cluster.
-     */
-    boolean isSameCluster(ReadOnlyPerson other);
 
     /**
      * Returns true if both have the same state. (interfaces cannot override .equals)
@@ -66,9 +47,7 @@ public interface ReadOnlyPerson {
                 && other.getAddress().equals(this.getAddress()))
                 && other.getPostalCode().equals(this.getPostalCode())
                 && other.getCluster().equals(this.getCluster())
-                && (other.getIsBlacklisted() == (this.getIsBlacklisted()))
                 && other.getDebt().equals(this.getDebt())
-                && other.getInterest().equals(this.getInterest())
                 && other.getDateBorrow().equals(this.getDateBorrow())
                 && other.getDeadline().equals(this.getDeadline())
                 && other.getDateRepaid().equals(this.getDateRepaid());
@@ -92,9 +71,6 @@ public interface ReadOnlyPerson {
                 .append(getCluster())
                 .append(" Debt: ")
                 .append(getDebt())
-                .append(" Interest: ")
-                .append(getInterest())
-                .append("Date borrowed: ")
                 .append(" Date borrowed: ")
                 .append(getDateBorrow())
                 .append(" Deadline: ")

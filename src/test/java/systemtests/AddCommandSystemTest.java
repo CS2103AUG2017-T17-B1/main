@@ -9,13 +9,10 @@ import static seedu.address.logic.commands.CommandTestUtil.DEBT_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DEBT_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.INTEREST_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.INTEREST_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_DEADLINE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_DEBT_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_INTEREST_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_POSTAL_CODE_DESC;
@@ -36,8 +33,6 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_DEBT_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_DEBT_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_INTEREST_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_INTEREST_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
@@ -50,7 +45,6 @@ import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.CARL;
-import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.HOON;
 import static seedu.address.testutil.TypicalPersons.IDA;
 import static seedu.address.testutil.TypicalPersons.KEYWORD_MATCHING_MEIER;
@@ -61,7 +55,6 @@ import seedu.address.commons.core.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.FindCommand;
-import seedu.address.logic.commands.NearbyCommand;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.logic.commands.UndoCommand;
@@ -70,7 +63,6 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Deadline;
 import seedu.address.model.person.Debt;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.Interest;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.PostalCode;
@@ -91,8 +83,7 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         ReadOnlyPerson toAdd = AMY;
         String command = "   " + AddCommand.COMMAND_WORD + "  " + NAME_DESC_AMY + "  " + PHONE_DESC_AMY + " "
                 + EMAIL_DESC_AMY + "   " + ADDRESS_DESC_AMY + "  " + POSTAL_CODE_DESC_AMY + "   "
-                + DEBT_DESC_AMY  + "   " + INTEREST_DESC_AMY + " " + DEADLINE_DESC_AMY + "  "
-                + TAG_DESC_FRIEND + " ";
+                + DEBT_DESC_AMY  + "   " + DEADLINE_DESC_AMY + "  " + TAG_DESC_FRIEND + " ";
         assertCommandSuccess(command, toAdd);
 
         /* Case: undo adding Amy to the list -> Amy deleted */
@@ -108,7 +99,7 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: add a duplicate person -> rejected */
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_PERSON);
 
         /* Case: add a duplicate person except with different tags -> rejected */
@@ -116,72 +107,63 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         // This test will fail is a new tag that is not in the model is used, see the bug documented in
         // AddressBook#addPerson(ReadOnlyPerson)
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY
-                + DEADLINE_DESC_AMY + " " + PREFIX_TAG.getPrefix() + "friends";
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + " " + PREFIX_TAG.getPrefix() + "friends";
         assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_PERSON);
 
         /* Case: add a person with all fields same as another person in the address book except name -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_BOB).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_BOB + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a person with all fields same as another person in the address book except phone -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_BOB + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a person with all fields same as another person in the address book except email -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_BOB)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_BOB + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a person with all fields same as another person in the address book except address -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_BOB).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_BOB
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a person with all fields same as another person in the address book except postal code -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_BOB).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_BOB + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_BOB + DEBT_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a person with all fields same as another person in the address book except debt -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_BOB)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_BOB + INTEREST_DESC_AMY + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_BOB + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
-        /* Case: add a person with all fields same as another person in the address book except deadline -> added */
+        /* Case: add a person with all fields same as another person in the address book except dead line -> added */
         toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
                 .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_AMY).withDeadline(VALID_DEADLINE_BOB).withTags(VALID_TAG_FRIEND).build();
+                .withDeadline(VALID_DEADLINE_BOB).withTags(VALID_TAG_FRIEND).build();
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_AMY + DEADLINE_DESC_BOB + TAG_DESC_FRIEND;
-        assertCommandSuccess(command, toAdd);
-
-        /* Case: add a person with all fields same as another person in the address book except interest -> added */
-        toAdd = new PersonBuilder().withName(VALID_NAME_AMY).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY)
-                .withAddress(VALID_ADDRESS_AMY).withPostalCode(VALID_POSTAL_CODE_AMY).withDebt(VALID_DEBT_AMY)
-                .withInterest(VALID_INTEREST_BOB).withDeadline(VALID_DEADLINE_AMY).withTags(VALID_TAG_FRIEND).build();
-        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INTEREST_DESC_BOB + DEADLINE_DESC_AMY + TAG_DESC_FRIEND;
+                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + DEADLINE_DESC_BOB + TAG_DESC_FRIEND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: filters the person list before adding -> added */
@@ -198,19 +180,13 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         /* Case: add a person with tags, command with parameters in random order -> added */
         toAdd = BOB;
         command = AddCommand.COMMAND_WORD + TAG_DESC_FRIEND + PHONE_DESC_BOB + ADDRESS_DESC_BOB + NAME_DESC_BOB
-                + POSTAL_CODE_DESC_BOB + DEBT_DESC_BOB + INTEREST_DESC_BOB + DEADLINE_DESC_BOB
-                + TAG_DESC_HUSBAND + EMAIL_DESC_BOB;
+                + POSTAL_CODE_DESC_BOB + DEBT_DESC_BOB + DEADLINE_DESC_BOB + TAG_DESC_HUSBAND + EMAIL_DESC_BOB;
         assertCommandSuccess(command, toAdd);
 
         /* Case: selects first card in the person list, add a person -> added, card selection remains unchanged */
         executeCommand(SelectCommand.COMMAND_WORD + " 1");
         assert getPersonListPanel().isAnyCardSelected();
         assertCommandSuccess(CARL);
-
-        /* Case: selects first card in the nearby list, add a person -> added, card selection remains unchanged */
-        executeCommand(NearbyCommand.COMMAND_WORD + " 1");
-        assert getPersonListPanel().isAnyCardSelected();
-        assertCommandSuccess(DANIEL);
 
         /* Case: add a person, missing tags -> added */
         assertCommandSuccess(HOON);
@@ -278,11 +254,6 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
                 + POSTAL_CODE_DESC_AMY + INVALID_DEBT_DESC;
         assertCommandFailure(command, Debt.MESSAGE_DEBT_CONSTRAINTS);
-
-        /* Case: invalid interest -> rejected */
-        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY
-                + POSTAL_CODE_DESC_AMY + DEBT_DESC_AMY + INVALID_INTEREST_DESC;
-        assertCommandFailure(command, Interest.MESSAGE_INTEREST_CONSTRAINTS);
 
         /* Case: invalid deadline -> rejected */
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + ADDRESS_DESC_AMY

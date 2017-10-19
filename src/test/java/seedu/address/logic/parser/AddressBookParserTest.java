@@ -20,7 +20,6 @@ import seedu.address.logic.Username;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.BanCommand;
 import seedu.address.logic.commands.BlacklistCommand;
-import seedu.address.logic.commands.BorrowCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -31,13 +30,11 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.LoginCommand;
-import seedu.address.logic.commands.NearbyCommand;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.logic.commands.UnbanCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Debt;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -94,16 +91,6 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_borrow() throws Exception {
-        String toBorrow = "5000";
-        Debt debtAmount = new Debt(toBorrow);
-        BorrowCommand expectedBorrowCommand = new BorrowCommand(INDEX_FIRST_PERSON, debtAmount);
-        BorrowCommand borrowCommand = (BorrowCommand) parser.parseCommand(BorrowCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + toBorrow);
-        assertEquals(expectedBorrowCommand, borrowCommand);
-    }
-
-    @Test
     public void parseCommand_exit() throws Exception {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
@@ -153,13 +140,6 @@ public class AddressBookParserTest {
         SelectCommand command = (SelectCommand) parser.parseCommand(
                 SelectCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new SelectCommand(INDEX_FIRST_PERSON), command);
-    }
-
-    @Test
-    public void parseCommand_nearby() throws Exception {
-        NearbyCommand command = (NearbyCommand) parser.parseCommand(
-                NearbyCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
-        assertEquals(new NearbyCommand(INDEX_FIRST_PERSON), command);
     }
 
     @Test

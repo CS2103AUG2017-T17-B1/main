@@ -36,20 +36,6 @@ public class UniquePersonList implements Iterable<Person> {
     }
 
     /**
-     * Returns {@code ObservableList} of all objects in list.
-     */
-    public ObservableList<Person> getInternalList() {
-        return internalList;
-    }
-
-    /**
-     * Returns index of {@code ReadOnlyPerson} in list.
-     */
-    public int getIndexOf(ReadOnlyPerson key) {
-        return internalList.indexOf(key);
-    }
-
-    /**
      * Adds a person to the list.
      *
      * @throws DuplicatePersonException if the person to add is a duplicate of an existing person in the list.
@@ -60,19 +46,6 @@ public class UniquePersonList implements Iterable<Person> {
             throw new DuplicatePersonException();
         }
         internalList.add(new Person(toAdd));
-    }
-
-    /**
-     * Adds a person to the list in a specific position.
-     *
-     * @throws DuplicatePersonException if the person to add is a duplicate of an existing person in the list.
-     */
-    public void add(int index, ReadOnlyPerson toAdd) throws DuplicatePersonException {
-        requireNonNull(toAdd);
-        if (contains(toAdd)) {
-            throw new DuplicatePersonException();
-        }
-        internalList.add(index, new Person(toAdd));
     }
 
     /**

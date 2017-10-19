@@ -19,12 +19,6 @@ public interface Logic {
      */
     CommandResult execute(String commandText) throws CommandException, ParseException;
 
-    /** Returns an unmodifiable view of all persons */
-    ObservableList<ReadOnlyPerson> getAllPersons();
-
-    /** Sets the current selected person*/
-    void updateSelectedPerson(ReadOnlyPerson person);
-
     /** Returns an unmodifiable view of the filtered list of persons */
     ObservableList<ReadOnlyPerson> getFilteredPersonList();
 

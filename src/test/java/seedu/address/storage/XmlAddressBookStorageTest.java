@@ -72,21 +72,20 @@ public class XmlAddressBookStorageTest {
         //Save in new file and read back
         xmlAddressBookStorage.saveAddressBook(original, filePath);
         ReadOnlyAddressBook readBack = xmlAddressBookStorage.readAddressBook(filePath).get();
-        AddressBook readBackAddressBook = new AddressBook(readBack);
-        assertEquals(original.toString(), readBackAddressBook.toString());
+        assertEquals(original, new AddressBook(readBack));
 
         //Modify data, overwrite exiting file, and read back
         original.addPerson(new Person(HOON));
         original.removePerson(new Person(ALICE));
         xmlAddressBookStorage.saveAddressBook(original, filePath);
         readBack = xmlAddressBookStorage.readAddressBook(filePath).get();
-        assertEquals(original.toString(), new AddressBook(readBack).toString());
+        assertEquals(original, new AddressBook(readBack));
 
         //Save and read without specifying file path
         original.addPerson(new Person(IDA));
         xmlAddressBookStorage.saveAddressBook(original); //file path not specified
         readBack = xmlAddressBookStorage.readAddressBook().get(); //file path not specified
-        assertEquals(original.toString(), new AddressBook(readBack).toString());
+        assertEquals(original, new AddressBook(readBack));
     }
 
     @Test
@@ -99,7 +98,7 @@ public class XmlAddressBookStorageTest {
         xmlAddressBookStorage.saveAddressBook(original, filePath);
         xmlAddressBookStorage.backupAddressBook();
         ReadOnlyAddressBook readBack = xmlAddressBookStorage.readBackupAddressBook().get();
-        assertEquals(original.toString(), new AddressBook(readBack).toString());
+        assertEquals(original, new AddressBook(readBack));
 
         //Modify data, overwrite exiting backup file, and read back
         original.addPerson(new Person(HOON));
@@ -107,7 +106,7 @@ public class XmlAddressBookStorageTest {
         xmlAddressBookStorage.saveAddressBook(original, filePath);
         xmlAddressBookStorage.backupAddressBook();
         readBack = xmlAddressBookStorage.readBackupAddressBook().get();
-        assertEquals(original.toString(), new AddressBook(readBack).toString());
+        assertEquals(original, new AddressBook(readBack));
     }
 
     @Test

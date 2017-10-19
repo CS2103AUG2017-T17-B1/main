@@ -11,7 +11,6 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.BanCommand;
 import seedu.address.logic.commands.BlacklistCommand;
-import seedu.address.logic.commands.BorrowCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteCommand;
@@ -22,7 +21,6 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.LoginCommand;
-import seedu.address.logic.commands.NearbyCommand;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.logic.commands.UnbanCommand;
@@ -131,14 +129,6 @@ public class AddressBookParser {
         case RedoCommand.COMMAND_WORD:
             logger.info("----------------[ACTUAL COMMAND][" + commandWord + "]");
             return new RedoCommand();
-
-        case BorrowCommand.COMMAND_WORD:
-            logger.info("----------------[ACTUAL COMMAND][" + commandWord + "]");
-            return new BorrowCommandParser().parse(arguments);
-
-        case NearbyCommand.COMMAND_WORD:
-            logger.info("----------------[ACTUAL COMMAND][" + commandWord + "]");
-            return new NearbyCommandParser().parse(arguments);
 
         default:
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);

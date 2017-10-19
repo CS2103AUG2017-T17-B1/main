@@ -7,7 +7,6 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.exceptions.UserNotFoundException;
 import seedu.address.logic.Password;
 import seedu.address.logic.Username;
-import seedu.address.model.person.Debt;
 import seedu.address.model.person.ReadOnlyPerson;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
@@ -29,16 +28,10 @@ public interface Model {
     /** Returns the AddressBook */
     ReadOnlyAddressBook getAddressBook();
 
-    /** Returns the name of current displayed list */
-    String getCurrentList();
-
-    /** Sets the name of current displayed list */
-    void setCurrentList(String currentList);
-
     /** Deletes the given person. */
     void deletePerson(ReadOnlyPerson target) throws PersonNotFoundException;
 
-    /** Deletes the given person from blacklist. */
+    /** Deletes the given person. */
     void removeBlacklistedPerson(ReadOnlyPerson target) throws PersonNotFoundException;
 
     /** Adds the given person */
@@ -75,10 +68,6 @@ public interface Model {
      */
     void updateFilteredBlacklistedPersonList(Predicate<ReadOnlyPerson> predicate);
 
-    ObservableList<ReadOnlyPerson> getNearbyPersons();
-
-    void updateSelectedPerson(ReadOnlyPerson person);
-
     void deleteTag(Tag tag) throws PersonNotFoundException, DuplicatePersonException, TagNotFoundException;
 
     /**
@@ -92,15 +81,4 @@ public interface Model {
      * Updates the list shown in Person List Panel to the requested list.
      */
     void changeListTo(String listName);
-
-    /**
-     * Retrieves the full list of persons
-     */
-    ObservableList<ReadOnlyPerson> getAllPersons();
-
-    /**
-     * Increase the debt of a person by the amount indicated
-     * @throws PersonNotFoundException if {@code target} could not be found in the list.
-     */
-    void addDebtToPerson(ReadOnlyPerson target, Debt amount) throws PersonNotFoundException, IllegalValueException;
 }

@@ -34,7 +34,6 @@ public class EditPersonDescriptorBuilder {
         descriptor.setAddress(person.getAddress());
         descriptor.setPostalCode(person.getPostalCode());
         descriptor.setDebt(person.getDebt());
-        descriptor.setInterest(person.getInterest());
         descriptor.setDeadline(person.getDeadline());
         descriptor.setTags(person.getTags());
     }
@@ -71,18 +70,6 @@ public class EditPersonDescriptorBuilder {
             ParserUtil.parseDebt(Optional.of(debt)).ifPresent(descriptor::setDebt);
         } catch (IllegalValueException ive) {
             throw new IllegalArgumentException("debt is expected to be unique.");
-        }
-        return this;
-    }
-
-    /**
-     * Sets the {@code Interest} of the {@code EditPersonDescriptor} that we are building.
-     */
-    public EditPersonDescriptorBuilder withInterest(String interest) {
-        try {
-            ParserUtil.parseInterest(Optional.of(interest)).ifPresent(descriptor::setInterest);
-        } catch (IllegalValueException ive) {
-            throw new IllegalArgumentException("interest is expected to be unique.");
         }
         return this;
     }
@@ -128,7 +115,7 @@ public class EditPersonDescriptorBuilder {
      */
     public EditPersonDescriptorBuilder withDeadline(String deadline) {
         try {
-            ParserUtil.parseDeadlineForEdit(Optional.of(deadline)).ifPresent(descriptor::setDeadline);
+            ParserUtil.parseDeadline(Optional.of(deadline)).ifPresent(descriptor::setDeadline);
         } catch (IllegalValueException ive) {
             throw new IllegalArgumentException("deadline is expected to be unique.");
         }

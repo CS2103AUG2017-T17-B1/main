@@ -20,7 +20,6 @@ import guitests.guihandles.CommandBoxHandle;
 import guitests.guihandles.InfoPanelHandle;
 import guitests.guihandles.MainMenuHandle;
 import guitests.guihandles.MainWindowHandle;
-import guitests.guihandles.NearbyPersonListPanelHandle;
 import guitests.guihandles.PersonListPanelHandle;
 import guitests.guihandles.ResultDisplayHandle;
 import guitests.guihandles.StatusBarFooterHandle;
@@ -29,7 +28,6 @@ import seedu.address.commons.core.EventsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.NearbyCommand;
 import seedu.address.logic.commands.SelectCommand;
 import seedu.address.model.Model;
 import seedu.address.ui.CommandBox;
@@ -76,10 +74,6 @@ public abstract class AddressBookSystemTest {
 
     public PersonListPanelHandle getPersonListPanel() {
         return mainWindowHandle.getPersonListPanel();
-    }
-
-    public NearbyPersonListPanelHandle getNearbyPersonListPanel() {
-        return getInfoPanel().getNearbyPersonListPanel();
     }
 
     public MainMenuHandle getMainMenu() {
@@ -136,14 +130,6 @@ public abstract class AddressBookSystemTest {
     }
 
     /**
-     * Selects the person at {@code index} of the displayed nearby list.
-     */
-    protected void selectNearbyPerson(Index index) {
-        executeCommand(NearbyCommand.COMMAND_WORD + " " + index.getOneBased());
-        assert getNearbyPersonListPanel().getSelectedCardIndex() == index.getZeroBased();
-    }
-
-    /**
      * Asserts that the {@code CommandBox} displays {@code expectedCommandInput}, the {@code ResultDisplay} displays
      * {@code expectedResultMessage}, the model and storage contains the same person objects as {@code expectedModel}
      * and the person list panel displays the persons in the model correctly.
@@ -170,7 +156,7 @@ public abstract class AddressBookSystemTest {
     }
 
     /**
-     * Asserts that the previously selected card is now deselected and the info panel remains displaying the details
+     * Asserts that the previously selected card is now deselected and the browser's url remains displaying the details
      * of the previously selected person.
      * @see InfoPanelHandle#isSelectedPersonChanged()
      */

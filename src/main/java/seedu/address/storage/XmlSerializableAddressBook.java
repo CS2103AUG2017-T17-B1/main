@@ -23,6 +23,8 @@ public class XmlSerializableAddressBook implements ReadOnlyAddressBook {
     @XmlElement
     private List<XmlAdaptedPerson> persons;
     @XmlElement
+    private List<XmlAdaptedPerson> blacklistedPersons;
+    @XmlElement
     private List<XmlAdaptedTag> tags;
 
     /**
@@ -31,6 +33,7 @@ public class XmlSerializableAddressBook implements ReadOnlyAddressBook {
      */
     public XmlSerializableAddressBook() {
         persons = new ArrayList<>();
+        blacklistedPersons = new ArrayList<>();
         tags = new ArrayList<>();
     }
 
@@ -40,6 +43,8 @@ public class XmlSerializableAddressBook implements ReadOnlyAddressBook {
     public XmlSerializableAddressBook(ReadOnlyAddressBook src) {
         this();
         persons.addAll(src.getPersonList().stream().map(XmlAdaptedPerson::new).collect(Collectors.toList()));
+        blacklistedPersons.addAll(src.getBlacklistedPersonList()
+                .stream().map(XmlAdaptedPerson::new).collect(Collectors.toList()));
         tags.addAll(src.getTagList().stream().map(XmlAdaptedTag::new).collect(Collectors.toList()));
     }
 
@@ -58,14 +63,19 @@ public class XmlSerializableAddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns a list of blacklisted people from AddressBook.
+     * Returns a list of blacklisted people
      */
     @Override
     public ObservableList<ReadOnlyPerson> getBlacklistedPersonList() {
-        ObservableList<ReadOnlyPerson> persons = getPersonList();
-        ObservableList<ReadOnlyPerson> blacklistedPersons = persons.stream()
-                .filter(person -> person.getIsBlacklisted())
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        final ObservableList<ReadOnlyPerson> blacklistedPersons = this.blacklistedPersons.stream().map(p -> {
+            try {
+                return p.toModelType();
+            } catch (IllegalValueException e) {
+                e.printStackTrace();
+                //TODO: better error handling
+                return null;
+            }
+        }).collect(Collectors.toCollection(FXCollections::observableArrayList));
         return FXCollections.unmodifiableObservableList(blacklistedPersons);
     }
 
@@ -82,4 +92,5 @@ public class XmlSerializableAddressBook implements ReadOnlyAddressBook {
         }).collect(Collectors.toCollection(FXCollections::observableArrayList));
         return FXCollections.unmodifiableObservableList(tags);
     }
+
 }

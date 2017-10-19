@@ -10,15 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javafx.collections.ObservableList;
-import seedu.address.model.person.Address;
-import seedu.address.model.person.Deadline;
-import seedu.address.model.person.Debt;
-import seedu.address.model.person.Email;
-import seedu.address.model.person.Interest;
-import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Phone;
-import seedu.address.model.person.PostalCode;
 import seedu.address.model.person.ReadOnlyPerson;
 import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
@@ -34,6 +26,7 @@ import seedu.address.model.tag.exceptions.TagNotFoundException;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
+    private final UniquePersonList blacklistedPersons;
     private final UniqueTagList tags;
 
     /*
@@ -45,6 +38,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
+        blacklistedPersons = new UniquePersonList();
         tags = new UniqueTagList();
     }
 
@@ -64,6 +58,10 @@ public class AddressBook implements ReadOnlyAddressBook {
         this.persons.setPersons(persons);
     }
 
+    public void setBlacklistedPersons(List<? extends ReadOnlyPerson> persons) throws DuplicatePersonException {
+        this.blacklistedPersons.setPersons(persons);
+    }
+
     public void setTags(Set<Tag> tags) {
         this.tags.setTags(tags);
     }
@@ -78,26 +76,16 @@ public class AddressBook implements ReadOnlyAddressBook {
         } catch (DuplicatePersonException e) {
             assert false : "AddressBooks should not have duplicate persons";
         }
+
+        try {
+            setBlacklistedPersons(newData.getBlacklistedPersonList());
+        } catch (DuplicatePersonException e) {
+            assert false : "AddressBooks should not have duplicate persons";
+        }
+
         setTags(new HashSet<>(newData.getTagList()));
         syncMasterTagListWith(persons);
-    }
-
-    /**
-     * Returns {@UniquePersonList} of all blacklisted persons
-     * in the existing data of this {@code AddressBook} with {@code newData}.
-     */
-    public UniquePersonList getBlacklistedPersons() {
-        UniquePersonList blacklistedPersons = new UniquePersonList();
-        for (Person person : persons.getInternalList()) {
-            if (person.getIsBlacklisted()) {
-                try {
-                    blacklistedPersons.add(person);
-                } catch (DuplicatePersonException e) {
-                    assert false : "This is not possible as prior checks have been done";
-                }
-            }
-        }
-        return blacklistedPersons;
+        syncMasterTagListWith(blacklistedPersons);
     }
 
     //// person-level operations
@@ -126,21 +114,12 @@ public class AddressBook implements ReadOnlyAddressBook {
      * @throws DuplicatePersonException if an equivalent person already exists.
      */
     public void addBlacklistedPerson(ReadOnlyPerson p) throws DuplicatePersonException {
-        int index;
-        index = persons.getIndexOf(p);
-
-        Person newBlacklistedPerson = new Person(p);
-        newBlacklistedPerson.setIsBlacklisted(true);
-        try {
-            persons.remove(p);
-        } catch (PersonNotFoundException e) {
-            assert false : "This is not possible as prior checks have been done";
-        }
-        syncMasterTagListWith(newBlacklistedPerson);
+        Person newPerson = new Person(p);
+        syncMasterTagListWith(newPerson);
         // TODO: the tags master list will be updated even though the below line fails.
         // This can cause the tags master list to have additional tags that are not tagged to any person
         // in the person list.
-        persons.add(index, newBlacklistedPerson);
+        blacklistedPersons.add(newPerson);
     }
 
     /**
@@ -204,26 +183,13 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Updates {@code key} to exclude {@code key} from the blacklist in this {@code AddressBook}.
+     * Removes {@code key} from this {@code AddressBook}.
      * @throws PersonNotFoundException if the {@code key} is not in this {@code AddressBook}.
      */
-    public void removeBlacklistedPerson(ReadOnlyPerson key) throws PersonNotFoundException {
-        int index;
-        index = persons.getIndexOf(key);
-
-        Person newBlacklistedPerson = new Person(key);
-        newBlacklistedPerson.setIsBlacklisted(false);
-        persons.remove(key);
-        syncMasterTagListWith(newBlacklistedPerson);
-        // TODO: the tags master list will be updated even though the below line fails.
-        // This can cause the tags master list to have additional tags that are not tagged to any person
-        // in the person list.
-        try {
-            persons.add(index, newBlacklistedPerson);
-        } catch (DuplicatePersonException e) {
-            assert false : "This is not possible as prior checks have been done";
-        }
+    public boolean removeBlacklistedPerson(ReadOnlyPerson key) throws PersonNotFoundException {
+        return blacklistedPersons.remove(key);
     }
+
     //// tag-level operations
 
     /**
@@ -244,45 +210,16 @@ public class AddressBook implements ReadOnlyAddressBook {
         tags.remove(t);
     }
 
-
-    //@@author jelneo
-
-    /**
-     * Increase debts of a person by the indicated amount
-     * @param target person that borrowed more money
-     * @param amount amount that the person borrowed. Must be either a positive integer or positive number with
-     *               two decimal places
-     * @throws PersonNotFoundException if {@code target} could not be found in the list.
-     */
-    public void addDebtToPerson(ReadOnlyPerson target, Debt amount) throws PersonNotFoundException {
-        Name name = target.getName();
-        Phone phone = target.getPhone();
-        Email email = target.getEmail();
-        Address address = target.getAddress();
-        PostalCode postalCode = target.getPostalCode();
-        Debt newDebt = target.getDebt();
-        newDebt.addToDebt(amount);
-        Interest interest = target.getInterest();
-        Deadline deadline = target.getDeadline();
-        Set<Tag> tags = target.getTags();
-        Person editedPerson = new Person(name, phone, email, address, postalCode, newDebt, interest, deadline, tags);
-        editedPerson.setDateBorrow(target.getDateBorrow());
-        try {
-            persons.setPerson(target, editedPerson);
-        } catch (DuplicatePersonException dpe) {
-            assert false : "There should be no duplicate when updating the debt of a person";
-        }
-    }
-    //@@author
-
     //// util methods
 
     @Override
     public String toString() {
         return persons.asObservableList().size() + " persons, "
+                + blacklistedPersons.asObservableList().size() + " blacklisted persons, "
                 + tags.asObservableList().size() +  " tags";
         // TODO: refine later
     }
+
     @Override
     public ObservableList<ReadOnlyPerson> getPersonList() {
         return persons.asObservableList();
@@ -290,7 +227,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     @Override
     public ObservableList<ReadOnlyPerson> getBlacklistedPersonList() {
-        return getBlacklistedPersons().asObservableList();
+        return blacklistedPersons.asObservableList();
     }
 
     @Override
@@ -303,12 +240,13 @@ public class AddressBook implements ReadOnlyAddressBook {
         return other == this // short circuit if same object
                 || (other instanceof AddressBook // instanceof handles nulls
                 && this.persons.equals(((AddressBook) other).persons)
+                && this.blacklistedPersons.equals(((AddressBook) other).blacklistedPersons)
                 && this.tags.equalsOrderInsensitive(((AddressBook) other).tags));
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(persons, tags);
+        return Objects.hash(persons, blacklistedPersons, tags);
     }
 }

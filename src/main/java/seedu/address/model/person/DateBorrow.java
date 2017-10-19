@@ -1,7 +1,6 @@
 package seedu.address.model.person;
 
-import static seedu.address.model.util.DateUtil.formatDate;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 //@@author lawwman
@@ -13,11 +12,14 @@ import java.util.Date;
  */
 public class DateBorrow {
 
+    public static final String DATE_FORMAT = "E',' dd MMM', Year' yyyy";
+
     public final String value;
 
     public DateBorrow() {
         Date date = new Date();
-        value = formatDate(date);
+        SimpleDateFormat ft = new SimpleDateFormat(DATE_FORMAT);
+        value = ft.format(date);
     }
 
     /**
