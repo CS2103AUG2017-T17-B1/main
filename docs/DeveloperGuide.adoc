@@ -372,23 +372,23 @@ _Figure 3.2.1 : Sequence Diagram of How the Borrow Command Works_
 **Pros:** Increased modularity +
 **Cons:** Requires modifications of `ArgumentTokenizer::tokenize` method since supplying whitespace as a prefix to the current `ArgumentTokenizer::tokenize` method incorrectly tokenizes arguments.
 
-          For example:
+For example:
 
-          Entered command: `borrow 1 500`
+Entered command: `borrow 1 500`
 
-          Prefixes supplied to `ArgumentTokenizer::tokenize` method: " "
+Prefixes supplied to `ArgumentTokenizer::tokenize` method: " "
 
-          Outcome: prefix `" "` will be mapped to `1 500` in `argMultimap`. Index and amount borrowed are not separated.
+Outcome: prefix `" "` will be mapped to `1 500` in `argMultimap`. Index and amount borrowed are not separated.
 
 ---
 
 **Aspect:** Updating `Debt` field +
-**Alternative 1 (current choice):** Create a new `Person` object, called `editedPerson`, by copying all the attributes from the target `Person` object and update the `Debt` field before replacing the old `Person` object with the `editedPerson`. +
+**Alternative 1 (current choice):** Create a new `Person` object, called `editedPerson`, by supplying the target `ReadOnlyPerson` object to constructor `Person::new`. +
 **Pros:** Straightforward and simple to implement +
-**Cons:** Have to create a copy of all the attributes even though `Debt` is the only attribute to be updated. +
+**Cons:** `Debt` class would need to have another constructor that takes in a `Double` parameter for easier implementation of `AddressBook::addDebtToPerson()` method. +
 **Alternative 2:** Reusing the `updatePerson()` method in `AddressBook.java` +
 **Pros:** Do not have to code the method from scratch +
-**Cons:** Have to write more code to convert `editedPerson` to be of object type `ReadOnlyPerson` because the `updatePerson()` method only accepts `ReadOnlyPerson` objects as parameters. +
+**Cons:** A new `Person` object have to be created in order to edit the `Debt` field. Since the `updatePerson()` method only accepts `ReadOnlyPerson` objects as parameters, more code has to be written to convert the `Person` object to be a `ReadOnlyPerson` object. +
 
 // end::borrowCommand[]
 === Logging
