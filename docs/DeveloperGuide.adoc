@@ -346,7 +346,7 @@ image::UndoRedoActivityDiagram.png[width="200"]
 // end::undoredo[]
 
 // tag::datestoring[]
-=== Date Storing mechanism
+=== Date storing mechanism
 
 The date storing mechanism only begins to work when an instance of the `Person` class is implemented. An instance of the `Date` class is created and used to store the current date that the `Person` instance was created.
 An example of such an implementation of this is the `dateBorrow` field of `Person`.
@@ -397,9 +397,10 @@ This is because the above mentioned constructor was meant to make a copy of the 
 **Alternative 1(current choice):** Create a `DateBorrow` class as such but modify the constructor to maintain consistency. +
 **Pros:** Blends well with existing coding style and how the commands work. +
 **Cons:** As of now there is no problems with the implementation. +
-**Alternative 2:** Have the User manually key in the date. +
+**Alternative 2:** Have the user manually key in the date. +
 **Pros:** Implementation is very simple as the developer could just follow current coding style to create a new field. +
-**Cons:** Is not as user friendly. As of now, there amount of fields is rather high and having to input another one is tedious for the users.
+**Cons:** Such an implementation would not be as user-friendly as the first alternative. Currently the amount of fields for the user to key in
+is rather high. Implementing alternative 2 would be more tedious on the user's side.
 
 === Logging
 
