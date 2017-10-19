@@ -348,8 +348,8 @@ image::UndoRedoActivityDiagram.png[width="200"]
 // tag::datestoring[]
 === Date Storing mechanism
 
-The date storing mechanism only begins to work when an instance of the `Person` class in implemented. An instance of the `Date` class is used to store the current date that the `Person` instance was created.
-Such an implementation doesn't allow error when creating the field as there is no room for mistakes on the user's side. An example of such an implementation of this is the `dateBorrow` field of `Person`.
+The date storing mechanism only begins to work when an instance of the `Person` class is implemented. An instance of the `Date` class is created and used to store the current date that the `Person` instance was created.
+An example of such an implementation of this is the `dateBorrow` field of `Person`.
 [source,java]
 ----
 public class Person implements ReadOnlyPerson {
@@ -364,7 +364,7 @@ public class Person implements ReadOnlyPerson {
     private ObjectProperty<Interest> interest;
     private ObjectProperty<DateBorrow> dateBorrow;
 ----
-When the `Person` instance is created, the following line is called:
+ Such an implementation doesn't allow for errors when creating the field as there is no room for mistakes on the user's side. When the `Person` instance is created, the following line is called:
 [source,java]
 ----
     this.dateBorrow = new SimpleObjectProperty<>(new DateBorrow());
@@ -384,7 +384,7 @@ This way of implementation is rather intuitive when adding a new `Person` as a n
         this(source.getName(), source.getPhone(), source.getEmail(), source.getAddress(), source.getPostalCode(),
                 source.getDebt(), source.getInterest(), source.getDeadline(), source.getTags());
 ----
-This would result in inconsistencies in the code. For example, an `Edit` command is implemented in such a way that it creates an `editedPerson`. This can be seen in the following sequence diagram: +
+This would result in inconsistencies in the code. For example, an `Edit` command is implemented in such a way that it creates an `editedPerson`.
 This is because the above mentioned constructor was meant to make a copy of the `Person` with a given source. Hence the following line was added to ensure consistency.
 [source,java]
 ----
