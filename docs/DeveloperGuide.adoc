@@ -348,9 +348,9 @@ image::UndoRedoActivityDiagram.png[width="200"]
 // tag::borrowCommand[]
 === Borrow command mechanism
 
-The `BorrowCommand` class extends `UndoableCommand` so that this command can be undone or redone if necessary.
+The borrow command allows users to increase the debt of a person should he/she borrow more money. The `BorrowCommand` class, which handles the updating of the `Debt` field in a `Person` object, extends `UndoableCommand` so that this command can be undone or redone if necessary.
 
-The borrow command requires the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix `p/` used for phone number). Hence, the `String::split` method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate `Object` types and supplied as arguments to the `BorrowCommand` constructor.
+The user inputs required are the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix `p/` used for phone number). Hence, the `String::split` method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate `Object` types and supplied as arguments to the `BorrowCommand` constructor.
 
 When `BorrowCommand` is executed in `LogicManager`, the `Debt` attribute in the target `Person` object is updated in the `AddressBook` class in the `Model` component. A new `Person` object is created with the debt amount updated to reflect the new total debt. The target `Person` object is then replaced with this new `Person` object.
 
