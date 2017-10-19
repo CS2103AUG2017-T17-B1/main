@@ -48,8 +48,9 @@
 <li><a href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></li>
 <li><a href="#backup-storage-mechanism">3.3. Backup storage mechanism</a></li>
 <li><a href="#date-storing-mechanism">3.4. Date storing mechanism</a></li>
-<li><a href="#logging">3.5. Logging</a></li>
-<li><a href="#configuration">3.6. Configuration</a></li>
+<li><a href="#list-mainlist-blacklist-etc-mechanism">3.5. List (Mainlist, Blacklist etc) mechanism</a></li>
+<li><a href="#logging">3.6. Logging</a></li>
+<li><a href="#configuration">3.7. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">4. Documentation</a>
@@ -944,7 +945,87 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">3.5. Logging</a></h3>
+<h3 id="list-mainlist-blacklist-etc-mechanism"><a class="link" href="#list-mainlist-blacklist-etc-mechanism">3.5. List (Mainlist, Blacklist etc) mechanism</a></h3>
+<div class="paragraph">
+<p>List feature is a useful feature to view persons of a certain category. In the context of this project, master list contains all the contacts of the debt collection agency.</p>
+</div>
+<div class="paragraph">
+<p>We are displaying multiple lists to suit the need for the direction of the project. The lists could be viewed with the respective commands that will bring it to picture. The commands to materialize these lists are named after the lists itself. Meaning, to view the blacklist, the command typed is "blacklist" or "bl'.</p>
+</div>
+<div class="paragraph">
+<p>These commands will inherit from <code>UndoableCommand</code>. Thus, these commands are supported by <code>undo</code> and <code>redo</code> command residing in the current state of Addressbook.</p>
+</div>
+<div class="paragraph">
+<p>This List mechanism is facilitated by commands which uses <code>Logic</code> interface to obtain the copy of the list that is required. As seen by the diagram 3.2.1 and 3.2.2 above, to obtain the current blacklist of the address book, "list" string is first captured by the <code>CommandBox</code>. The <code>CommandBox</code> then passes this string to the <code>Logic</code> interface for execution.</p>
+</div>
+<div class="paragraph">
+<p><code>Logic</code> interface uses <code>LogicManager</code>, the class that implements its methods, to package it as a <code>Command</code> object. The respective command is then executed by this following statement in <code>LogicManager</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CommandResult result = command.execute();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>Logic</code> <code>Manager</code> subsequently calls <code>Model</code> interface. <code>ModelManager</code> handles the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>AddressBook</code> class handles this request and thus will return the required list, since the various lists are stored in this class. Technically, the <code>List</code> <code>Object</code> that exists in the current structure just contains all persons. The blacklisted persons are obtained by running a check on all persons residing in this variable. This is shown by the following code below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> UniquePersonList getBlacklistedPersons() {
+    UniquePersonList blacklistedPersons = <span class="keyword">new</span> UniquePersonList();
+    <span class="keyword">for</span> (Person person : persons.getInternalList()) {
+        <span class="keyword">if</span> (person.getIsBlacklisted()) {
+            <span class="keyword">try</span> {
+                blacklistedPersons.add(person);
+            } <span class="keyword">catch</span> (DuplicatePersonException e) {
+                <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>;
+            }
+        }
+    }
+    <span class="keyword">return</span> blacklistedPersons;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although this seems inefficient, it supports syncing of the various lists well. Meaning, any changes that occurred in main list will be reflected in blacklist as well. For example, if a person is deleted from the main list, he will also be deleted from the blacklist. This also works for various other commands. Thus, it is efficient in this aspect.</p>
+</div>
+<div class="paragraph">
+<p>The following sequence diagram, Figure 3.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/BlacklistCommandSequenceDiagram1.PNG" alt="BlacklistCommandSequenceDiagram1" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>Figure 3.5.1 : Sequence Diagram of How the Blacklist Command Works_</p>
+</div>
+<div class="paragraph">
+<p>The following sequence diagram, Figure 3.5.2, shows further details of the interaction between <code>Model</code> and 'Addressbook` to obtain the blacklist:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/BlacklistCommandSequenceDiagram2.png" alt="BlacklistCommandSequenceDiagram2" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>Figure 3.5.2 : Sequence Diagram of Model and Addressbook Interacts To Generate The Blacklist From All Persons_</p>
+</div>
+<div class="sect3">
+<h4 id="design-constraints"><a class="link" href="#design-constraints">3.5.1. Design Constraints:</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command).<br>
+<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list.<br>
+<strong>Pros:</strong> Easy to implement.<br>
+<strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
+<strong>Alternative 2:</strong> Restrict other command usages in certain lists.<br>
+<strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
+<strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">3.6. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -982,7 +1063,7 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">3.6. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">3.7. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -2624,7 +2705,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-19 08:45:05 +00:00
+Last updated 2017-10-19 09:04:05 +00:00
 </div>
 </div>
 </body>
