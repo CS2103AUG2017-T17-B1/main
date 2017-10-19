@@ -45,8 +45,9 @@
 <li><a href="#implementation">3. Implementation</a>
 <ul class="sectlevel2">
 <li><a href="#undo-redo-mechanism">3.1. Undo/Redo mechanism</a></li>
-<li><a href="#logging">3.2. Logging</a></li>
-<li><a href="#configuration">3.3. Configuration</a></li>
+<li><a href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></li>
+<li><a href="#logging">3.3. Logging</a></li>
+<li><a href="#configuration">3.4. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">4. Documentation</a>
@@ -767,7 +768,84 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">3.2. Logging</a></h3>
+<h3 id="borrow-command-mechanism"><a class="link" href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></h3>
+<div class="paragraph">
+<p>The <code>BorrowCommand</code> class extends <code>UndoableCommand</code> so that this command can be undone or redone if necessary.</p>
+</div>
+<div class="paragraph">
+<p>The borrow command requires the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String::split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Debt</code> attribute in the target <code>Person</code> object is updated in the <code>AddressBook</code> class in the <code>Model</code> component. A new <code>Person</code> object is created with the debt amount updated to reflect the new total debt. The target <code>Person</code> object is then replaced with this new <code>Person</code> object.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>DateBorrow</code> field in the new <code>Person</code> object needs to be updated to match the <code>DateBorrow</code> field in the target <code>Person</code> object. This is because the date when the <code>Person</code> object was created is set as the date for the <code>DateBorrow</code> field.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following sequence diagram, Figure 3.2.1, shows the further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the borrow command is executed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/BorrowCommandSequenceDiagram.png" alt="BorrowCommandSequenceDiagram" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 3.2.1 : Sequence Diagram of How the Borrow Command Works</em></p>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">3.2.1. Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code><br>
+<strong>Alternative 1 (current choice):</strong> Tokenize arguments using <code>String::split</code> method<br>
+<strong>Pros:</strong> Easier to parse arguments using <code>String::split</code> method since there are no prefixes in the command input. It is also easier to validate the number of arguments entered by the user. This can be done through checking the length of the <code>String</code> array return by <code>String::split</code>.<br>
+<strong>Cons:</strong> User has to follow the format for entering the command strictly as an extra whitespace between the index and the amount borrowed would invoke a <code>ParseException</code>.<br>
+<strong>Alternative 2:</strong> Modify <code>ArgumentTokenizer::tokenize</code> method to tokenize arguments<br>
+<strong>Pros:</strong> Increased modularity<br>
+<strong>Cons:</strong> Requires modifications of <code>ArgumentTokenizer::tokenize</code> method since supplying whitespace as a prefix to the current <code>ArgumentTokenizer::tokenize</code> method incorrectly tokenizes arguments.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>For example:</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Entered command: `borrow 1 500`</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Prefixes supplied to `ArgumentTokenizer::tokenize` method: " "</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Outcome: prefix `" "` will be mapped to `1 500` in `argMultimap`. Index and amount borrowed are not separated.</pre>
+</div>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Updating <code>Debt</code> field<br>
+<strong>Alternative 1 (current choice):</strong> Create a new <code>Person</code> object, called <code>editedPerson</code>, by copying all the attributes from the target <code>Person</code> object and update the <code>Debt</code> field before replacing the old <code>Person</code> object with the <code>editedPerson</code>.<br>
+<strong>Pros:</strong> Straightforward and simple to implement<br>
+<strong>Cons:</strong> Have to create a copy of all the attributes even though <code>Debt</code> is the only attribute to be updated.<br>
+<strong>Alternative 2:</strong> Reusing the <code>updatePerson()</code> method in <code>AddressBook.java</code><br>
+<strong>Pros:</strong> Do not have to code the method from scratch<br>
+<strong>Cons:</strong> Have to write more code to convert <code>editedPerson</code> to be of object type <code>ReadOnlyPerson</code> because the <code>updatePerson()</code> method only accepts <code>ReadOnlyPerson</code> objects as parameters.<br></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">3.3. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -805,7 +883,7 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">3.3. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">3.4. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -2447,7 +2525,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-18 15:11:39 +00:00
+Last updated 2017-10-19 01:14:06 +00:00
 </div>
 </div>
 </body>
