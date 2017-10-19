@@ -352,12 +352,12 @@ The `BorrowCommand` class extends `UndoableCommand` so that this command can be 
 
 The borrow command requires the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix `p/` used for phone number). Hence, the `String::split` method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate `Object` types and supplied as arguments to the `BorrowCommand` constructor.
 
-The `Debt` attribute in the target `Person` object is updated in the `AddressBook` class in the `Model` component. A new `Person` object is created with the debt amount updated to reflect the new total debt. The target `Person` object is then replaced with this new `Person` object.
+When `BorrowCommand` is executed in `LogicManager`, the `Debt` attribute in the target `Person` object is updated in the `AddressBook` class in the `Model` component. A new `Person` object is created with the debt amount updated to reflect the new total debt. The target `Person` object is then replaced with this new `Person` object.
 
 [NOTE]
 `DateBorrow` field in the new `Person` object needs to be updated to match the `DateBorrow` field in the target `Person` object. This is because the date when the `Person` object was created is set as the date for the `DateBorrow` field.
 
-The following sequence diagram, Figure 3.2.1, shows the further details of the interaction between the `Logic` and `Model` component when the borrow command is executed:
+The following sequence diagram, Figure 3.2.1, shows further details of the interaction between the `Logic` and `Model` component when the borrow command is executed:
 
 image::BorrowCommandSequenceDiagram.png[width="800"]
 _Figure 3.2.1 : Sequence Diagram of How the Borrow Command Works_
