@@ -47,8 +47,9 @@
 <li><a href="#undo-redo-mechanism">3.1. Undo/Redo mechanism</a></li>
 <li><a href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></li>
 <li><a href="#backup-storage-mechanism">3.3. Backup storage mechanism</a></li>
-<li><a href="#logging">3.4. Logging</a></li>
-<li><a href="#configuration">3.5. Configuration</a></li>
+<li><a href="#date-storing-mechanism">3.4. Date storing mechanism</a></li>
+<li><a href="#logging">3.5. Logging</a></li>
+<li><a href="#configuration">3.6. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">4. Documentation</a>
@@ -870,7 +871,80 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">3.4. Logging</a></h3>
+<h3 id="date-storing-mechanism"><a class="link" href="#date-storing-mechanism">3.4. Date storing mechanism</a></h3>
+<div class="paragraph">
+<p>The date storing mechanism only begins to work when an instance of the <code>Person</code> class is implemented. An instance of the <code>Date</code> class is created and used to store the current date that the <code>Person</code> instance was created.
+An example of such an implementation of this is the <code>dateBorrow</code> field of <code>Person</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> <span class="directive">implements</span> ReadOnlyPerson {
+
+    <span class="directive">private</span> ObjectProperty&lt;<span class="predefined-type">Name</span>&gt; name;
+    <span class="directive">private</span> ObjectProperty&lt;Phone&gt; phone;
+    <span class="directive">private</span> ObjectProperty&lt;Email&gt; email;
+    <span class="directive">private</span> ObjectProperty&lt;Address&gt; address;
+    <span class="directive">private</span> ObjectProperty&lt;PostalCode&gt; postalCode;
+    <span class="directive">private</span> ObjectProperty&lt;Cluster&gt; cluster;
+    <span class="directive">private</span> ObjectProperty&lt;Debt&gt; debt;
+    <span class="directive">private</span> ObjectProperty&lt;Interest&gt; interest;
+    <span class="directive">private</span> ObjectProperty&lt;DateBorrow&gt; dateBorrow;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Such an implementation doesn&#8217;t allow for errors when creating the field as there is no room for mistakes on the user&#8217;s side. When the <code>Person</code> instance is created, the following line is called:<br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="local-variable">this</span>.dateBorrow = <span class="keyword">new</span> SimpleObjectProperty&lt;&gt;(<span class="keyword">new</span> DateBorrow());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Suppose the above line is called, the <code>DateBorrow</code> class creates a new <code>Date</code> with the following line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">public</span> DateBorrow() {
+        <span class="predefined-type">Date</span> date = <span class="keyword">new</span> <span class="predefined-type">Date</span>();
+        value = formatDate(date);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way of implementation is rather intuitive when adding a new <code>Person</code> as a new <code>Date</code> can simply be created. However, whenever a <code>Person</code> constructor is called, such as the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">public</span> Person(ReadOnlyPerson source) {
+        <span class="local-variable">this</span>(source.getName(), source.getPhone(), source.getEmail(), source.getAddress(), source.getPostalCode(),
+                source.getDebt(), source.getInterest(), source.getDeadline(), source.getTags());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would result in inconsistencies in the code. For example, an <code>Edit</code> command is implemented in such a way that it creates an <code>editedPerson</code>.
+This is because the above mentioned constructor was meant to make a copy of the <code>Person</code> with a given source. Hence the following line was added to ensure consistency.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">        <span class="local-variable">this</span>.dateBorrow = <span class="keyword">new</span> SimpleObjectProperty&lt;&gt;(source.getDateBorrow());</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-4"><a class="link" href="#design-considerations-4">3.4.1. Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Implementation of <code>DateBorrow</code><br>
+<strong>Alternative 1(current choice):</strong> Create a <code>DateBorrow</code> class as such but modify the constructor to maintain consistency.<br>
+<strong>Pros:</strong> Blends well with existing coding style and how the commands work.<br>
+<strong>Cons:</strong> As of now there is no problems with the implementation.<br>
+<strong>Alternative 2:</strong> Have the user manually key in the date.<br>
+<strong>Pros:</strong> Implementation is very simple as the developer could just follow current coding style to create a new field.<br>
+<strong>Cons:</strong> Such an implementation would not be as user-friendly as the first alternative. Currently the amount of fields for the user to key in
+is rather high. Implementing alternative 2 would be more tedious on the user&#8217;s side.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">3.5. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -908,7 +982,7 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">3.5. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">3.6. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -2550,7 +2624,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-19 08:44:11 +00:00
+Last updated 2017-10-19 08:45:05 +00:00
 </div>
 </div>
 </body>
