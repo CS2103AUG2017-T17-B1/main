@@ -55,7 +55,7 @@ This developer guide provides detailed information for future contributors to im
 <li><a href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></li>
 <li><a href="#backup-storage-mechanism">3.3. Backup storage mechanism</a></li>
 <li><a href="#date-storing-mechanism">3.4. Date storing mechanism</a></li>
-<li><a href="#list-mainlist-blacklist-etc-mechanism">3.5. List (Mainlist, Blacklist etc) mechanism</a></li>
+<li><a href="#list-masterlist-blacklist-etc-mechanism">3.5. List (Masterlist, Blacklist etc) mechanism</a></li>
 <li><a href="#logging">3.6. Logging</a></li>
 <li><a href="#configuration">3.7. Configuration</a></li>
 </ul>
@@ -985,29 +985,55 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 </div>
 <div class="sect2">
-<h3 id="list-mainlist-blacklist-etc-mechanism"><a class="link" href="#list-mainlist-blacklist-etc-mechanism">3.5. List (Mainlist, Blacklist etc) mechanism</a></h3>
+<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">3.5. List (Masterlist, Blacklist etc) mechanism</a></h3>
 <div class="paragraph">
-<p>List feature is a useful feature to view persons of a certain category. In the context of this project, master list contains all the contacts of the debt collection agency.</p>
+<p>Having multiple lists is useful for debt collectors to view debtors of different categories. Currently, these different lists include masterlist and blacklist.</p>
 </div>
 <div class="paragraph">
-<p>We are displaying multiple lists to suit the need for the direction of the project. The lists could be viewed with the respective commands that will bring it to picture. The commands to materialize these lists are named after the lists itself. Meaning, to view the blacklist, the command typed is "blacklist" or "bl'.</p>
+<p>These lists could be viewed with the respective commands that will update the panel that is currently displayed. The commands to display these lists are named after the lists themselves. For example, to view the <code>blacklist</code>, the command typed is "blacklist" or "bl".</p>
 </div>
 <div class="paragraph">
-<p>These commands will inherit from <code>UndoableCommand</code>. Thus, these commands are supported by <code>undo</code> and <code>redo</code> command residing in the current state of Addressbook.</p>
+<p>The following sequence diagram, Figure 3.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/BlacklistCommandSequenceDiagram1.PNG" alt="BlacklistCommandSequenceDiagram1" width="800">
+</div>
 </div>
 <div class="paragraph">
-<p>This List mechanism is facilitated by commands which uses <code>Logic</code> interface to obtain the copy of the list that is required. As seen by the diagram 3.2.1 and 3.2.2 above, to obtain the current blacklist of the address book, "list" string is first captured by the <code>CommandBox</code>. The <code>CommandBox</code> then passes this string to the <code>Logic</code> interface for execution.</p>
+<p><em>Figure 3.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
 </div>
 <div class="paragraph">
-<p><code>Logic</code> interface uses <code>LogicManager</code>, the class that implements its methods, to package it as a <code>Command</code> object. The respective command is then executed by this following statement in <code>LogicManager</code> class:</p>
+<p>The following sequence diagram, Figure 3.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/BlacklistCommandSequenceDiagram2.png" alt="BlacklistCommandSequenceDiagram2" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 3.5.2 : Sequence diagram of how <code>ModelManager</code> interacts with <code>ReadOnlyAddressBook</code> To generate blacklist From all persons</em></p>
+</div>
+<div class="paragraph">
+<p>The List mechanism is facilitated by commands which use <code>Logic</code> interface to obtain the copy of the list that is required. As seen from Figure 3.5.1 and Figure 3.5.2 above, to obtain the current blacklist of the addressbook, "blacklist" <code>String</code> is first captured by the <code>CommandBox</code> class. The <code>CommandBox</code> class then passes this <code>String</code> to the <code>Logic</code> interface for execution.</p>
+</div>
+<div class="paragraph">
+<p><code>Logic</code> interface uses <code>LogicManager</code> class to validate the written command and package it as a <code>Command</code> object. The respective command is then executed in <code>LogicManager</code> class. These are the instructions that are executed for this command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">CommandResult result = command.execute();</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
+        model.changeListTo(COMMAND_WORD);
+        model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
+        <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>Logic</code> <code>Manager</code> subsequently calls <code>Model</code> interface. <code>ModelManager</code> handles the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>AddressBook</code> class handles this request and thus will return the required list, since the various lists are stored in this class. Technically, the <code>List</code> <code>Object</code> that exists in the current structure just contains all persons. The blacklisted persons are obtained by running a check on all persons residing in this variable. This is shown by the following code below:</p>
+<p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>LogicManager</code> subsequently calls <code>Model</code> interface. <code>Model</code> uses <code>ModelManager</code> class to handle the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>ReadOnlyAddressBook</code> uses <code>AddressBook</code> class to handle this request.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>ReadOnlyPerson#getIsBlacklisted()</code> method, as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1027,29 +1053,7 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 </div>
 <div class="paragraph">
-<p>Although this seems inefficient, it supports syncing of the various lists well. Meaning, any changes that occurred in main list will be reflected in blacklist as well. For example, if a person is deleted from the main list, he will also be deleted from the blacklist. This also works for various other commands. Thus, it is efficient in this aspect.</p>
-</div>
-<div class="paragraph">
-<p>The following sequence diagram, Figure 3.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/BlacklistCommandSequenceDiagram1.PNG" alt="BlacklistCommandSequenceDiagram1" width="800">
-</div>
-</div>
-<div class="paragraph">
-<p>Figure 3.5.1 : Sequence Diagram of How the Blacklist Command Works_</p>
-</div>
-<div class="paragraph">
-<p>The following sequence diagram, Figure 3.5.2, shows further details of the interaction between <code>Model</code> and 'Addressbook` to obtain the blacklist:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/BlacklistCommandSequenceDiagram2.png" alt="BlacklistCommandSequenceDiagram2" width="800">
-</div>
-</div>
-<div class="paragraph">
-<p>Figure 3.5.2 : Sequence Diagram of Model and Addressbook Interacts To Generate The Blacklist From All Persons_</p>
+<p>Although this way of implementation seems inefficient, it supports robust synchronisation among the various other lists. For example, if a person is deleted from the masterlist, he will also be deleted from the blacklist. Likewise for various other commands that changes the <code>ReadOnlyPerson</code> object. Thus, it is efficient in this aspect. Moreover, this implementation sets the groundwork for future implementations of various other lists.</p>
 </div>
 <div class="sect3">
 <h4 id="design-constraints"><a class="link" href="#design-constraints">3.5.1. Design Constraints:</a></h4>
@@ -2763,7 +2767,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-20 08:28:09 +00:00
+Last updated 2017-10-20 08:37:57 +00:00
 </div>
 </div>
 </body>
