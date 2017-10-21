@@ -44,12 +44,13 @@
 <li><a href="#selecting-a-person-code-select-code">4.13. Selecting a person : <code>select</code></a></li>
 <li><a href="#selecting-a-nearby-person-code-nearby-code">4.14. Selecting a nearby person: <code>nearby</code></a></li>
 <li><a href="#listing-entered-commands-code-history-code">4.15. Listing entered commands : <code>history</code></a></li>
-<li><a href="#undoing-previous-command-code-undo-code">4.16. Undoing previous command : <code>undo</code></a></li>
-<li><a href="#redoing-the-previously-undone-command-code-redo-code">4.17. Redoing the previously undone command : <code>redo</code></a></li>
-<li><a href="#clearing-all-entries-code-clear-code">4.18. Clearing all entries : <code>clear</code></a></li>
-<li><a href="#exiting-the-program-code-exit-code">4.19. Exiting the program : <code>exit</code></a></li>
-<li><a href="#saving-the-data">4.20. Saving the data</a></li>
-<li><a href="#loading-the-data">4.21. Loading the data</a></li>
+<li><a href="#sorting-all-contacts-code-sort-code">4.16. Sorting all contacts : <code>sort</code></a></li>
+<li><a href="#undoing-previous-command-code-undo-code">4.17. Undoing previous command : <code>undo</code></a></li>
+<li><a href="#redoing-the-previously-undone-command-code-redo-code">4.18. Redoing the previously undone command : <code>redo</code></a></li>
+<li><a href="#clearing-all-entries-code-clear-code">4.19. Clearing all entries : <code>clear</code></a></li>
+<li><a href="#exiting-the-program-code-exit-code">4.20. Exiting the program : <code>exit</code></a></li>
+<li><a href="#saving-the-data">4.21. Saving the data</a></li>
+<li><a href="#loading-the-data">4.22. Loading the data</a></li>
 </ul>
 </li>
 <li><a href="#faq">5. FAQ</a></li>
@@ -665,7 +666,40 @@ Format: <code>history</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">4.16. Undoing previous command : <code>undo</code></a></h3>
+<h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">4.16. Sorting all contacts : <code>sort</code></a></h3>
+<div class="paragraph">
+<p>Sorts all the contacts in the address book in specified order. If no order is specified, the contacts are sorted in ascending lexographical order.<br>
+Format: <code>sort ORDERING</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Valid orderings are: <code>name</code>, <code>cluster</code>, <code>deadline</code> and <code>debt</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sort</code><br>
+Sorts the contacts in the address book by name.</p>
+</li>
+<li>
+<p><code>sort cluster</code><br>
+Sorts the contacts in the address book by their postal districts.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">4.17. Undoing previous command : <code>undo</code></a></h3>
 <div class="paragraph">
 <p>Restores the address book to the state before the previous <em>undoable</em> command was executed.<br>
 Format: <code>undo</code></p>
@@ -710,7 +744,7 @@ The <code>undo</code> command fails as there are no undoable commands executed p
 </div>
 </div>
 <div class="sect2">
-<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">4.17. Redoing the previously undone command : <code>redo</code></a></h3>
+<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">4.18. Redoing the previously undone command : <code>redo</code></a></h3>
 <div class="paragraph">
 <p>Reverses the most recent <code>undo</code> command.<br>
 Format: <code>redo</code></p>
@@ -742,21 +776,21 @@ The <code>redo</code> command fails as there are no <code>undo</code> commands e
 </div>
 </div>
 <div class="sect2">
-<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">4.18. Clearing all entries : <code>clear</code></a></h3>
+<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">4.19. Clearing all entries : <code>clear</code></a></h3>
 <div class="paragraph">
 <p>Clears all entries from the address book.<br>
 Format: <code>clear</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">4.19. Exiting the program : <code>exit</code></a></h3>
+<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">4.20. Exiting the program : <code>exit</code></a></h3>
 <div class="paragraph">
 <p>Exits the program.<br>
 Format: <code>exit</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="saving-the-data"><a class="link" href="#saving-the-data">4.20. Saving the data</a></h3>
+<h3 id="saving-the-data"><a class="link" href="#saving-the-data">4.21. Saving the data</a></h3>
 <div class="paragraph">
 <p>Address book data are saved in the hard disk automatically after any command that changes the data.<br>
 There is no need to save manually.<br>
@@ -764,7 +798,7 @@ If address book data can be loaded successfully, backup address book data is sav
 </div>
 </div>
 <div class="sect2">
-<h3 id="loading-the-data"><a class="link" href="#loading-the-data">4.21. Loading the data</a></h3>
+<h3 id="loading-the-data"><a class="link" href="#loading-the-data">4.22. Loading the data</a></h3>
 <div class="paragraph">
 <p>If the data file does not exist or cannot be read:</p>
 </div>
@@ -895,6 +929,10 @@ e.g.<code>select 2</code></p>
 <p><strong>Nearby</strong> : <code>nearby</code></p>
 </li>
 <li>
+<p><strong>Sort</strong> : <code>sort ORDERING</code><br>
+e.g. <code>sort debt</code></p>
+</li>
+<li>
 <p><strong>Undo</strong> : <code>undo</code></p>
 </li>
 <li>
@@ -973,6 +1011,9 @@ e.g.<code>select 2</code></p>
 <p>Interest field (since v1.2)</p>
 </li>
 <li>
+<p>Sort by various fields (since v1.3)</p>
+</li>
+<li>
 <p><code>Payback</code> command (since v1.3)</p>
 </li>
 </ul>
@@ -992,9 +1033,6 @@ e.g.<code>select 2</code></p>
 </li>
 <li>
 <p>List of people who have overdue debts.</p>
-</li>
-<li>
-<p>A command to <code>Sort</code> the list of person&#8217;s by name.</p>
 </li>
 <li>
 <p>A person&#8217;s debts are automatically incremented according to the interest rate of their loan.</p>
@@ -1057,7 +1095,7 @@ e.g.<code>select 2</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-21 15:41:54 +00:00
+Last updated 2017-10-21 16:40:10 +00:00
 </div>
 </div>
 </body>
