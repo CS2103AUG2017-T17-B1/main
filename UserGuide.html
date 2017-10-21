@@ -37,18 +37,19 @@
 <li><a href="#editing-a-person-code-edit-code">4.6. Editing a person : <code>edit</code></a></li>
 <li><a href="#locating-persons-by-name-code-find-code">4.7. Locating persons by name: <code>find</code></a></li>
 <li><a href="#increasing-the-debt-of-a-debtor-code-borrow-code">4.8. Increasing the debt of a debtor: <code>borrow</code></a></li>
-<li><a href="#deleting-a-person-code-delete-code">4.9. Deleting a person : <code>delete</code></a></li>
-<li><a href="#banning-a-debtor-code-ban-code">4.10. Banning a debtor : <code>ban</code></a></li>
-<li><a href="#unbanning-a-blacklisted-person-code-unban-code">4.11. Unbanning a blacklisted person : <code>unban</code></a></li>
-<li><a href="#selecting-a-person-code-select-code">4.12. Selecting a person : <code>select</code></a></li>
-<li><a href="#selecting-a-nearby-person-code-nearby-code">4.13. Selecting a nearby person: <code>nearby</code></a></li>
-<li><a href="#listing-entered-commands-code-history-code">4.14. Listing entered commands : <code>history</code></a></li>
-<li><a href="#undoing-previous-command-code-undo-code">4.15. Undoing previous command : <code>undo</code></a></li>
-<li><a href="#redoing-the-previously-undone-command-code-redo-code">4.16. Redoing the previously undone command : <code>redo</code></a></li>
-<li><a href="#clearing-all-entries-code-clear-code">4.17. Clearing all entries : <code>clear</code></a></li>
-<li><a href="#exiting-the-program-code-exit-code">4.18. Exiting the program : <code>exit</code></a></li>
-<li><a href="#saving-the-data">4.19. Saving the data</a></li>
-<li><a href="#loading-the-data">4.20. Loading the data</a></li>
+<li><a href="#decreasing-the-debt-of-a-person-code-payback-code">4.9. Decreasing the debt of a person: <code>payback</code></a></li>
+<li><a href="#deleting-a-person-code-delete-code">4.10. Deleting a person : <code>delete</code></a></li>
+<li><a href="#banning-a-debtor-code-ban-code">4.11. Banning a debtor : <code>ban</code></a></li>
+<li><a href="#unbanning-a-blacklisted-person-code-unban-code">4.12. Unbanning a blacklisted person : <code>unban</code></a></li>
+<li><a href="#selecting-a-person-code-select-code">4.13. Selecting a person : <code>select</code></a></li>
+<li><a href="#selecting-a-nearby-person-code-nearby-code">4.14. Selecting a nearby person: <code>nearby</code></a></li>
+<li><a href="#listing-entered-commands-code-history-code">4.15. Listing entered commands : <code>history</code></a></li>
+<li><a href="#undoing-previous-command-code-undo-code">4.16. Undoing previous command : <code>undo</code></a></li>
+<li><a href="#redoing-the-previously-undone-command-code-redo-code">4.17. Redoing the previously undone command : <code>redo</code></a></li>
+<li><a href="#clearing-all-entries-code-clear-code">4.18. Clearing all entries : <code>clear</code></a></li>
+<li><a href="#exiting-the-program-code-exit-code">4.19. Exiting the program : <code>exit</code></a></li>
+<li><a href="#saving-the-data">4.20. Saving the data</a></li>
+<li><a href="#loading-the-data">4.21. Loading the data</a></li>
 </ul>
 </li>
 <li><a href="#faq">5. FAQ</a></li>
@@ -400,7 +401,46 @@ Increases the debt of the 2nd person by $1000.10.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">4.9. Deleting a person : <code>delete</code></a></h3>
+<h3 id="decreasing-the-debt-of-a-person-code-payback-code"><a class="link" href="#decreasing-the-debt-of-a-person-code-payback-code">4.9. Decreasing the debt of a person: <code>payback</code></a></h3>
+<div class="paragraph">
+<p>Decrease the debt of a person by the amount entered.<br>
+Format: <code>payback INDEX AMOUNT</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Decrease the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+</li>
+<li>
+<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600</code> which represents $600.</p>
+</li>
+<li>
+<p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>payback 1 500</code><br>
+Decreases the debt of the 1st person by $500.</p>
+</li>
+<li>
+<p><code>payback 2 1000.10</code><br>
+Decreases the debt of the 2nd person by $1000.10.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">4.10. Deleting a person : <code>delete</code></a></h3>
 <div class="paragraph">
 <p>Deletes the specified person from the address book.<br>
 Format: <code>delete INDEX</code></p>
@@ -441,7 +481,7 @@ Deletes the 1st person in the results of the <code>find</code> command.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">4.10. Banning a debtor : <code>ban</code></a></h3>
+<h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">4.11. Banning a debtor : <code>ban</code></a></h3>
 <div class="paragraph">
 <p>Adds the specified debtor from current records to blacklist.<br>
 Format: 'ban INDEX'</p>
@@ -482,7 +522,7 @@ Adds the 1st person in the results of the <code>find</code> command to blacklist
 </div>
 </div>
 <div class="sect2">
-<h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">4.11. Unbanning a blacklisted person : <code>unban</code></a></h3>
+<h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">4.12. Unbanning a blacklisted person : <code>unban</code></a></h3>
 <div class="paragraph">
 <p>Removes the specified person from blacklist.<br>
 Format: 'unban INDEX'</p>
@@ -523,7 +563,7 @@ Removes the 1st person in the results of the <code>find</code> command from blac
 </div>
 </div>
 <div class="sect2">
-<h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">4.12. Selecting a person : <code>select</code></a></h3>
+<h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">4.13. Selecting a person : <code>select</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the last person listing.<br>
 Format: <code>select INDEX</code></p>
@@ -564,7 +604,7 @@ Selects the 1st person in the results of the <code>find</code> command.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">4.13. Selecting a nearby person: <code>nearby</code></a></h3>
+<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">4.14. Selecting a nearby person: <code>nearby</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
 Format: <code>nearby INDEX</code></p>
@@ -604,7 +644,7 @@ Selects the 1st person in the nearby contacts listing of the previously selected
 </div>
 </div>
 <div class="sect2">
-<h3 id="listing-entered-commands-code-history-code"><a class="link" href="#listing-entered-commands-code-history-code">4.14. Listing entered commands : <code>history</code></a></h3>
+<h3 id="listing-entered-commands-code-history-code"><a class="link" href="#listing-entered-commands-code-history-code">4.15. Listing entered commands : <code>history</code></a></h3>
 <div class="paragraph">
 <p>Lists all the commands that you have entered in reverse chronological order.<br>
 Format: <code>history</code></p>
@@ -625,7 +665,7 @@ Format: <code>history</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">4.15. Undoing previous command : <code>undo</code></a></h3>
+<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">4.16. Undoing previous command : <code>undo</code></a></h3>
 <div class="paragraph">
 <p>Restores the address book to the state before the previous <em>undoable</em> command was executed.<br>
 Format: <code>undo</code></p>
@@ -670,7 +710,7 @@ The <code>undo</code> command fails as there are no undoable commands executed p
 </div>
 </div>
 <div class="sect2">
-<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">4.16. Redoing the previously undone command : <code>redo</code></a></h3>
+<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">4.17. Redoing the previously undone command : <code>redo</code></a></h3>
 <div class="paragraph">
 <p>Reverses the most recent <code>undo</code> command.<br>
 Format: <code>redo</code></p>
@@ -702,21 +742,21 @@ The <code>redo</code> command fails as there are no <code>undo</code> commands e
 </div>
 </div>
 <div class="sect2">
-<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">4.17. Clearing all entries : <code>clear</code></a></h3>
+<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">4.18. Clearing all entries : <code>clear</code></a></h3>
 <div class="paragraph">
 <p>Clears all entries from the address book.<br>
 Format: <code>clear</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">4.18. Exiting the program : <code>exit</code></a></h3>
+<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">4.19. Exiting the program : <code>exit</code></a></h3>
 <div class="paragraph">
 <p>Exits the program.<br>
 Format: <code>exit</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="saving-the-data"><a class="link" href="#saving-the-data">4.19. Saving the data</a></h3>
+<h3 id="saving-the-data"><a class="link" href="#saving-the-data">4.20. Saving the data</a></h3>
 <div class="paragraph">
 <p>Address book data are saved in the hard disk automatically after any command that changes the data.<br>
 There is no need to save manually.<br>
@@ -724,7 +764,7 @@ If address book data can be loaded successfully, backup address book data is sav
 </div>
 </div>
 <div class="sect2">
-<h3 id="loading-the-data"><a class="link" href="#loading-the-data">4.20. Loading the data</a></h3>
+<h3 id="loading-the-data"><a class="link" href="#loading-the-data">4.21. Loading the data</a></h3>
 <div class="paragraph">
 <p>If the data file does not exist or cannot be read:</p>
 </div>
@@ -810,6 +850,10 @@ e.g. <code>add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd pc
 <li>
 <p><strong>Borrow</strong> : <code>borrow INDEX AMOUNT</code><br>
 e.g. <code>borrow 1 500.50</code></p>
+</li>
+<li>
+<p><strong>Pay back</strong> : <code>payback INDEX AMOUNT</code><br>
+e.g. <code>payback 1 500.50</code></p>
 </li>
 <li>
 <p><strong>Delete</strong> : <code>delete INDEX</code><br>
@@ -920,12 +964,6 @@ e.g.<code>select 2</code></p>
 <p><code>Nearby</code> command (since v1.2)</p>
 </li>
 <li>
-<p>Grouping of contacts (since v1.2)</p>
-</li>
-<li>
-<p>Display nearby contacts (since v1.2)</p>
-</li>
-<li>
 <p><code>Borrow</code> command (since v1.2)</p>
 </li>
 <li>
@@ -933,6 +971,9 @@ e.g.<code>select 2</code></p>
 </li>
 <li>
 <p>Interest field (since v1.2)</p>
+</li>
+<li>
+<p><code>Payback</code> command (since v1.3)</p>
 </li>
 </ul>
 </div>
@@ -957,9 +998,6 @@ e.g.<code>select 2</code></p>
 </li>
 <li>
 <p>A person&#8217;s debts are automatically incremented according to the interest rate of their loan.</p>
-</li>
-<li>
-<p>Group debtors by location.</p>
 </li>
 <li>
 <p>A progress bar to indicate how much of the person&#8217;s debt has been paid off.</p>
@@ -1019,7 +1057,7 @@ e.g.<code>select 2</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-20 09:38:08 +00:00
+Last updated 2017-10-21 13:18:12 +00:00
 </div>
 </div>
 </body>
