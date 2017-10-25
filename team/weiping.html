@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<title>Khoo Wei Ping - Project Portfolio</title>
+<link rel="stylesheet" href="../stylesheets/gh-pages.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../stylesheets/coderay-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Khoo Wei Ping - Project Portfolio</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="project-codii"><a class="link" href="#project-codii">Project: Codii</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>[<a href="https://github.com/CS2103AUG2017-T17-B1/main">Codii</a>] is a desktop address book application targeted at debt collectors. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 6kLoC.</p>
+</div>
+<div class="paragraph">
+<p>Codii is enhanced from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
+</div>
+<div class="paragraph">
+<p><strong>Code contributed</strong>: [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/main/khooroko.md">Functional code</a>] [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/test/khooroko.md">Test code</a>]</p>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-storage-backup"><a class="link" href="#enhancement-added-storage-backup">Enhancement Added: Storage backup</a></h3>
+<div class="sect3">
+<h4 id="external-behavior"><a class="link" href="#external-behavior">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="saving-the-data"><a class="link" href="#saving-the-data">Saving the data</a></h3>
+<div class="paragraph">
+<p>Address book data are saved in the hard disk automatically after any command that changes the data.<br>
+There is no need to save manually.<br>
+If address book data can be loaded successfully, backup address book data is saved upon starting the program.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="loading-the-data"><a class="link" href="#loading-the-data">Loading the data</a></h3>
+<div class="paragraph">
+<p>If the data file does not exist or cannot be read:</p>
+</div>
+<div class="ulist none">
+<ul class="none">
+<li>
+<p>Backup data file will be loaded, if available and readable.</p>
+</li>
+<li>
+<p>If backup data is unavailable:</p>
+<div class="ulist none">
+<ul class="none">
+<li>
+<p>You will be given a sample address book.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If backup data exists but cannot be read :</p>
+<div class="ulist none">
+<ul class="none">
+<li>
+<p>You will be given an empty address book.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To quickly revert address book data to the state of last use:</p>
+</div>
+<div class="ulist none">
+<ul class="none">
+<li>
+<p>1. Delete addressbook.xml.</p>
+</li>
+<li>
+<p>2. Rename addressbook.xml-backup.xml to addressbook.xml.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification"><a class="link" href="#justification">Justification</a></h4>
+<div class="paragraph">
+<p>The backup is a safety measure in case the main storage file is corrupted or deleted by accident.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation"><a class="link" href="#implementation">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="backup-storage-mechanism"><a class="link" href="#backup-storage-mechanism">Backup storage mechanism</a></h3>
+<div class="paragraph">
+<p>The backup storage mechanism is facilitated by the <code>StorageManager</code>. It backs up the address book data automatically each time the application starts up, if there is existing data available. The backup file is saved in the same location as the main file as <code>addressbook.xml-backup.xml</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/BackupAddressBookSequenceDiagram.png" alt="BackupAddressBookSequenceDiagram" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 3.3.1: Sequence diagram for backing up address book data</em></p>
+</div>
+<div class="paragraph">
+<p>The <code>backupAddressBook</code> method is called in <code>MainApp#init()</code> which is called each time the application starts. The sequence diagram for this method is shown above in Figure 3.3.1. No backup is made if there is no existing data.</p>
+</div>
+<div class="sect3">
+<h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> When to create the backup<br>
+<strong>Alternative 1 (current choice):</strong> on startup of the application<br>
+<strong>Pros:</strong> Guarantees that a backup is made only of a working version of the address book that the user can easily revert to, should he/she mess up the main copy while using the application.<br>
+<strong>Cons:</strong> If the user tends to make many changes within one session, none of the changes are saved in the backup.
+<strong>Alternative 2:</strong> Implement a command to create backup.<br>
+<strong>Pros:</strong> The backup is only created when the user desires to.<br>
+<strong>Cons:</strong> This makes the implementation pointless altogether as it is meant as a safety net for clumsy users. This alternative would only benefit the careful users, who do not require it as much in the first place.<br>
+<strong>Alternative 3:</strong> Create a backup after a fixed number of commands that change the address book.<br>
+<strong>Pros:</strong> This will create backups that are guaranteed to be recent.<br>
+<strong>Cons:</strong> It is difficult to determine the ideal number of commands to ensure that the backup is both recent enough, yet outdated enough for the user to want to restore state to should he/she mess up a command at some point.<br></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-sort-command"><a class="link" href="#enhancement-added-sort-command">Enhancement Added: Sort command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-2"><a class="link" href="#external-behavior-2">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">Sorting all contacts : <code>sort</code></a></h3>
+<div class="paragraph">
+<p>Sorts all the contacts in the address book in specified order. If no order is specified, the contacts are sorted in ascending lexographical order.<br>
+Format: <code>sort ORDERING</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Valid orderings are: <code>name</code>, <code>cluster</code>, <code>deadline</code> and <code>debt</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sort</code><br>
+Sorts the contacts in the address book by name.</p>
+</li>
+<li>
+<p><code>sort cluster</code><br>
+Sorts the contacts in the address book by their postal districts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-2"><a class="link" href="#justification-2">Justification</a></h4>
+<div class="paragraph">
+<p>Debt collectors would want to sort their contacts in various ways for easier viewing.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-nearby-command"><a class="link" href="#enhancement-added-nearby-command">Enhancement Added: Nearby command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">Selecting a nearby person: <code>nearby</code></a></h3>
+<div class="paragraph">
+<p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
+Format: <code>nearby INDEX</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Selects the person and loads the full information of the person at the specified <code>INDEX</code>.</p>
+</li>
+<li>
+<p>The index refers to the index number shown in the nearby contacts listing.</p>
+</li>
+<li>
+<p>The index <strong>must be a positice integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>select 2</code><br>
+Selects the 2nd person in the address book.</p>
+</li>
+<li>
+<p><code>nearby 1</code><br>
+Selects the 1st person in the nearby contacts listing of the previously selected person.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-3"><a class="link" href="#justification-3">Justification</a></h4>
+<div class="paragraph">
+<p>Debt collectors may want to see details of nearby contacts to plan a more effective visiting schedule</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
+<div class="sect3">
+<h4 id="various-ui-enhancements"><a class="link" href="#various-ui-enhancements">Various UI enhancements</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Resizing the result display panel</p>
+</li>
+<li>
+<p>Replacing the browser with full information panel</p>
+</li>
+<li>
+<p>Creating the nearby persons panel inside the full information panel</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="project-dog-mario"><a class="link" href="#project-dog-mario">Project: Dog Mario</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>[<a href="https://github.com/DogMario/Dog-Mario">Dog Mario</a>] is a game developed with [<a href="https://github.com/tbhbhbh">Tan Bing Hwang</a>] as an independent project for Orbital 2017.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-10-25 09:22:44 +00:00
+</div>
+</div>
+</body>
+</html>
