@@ -2093,8 +2093,8 @@ for <code>RemarkCommandParser</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have a list of people who have cleared their debts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">refer to their recorded info when they require my services again</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have a <a href="#whitelist">whitelist</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use that list for record keeping</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* * *</code></p></td>
@@ -2243,7 +2243,7 @@ for <code>RemarkCommandParser</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">debt collector</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">randomly generate a contact from the <a href="#cleared">cleared</a> list(clients who have paid their debts)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">randomly generate a contact from the <a href="#whitelist">whitelist</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">choose to chat up a random contact to talk them into getting a loan</p></td>
 </tr>
 <tr>
@@ -2605,6 +2605,14 @@ for <code>RemarkCommandParser</code>.</p>
 <pre>Requiring immediate attention of debt collectors</pre>
 </div>
 </div>
+<div id="whitelist" class="paragraph">
+<p>Whitelist</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>A list of people who have cleared their debts</pre>
+</div>
+</div>
 <div id="blacklist" class="paragraph">
 <p>Blacklist</p>
 </div>
@@ -2643,14 +2651,6 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="literalblock">
 <div class="content">
 <pre>An official record of events</pre>
-</div>
-</div>
-<div id="cleared" class="paragraph">
-<p>Cleared</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Refers to clients that have paid off all their debts (in this context)</pre>
 </div>
 </div>
 </div>
@@ -2767,7 +2767,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-25 09:22:44 +00:00
+Last updated 2017-10-26 05:17:51 +00:00
 </div>
 </div>
 </body>
