@@ -79,6 +79,9 @@ This guide includes step-by-step instructions on how each command work, FAQs and
 <p>Blacklist - List of people who are banned<br></p>
 </li>
 <li>
+<p>Whitelist - List of people who have cleared their debts<br></p>
+</li>
+<li>
 <p>Index - The ordering of a contact in the list</p>
 </li>
 </ul>
@@ -239,7 +242,7 @@ Format: <code>logout</code></p>
 <h3 id="adding-a-debtor-code-add-code"><a class="link" href="#adding-a-debtor-code-add-code">4.4. Adding a debtor: <code>add</code></a></h3>
 <div class="paragraph">
 <p>Adds a debtor to the address book. Date borrowed for debtor is automatically<br>
-noted down. As for Deadline, it is optional.<br>
+noted down. The <code>Deadline</code>, <code>Interest</code> and <code>Tag</code> fields are optional.<br>
 Format: <code>add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS pc/POSTAL CODE d/Debt [t/TAG]&#8230;&#8203;</code></p>
 </div>
 <div class="admonitionblock tip">
@@ -937,7 +940,28 @@ If address book data can be loaded successfully, backup address book data is sav
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
-<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder.</p>
+<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Q</strong>: What is the difference between <code>repaid</code> command and <code>payback</code> command?<br>
+<strong>A</strong>: <code>repaid</code> command completely clears a debtor&#8217;s debt while <code>payback</code> clears a specified amount. In both cases, when the debt reaches zero, the person is
+transferred to whitelist and date repaid is set to the date the command is executed.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Q</strong>: If I <code>delete</code> someone from the <code>masterlist</code>, will he/she be deleted from the other lists as well?<br>
+<strong>A</strong>: Yes.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Q</strong>: Is it possible to send a blacklisted person to the <code>whitelist</code>?<br>
+<strong>A</strong>: No. You have to <code>unban</code> the person prior to sending him/her to the <code>whitelist</code>.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Q</strong>: When will a debtor&#8217;s <code>debt</code> be accrued by his/her loan&#8217;s interest rate?<br>
+<strong>A</strong>: As of now, the default date to accrue is on the first day of the month.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Q</strong>: If I execute the <code>sort</code> command in the <code>masterlist</code>, will the other lists be sorted as well?<br>
+<strong>A</strong>: Yes.<br></p>
 </div>
 </div>
 </div>
@@ -1184,7 +1208,7 @@ e.g. <code>sort debt</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-26 10:06:00 +00:00
+Last updated 2017-10-26 10:50:17 +00:00
 </div>
 </div>
 </body>
