@@ -303,6 +303,9 @@ Format: <code>edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [pc/POSTAL COD
 <p>Edits the person at the specified <code>INDEX</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
 </li>
 <li>
+<p>If no index is specified, the currently selected person is edited instead.</p>
+</li>
+<li>
 <p>At least one of the optional fields must be provided.</p>
 </li>
 <li>
@@ -333,6 +336,12 @@ Edits the phone number, postal code, and email address of the 1st person to be <
 <li>
 <p><code>edit 2 n/Betsy Crower t/</code><br>
 Edits the name of the 2nd person to be <code>Betsy Crower</code> and clears all existing tags.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 1</code><br>
+<code>edit n/Peeta Pen</code><br>
+Edits the name of the 1st person in the address book to be <code>Peeta Pen</code>.</p>
 </li>
 </ul>
 </div>
@@ -393,7 +402,10 @@ Format: <code>borrow INDEX AMOUNT</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is increased instead.</p>
 </li>
 <li>
 <p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>500.50</code> which represents $500.50.</p>
@@ -415,6 +427,12 @@ Increases the debt of the 1st person by $500.</p>
 <p><code>borrow 2 1000.10</code><br>
 Increases the debt of the 2nd person by $1000.10.</p>
 </li>
+<li>
+<p><code>list</code><br>
+<code>select 2</code><br>
+<code>borrow 234</code><br>
+Increases the debt of the 2nd person by $234.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -429,7 +447,10 @@ Format: <code>payback INDEX AMOUNT</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Decrease the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+<p>Decreases the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is decreased instead.</p>
 </li>
 <li>
 <p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600</code> which represents $600.</p>
@@ -453,6 +474,12 @@ Decreases the debt of the 1st person by $500.</p>
 <li>
 <p><code>payback 2 1000.10</code><br>
 Decreases the debt of the 2nd person by $1000.10.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 3</code><br>
+<code>payback 234</code><br>
+Increases the debt of the 3rd person by $234.</p>
 </li>
 </ul>
 </div>
@@ -497,13 +524,10 @@ Format: <code>delete INDEX</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Deletes the person at the specified <code>INDEX</code>.</p>
+<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
 </li>
 <li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>If no index is specified, the currently selected person is deleted instead.</p>
 </li>
 </ul>
 </div>
@@ -523,6 +547,12 @@ Deletes the 2nd person in the address book.</p>
 <p><code>find Betsy</code><br>
 <code>delete 1</code><br>
 Deletes the 1st person in the results of the <code>find</code> command.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 4</code><br>
+<code>delete</code><br>
+Deletes the 4th person in the address book.</p>
 </li>
 </ul>
 </div>
@@ -1157,7 +1187,7 @@ e.g. <code>sort debt</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-26 05:24:14 +00:00
+Last updated 2017-10-26 05:42:59 +00:00
 </div>
 </div>
 </body>
