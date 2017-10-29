@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_OVERDUE_PERSONS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_WHITELISTED_PERSONS;
 
@@ -46,6 +47,14 @@ public abstract class UndoableCommand extends Command {
                 case "whitelist":
                     if (model.getFilteredWhitelistedPersonList().contains(selectedPerson)) {
                         this.index = Index.fromZeroBased(model.getFilteredWhitelistedPersonList()
+                                .indexOf(selectedPerson));
+                    } else {
+                        this.index = null;
+                    }
+                    break;
+                case "overdue":
+                    if (model.getFilteredOverduePersonList().contains(selectedPerson)) {
+                        this.index = Index.fromZeroBased(model.getFilteredOverduePersonList()
                                 .indexOf(selectedPerson));
                     } else {
                         this.index = null;
@@ -108,7 +117,9 @@ public abstract class UndoableCommand extends Command {
         case "whitelist":
             model.updateFilteredWhitelistedPersonList(PREDICATE_SHOW_ALL_WHITELISTED_PERSONS);
             break;
-
+        case "overdue":
+            model.updateFilteredOverduePersonList(PREDICATE_SHOW_ALL_OVERDUE_PERSONS);
+            break;
         default:
             model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         }

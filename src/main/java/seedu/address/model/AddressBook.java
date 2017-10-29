@@ -118,6 +118,25 @@ public class AddressBook implements ReadOnlyAddressBook {
         return whitelistedPersons;
     }
 
+    /**
+     * Searches for debt overdue persons in {@code persons}.
+     * @return UniquePersonList of all persons with overdue debts in {@code persons}
+     */
+    public UniquePersonList getOverduePersons() {
+        UniquePersonList overduePersons = new UniquePersonList();
+        for (Person person : persons.getInternalList()) {
+            if (person.hasOverdueDebt()) {
+                try {
+                    overduePersons.add(person);
+                } catch (DuplicatePersonException e) {
+                    assert false : "This is not possible as prior checks have"
+                            + " been done to ensure AddressBook does not have duplicate persons";
+                }
+            }
+        }
+        return overduePersons;
+    }
+
     //// person-level operations
 
     /**
@@ -180,6 +199,30 @@ public class AddressBook implements ReadOnlyAddressBook {
         }
         try {
             persons.add(index, newWhitelistedPerson);
+        } catch (DuplicatePersonException dpe) {
+            assert false : "This is not possible as it not possible to"
+                    + " have duplicates in persons before persons.remove(key) statement was executed.";
+        }
+        return persons.getReadOnlyPerson(index);
+    }
+
+    /**
+     * Adds a person to the overdue list in the address book.
+     * @return ReadOnly newOverduePerson
+     */
+    public ReadOnlyPerson addOverduePerson(ReadOnlyPerson p) {
+        int index;
+        index = persons.getIndexOf(p);
+
+        Person newOverduePerson = new Person(p);
+        newOverduePerson.setHasOverdueDebt(true);
+        try {
+            persons.remove(p);
+        } catch (PersonNotFoundException e) {
+            assert false : "This is not possible as prior checks have been done";
+        }
+        try {
+            persons.add(index, newOverduePerson);
         } catch (DuplicatePersonException dpe) {
             assert false : "This is not possible as it not possible to"
                     + " have duplicates in persons before persons.remove(key) statement was executed.";
@@ -456,6 +499,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<ReadOnlyPerson> getWhitelistedPersonList() {
         return getWhitelistedPersons().asObservableList();
+    }
+
+    @Override
+    public ObservableList<ReadOnlyPerson> getOverduePersonList() {
+        return getOverduePersons().asObservableList();
     }
 
     @Override

@@ -34,6 +34,7 @@ public class AddressBookTest {
         assertEquals(Collections.emptyList(), addressBook.getPersonList());
         assertEquals(Collections.emptyList(), addressBook.getBlacklistedPersonList());
         assertEquals(Collections.emptyList(), addressBook.getWhitelistedPersonList());
+        assertEquals(Collections.emptyList(), addressBook.getOverduePersonList());
         assertEquals(Collections.emptyList(), addressBook.getTagList());
     }
 
@@ -80,6 +81,12 @@ public class AddressBookTest {
     }
 
     @Test
+    public void getOverduePersonList_modifyList_throwsUnsupportedOperationException() {
+        thrown.expect(UnsupportedOperationException.class);
+        addressBook.getOverduePersonList().remove(0);
+    }
+
+    @Test
     public void getTagList_modifyList_throwsUnsupportedOperationException() {
         thrown.expect(UnsupportedOperationException.class);
         addressBook.getTagList().remove(0);
@@ -110,6 +117,11 @@ public class AddressBookTest {
         @Override
         public ObservableList<ReadOnlyPerson> getWhitelistedPersonList() {
             return getWhitelistedPersons(persons).asObservableList();
+        }
+
+        @Override
+        public ObservableList<ReadOnlyPerson> getOverduePersonList() {
+            return getOverduePersons(persons).asObservableList();
         }
 
         @Override
@@ -145,6 +157,21 @@ public class AddressBookTest {
                 }
             }
             return whitelistedPersons;
+        }
+
+        public UniquePersonList getOverduePersons(ObservableList<ReadOnlyPerson> persons) {
+            UniquePersonList overduePersons = new UniquePersonList();
+            for (ReadOnlyPerson readOnlyPerson : persons) {
+                Person person = new Person(readOnlyPerson);
+                if (person.hasOverdueDebt()) {
+                    try {
+                        overduePersons.add(person);
+                    } catch (DuplicatePersonException e) {
+                        assert false : "This is not possible as prior checks have been done";
+                    }
+                }
+            }
+            return overduePersons;
         }
 
     }

@@ -49,6 +49,7 @@ public class ModelManager extends ComponentManager implements Model {
 
     private FilteredList<ReadOnlyPerson> filteredWhitelistedPersons;
     private FilteredList<ReadOnlyPerson> filteredBlacklistedPersons;
+    private FilteredList<ReadOnlyPerson> filteredOverduePersons;
     private ObservableList<ReadOnlyPerson> nearbyPersons;
     private ReadOnlyPerson selectedPerson;
 
@@ -68,6 +69,7 @@ public class ModelManager extends ComponentManager implements Model {
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredWhitelistedPersons = new FilteredList<>(this.addressBook.getWhitelistedPersonList());
         filteredBlacklistedPersons = new FilteredList<>(this.addressBook.getBlacklistedPersonList());
+        filteredOverduePersons = new FilteredList<>(this.addressBook.getOverduePersonList());
 
         this.userPrefs = userPrefs;
 
@@ -236,6 +238,13 @@ public class ModelManager extends ComponentManager implements Model {
         filteredWhitelistedPersons = new FilteredList<>(this.addressBook.getWhitelistedPersonList());
     }
 
+    /**
+     * Reads the masterlist and updates the overdue list accordingly.
+     */
+    public void syncOverdueList() {
+        filteredOverduePersons = new FilteredList<>(this.addressBook.getOverduePersonList());
+    }
+
     //@@author jelneo
     /**
      * Authenticates user
@@ -361,6 +370,16 @@ public class ModelManager extends ComponentManager implements Model {
         return FXCollections.unmodifiableObservableList(filteredWhitelistedPersons);
     }
 
+    /**
+     * Returns an unmodifiable view of the overdue list of {@code ReadOnlyPerson} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<ReadOnlyPerson> getFilteredOverduePersonList() {
+        setCurrentList("overdue");
+        return FXCollections.unmodifiableObservableList(filteredOverduePersons);
+    }
+
     @Override
     public void updateFilteredPersonList(Predicate<ReadOnlyPerson> predicate) {
         requireNonNull(predicate);
@@ -389,6 +408,16 @@ public class ModelManager extends ComponentManager implements Model {
         filteredWhitelistedPersons.setPredicate(predicate);
     }
 
+    /**
+     * Obtains the latest list of overdue persons from masterlist and adds to {@code filteredOverduePersons}
+     * Filters {@code filteredOverduePersons} according to given {@param predicate}
+     */
+    @Override
+    public void updateFilteredOverduePersonList(Predicate<ReadOnlyPerson> predicate) {
+        requireNonNull(predicate);
+        syncOverdueList();
+        filteredOverduePersons.setPredicate(predicate);
+    }
     /**
      * Obtains and updates the list of persons that share the same cluster as {@param selectedPerson}.
      */
@@ -449,7 +478,8 @@ public class ModelManager extends ComponentManager implements Model {
         return addressBook.equals(other.addressBook)
                 && filteredPersons.equals(other.filteredPersons)
                 && filteredBlacklistedPersons.equals(other.filteredBlacklistedPersons)
-                && filteredWhitelistedPersons.equals(other.filteredWhitelistedPersons);
+                && filteredWhitelistedPersons.equals(other.filteredWhitelistedPersons)
+                && filteredOverduePersons.equals(other.filteredOverduePersons);
     }
 
 
