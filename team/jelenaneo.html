@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<title>Jelena Neo Hui Ling - Project Portfolio</title>
+<link rel="stylesheet" href="../stylesheets/gh-pages.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../stylesheets/coderay-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Jelena Neo Hui Ling - Project Portfolio</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="project-codii"><a class="link" href="#project-codii">Project: Codii</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>[<a href="https://github.com/CS2103AUG2017-T17-B1/main">Codii</a>] is a desktop address book application specially designed for debt collectors to manage debtors in a simple manner. It has a GUI but most of the user interactions happen using a CLI (Command Line Interface).</p>
+</div>
+<div class="paragraph">
+<p>Debt collectors can store information such as the amount owed, debt borrow date and debt cleared date in addition to debtor’s personal information.</p>
+</div>
+<div class="paragraph">
+<p>Unique features such as an interest calculator help debt collectors manage debts more efficiently.</p>
+</div>
+<div class="paragraph">
+<p>Codii is evolved from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
+</div>
+<div class="paragraph">
+<p><strong>Code contributed</strong>: [<a href="https://github.com">Functional code</a>] [<a href="https://github.com">Test code</a>] {give links to collated code files}</p>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-login-logout"><a class="link" href="#enhancement-added-login-logout">Enhancement Added: Login/Logout</a></h3>
+<div class="sect3">
+<h4 id="external-behavior"><a class="link" href="#external-behavior">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging-into-the-address-book-application-code-login-code"><a class="link" href="#logging-into-the-address-book-application-code-login-code">Logging into the address book application : <code>login</code></a></h3>
+<div class="paragraph">
+<p>Logs into the address book.<br>
+Format: <code>login USERNAME PASSWORD</code></p>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>login userAcc_123 pa$$_Word!@#&amp;</code></p>
+</li>
+<li>
+<p><code>login batMan_111 (Batcave.327+-)</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging-out-of-the-address-book-application-code-logout-code"><a class="link" href="#logging-out-of-the-address-book-application-code-logout-code">Logging out of the address book application : <code>logout</code></a></h3>
+<div class="paragraph">
+<p>Logs out of the address book.<br>
+Format: <code>logout</code></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification"><a class="link" href="#justification">Justification</a></h4>
+<div class="paragraph">
+<p>Debtor&#8217;s personal information will be stored in the address book. Hence, there is a need to limit access of the address book to debt collectors only.</p>
+</div>
+<div class="paragraph">
+<p>Only <code>help</code>, <code>exit</code> and <code>login</code> commands can be entered before login. Users can open a help window using the <code>help</code> command to look for further information on how to login if they need to. Users should also be able to exit the app without being logged in.</p>
+</div>
+<div class="paragraph">
+<p>It also makes sense for the user to be able to log out of the app without closing the app.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation"><a class="link" href="#implementation">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-borrow-payback-command"><a class="link" href="#enhancement-added-borrow-payback-command">Enhancement Added: Borrow/Payback command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-2"><a class="link" href="#external-behavior-2">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="increasing-the-debt-of-a-debtor-code-borrow-code"><a class="link" href="#increasing-the-debt-of-a-debtor-code-borrow-code">Increasing the debt of a debtor: <code>borrow</code></a></h3>
+<div class="paragraph">
+<p>Increase the debt of a debtor by the amount entered.<br>
+Format: <code>borrow INDEX AMOUNT</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is increased instead.</p>
+</li>
+<li>
+<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>500.50</code> which represents $500.50.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>borrow 1 500</code><br>
+Increases the debt of the 1st person by $500.</p>
+</li>
+<li>
+<p><code>borrow 2 1000.10</code><br>
+Increases the debt of the 2nd person by $1000.10.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 2</code><br>
+<code>borrow 234</code><br>
+Increases the debt of the 2nd person by $234.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="decreasing-the-debt-of-a-person-code-payback-code"><a class="link" href="#decreasing-the-debt-of-a-person-code-payback-code">Decreasing the debt of a person: <code>payback</code></a></h3>
+<div class="paragraph">
+<p>Decrease the debt of a person by the amount entered.<br>
+Format: <code>payback INDEX AMOUNT</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Decreases the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is decreased instead.</p>
+</li>
+<li>
+<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600</code> which represents $600.</p>
+</li>
+<li>
+<p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>payback 1 500</code><br>
+Decreases the debt of the 1st person by $500.</p>
+</li>
+<li>
+<p><code>payback 2 1000.10</code><br>
+Decreases the debt of the 2nd person by $1000.10.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 3</code><br>
+<code>payback 234</code><br>
+Increases the debt of the 3rd person by $234.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-2"><a class="link" href="#justification-2">Justification</a></h4>
+<div class="paragraph">
+<p>Should there be a need to adjust the debt of a person, the debt collector can use the <code>borrow</code> command to increase the debt by a specified amount  and the <code>payback</code> command to deduct a specified amount.
+If the debt collector uses the <code>edit</code> command to update the debt of a person, he/she has to manually calculate the new total debt before entering the new debt into the address book.
+The <code>borrow</code> and <code>payback</code> command eliminates this hassle by doing the math for the user.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-2"><a class="link" href="#implementation-2">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="borrow-command-mechanism"><a class="link" href="#borrow-command-mechanism">Borrow command mechanism</a></h3>
+<div class="paragraph">
+<p>The borrow command allows users to increase the debt of a person should he/she borrow more money. The <code>BorrowCommand</code> class, which handles the updating of the <code>Debt</code> field in a <code>Person</code> object, extends <code>UndoableCommand</code> so that this command can be undone or redone if necessary.</p>
+</div>
+<div class="paragraph">
+<p>The user inputs required are the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor.</p>
+</div>
+<div class="paragraph">
+<p>When <code>BorrowCommand</code> is executed in <code>LogicManager</code>, the <code>Debt</code> attribute in the target <code>Person</code> object is updated in the <code>AddressBook</code> class in the <code>Model</code> component. A new <code>Person</code> object is created with the debt amount updated to reflect the new total debt. The target <code>Person</code> object is then replaced with this new <code>Person</code> object.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>DateBorrow</code> field in the new <code>Person</code> object needs to be updated to match the <code>DateBorrow</code> field in the target <code>Person</code> object. This is because the date when the <code>Person</code> object was created is set as the date for the <code>DateBorrow</code> field.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following sequence diagram, Figure 3.2.1, shows further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the borrow command is executed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/BorrowCommandSequenceDiagram.png" alt="BorrowCommandSequenceDiagram" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 3.2.1 : Sequence diagram of how the <code>Borrow</code> command works</em></p>
+</div>
+<div class="sect3">
+<h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code><br>
+<strong>Alternative 1 (current choice):</strong> Tokenize arguments using <code>String#split</code> method<br>
+<strong>Pros:</strong> Easier to parse arguments using <code>String#split</code> method since there are no prefixes in the command input. It is also easier to validate the number of arguments entered by the user. This can be done through checking the length of the <code>String</code> array return by <code>String#split</code>.<br>
+<strong>Cons:</strong> User has to follow the format for entering the command strictly as an extra whitespace between the index and the amount borrowed would invoke a <code>ParseException</code>.<br>
+<strong>Alternative 2:</strong> Modify <code>ArgumentTokenizer#tokenize</code> method to tokenize arguments<br>
+<strong>Pros:</strong> Increased modularity<br>
+<strong>Cons:</strong> Requires modifications of <code>ArgumentTokenizer#tokenize</code> method since supplying whitespace as a prefix to the current <code>ArgumentTokenizer#tokenize</code> method incorrectly tokenizes arguments.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="paragraph">
+<p>Entered command: <code>borrow 1 500</code></p>
+</div>
+<div class="paragraph">
+<p>Prefixes supplied to <code>ArgumentTokenizer#tokenize</code> method: " "</p>
+</div>
+<div class="paragraph">
+<p>Outcome: prefix <code>" "</code> will be mapped to <code>1 500</code> in <code>argMultimap</code>. Index and amount borrowed are not separated.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Updating <code>Debt</code> field<br>
+<strong>Alternative 1 (current choice):</strong> Create a new <code>Person</code> object, called <code>editedPerson</code>, by supplying the target <code>ReadOnlyPerson</code> object to constructor <code>Person::new</code>.<br>
+<strong>Pros:</strong> Straightforward and simple to implement<br>
+<strong>Cons:</strong> <code>Debt</code> class would need to have another constructor that takes in a <code>Double</code> parameter for easier implementation of <code>AddressBook#addDebtToPerson()</code> method.<br>
+<strong>Alternative 2:</strong> Reusing the <code>updatePerson()</code> method in <code>AddressBook.java</code><br>
+<strong>Pros:</strong> Do not have to code the method from scratch<br>
+<strong>Cons:</strong> A new <code>Person</code> object have to be created in order to edit the <code>Debt</code> field. Since the <code>updatePerson()</code> method only accepts <code>ReadOnlyPerson</code> objects as parameters, more code has to be written to convert the <code>Person</code> object to be a <code>ReadOnlyPerson</code> object.<br></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-filter-command"><a class="link" href="#enhancement-added-filter-command">Enhancement Added: Filter command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+<div class="sect3">
+<h4 id="justification-3"><a class="link" href="#justification-3">Justification</a></h4>
+<div class="paragraph">
+<p>Tags can be a way of adding additional information to a contact. The <code>filter</code> command provides debt collectors a way to group debtors according to these  additional information for various purposes.</p>
+</div>
+<div class="paragraph">
+<p>For example, tags can be used to indicate a particular behavior of a debtor. A debt collection agency  can filter debtors by the <code>violent</code> tag to get a list of debtors that are violent. Manpower can then be planned accordingly to ensure that debt collectors go in pairs to collect debts from debtors listed in the 'violent' list for safety reasons.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-3"><a class="link" href="#implementation-3">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-proposed-add-command-code-remark-code"><a class="link" href="#enhancement-proposed-add-command-code-remark-code">Enhancement Proposed: Add command <code>remark</code></a></h3>
+<div class="paragraph">
+<p>{Explain similar to the Undo/Redo feature above.}</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Nag about code quality</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="project-powerpointlabs"><a class="link" href="#project-powerpointlabs">Project: PowerPointLabs</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>{Optionally (not graded), you may include other projects in your portfolio.}</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-10-29 11:32:07 +00:00
+</div>
+</div>
+</body>
+</html>
