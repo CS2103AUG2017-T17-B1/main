@@ -19,10 +19,16 @@
 <h2 id="project-codii"><a class="link" href="#project-codii">Project: Codii</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>[<a href="https://github.com/CS2103AUG2017-T17-B1/main">Codii</a>] is a desktop address book application targeted at debt collectors. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 6kLoC.</p>
+<p>[<a href="https://github.com/CS2103AUG2017-T17-B1/main">Codii</a>] is a desktop address book application specially designed for debt collectors to manage debtors in a simple manner. It has a GUI but most of the user interactions happen using a CLI (Command Line Interface).</p>
 </div>
 <div class="paragraph">
-<p>Codii is enhanced from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
+<p>Debt collectors can store information such as the amount owed, debt borrow date and debt cleared date in addition to debtor’s personal information.</p>
+</div>
+<div class="paragraph">
+<p>Unique features such as an interest calculator help debt collectors manage debts more efficiently.</p>
+</div>
+<div class="paragraph">
+<p>Codii is evolved from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
 </div>
 <div class="paragraph">
 <p><strong>Code contributed</strong>: [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/main/khooroko.md">Functional code</a>] [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/test/khooroko.md">Test code</a>]</p>
@@ -212,6 +218,114 @@ Sorts the contacts in the address book by their postal districts.</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="enhancement-added-cluster-field"><a class="link" href="#enhancement-added-cluster-field">Enhancement Added: Cluster field</a></h3>
+<div class="sect3">
+<h4 id="external-behaviour"><a class="link" href="#external-behaviour">External behaviour</a></h4>
+<div class="paragraph">
+<p><code>Clusters</code> are generated based on postal districts.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="justification-3"><a class="link" href="#justification-3">Justification</a></h4>
+<div class="paragraph">
+<p>An easy way to group contacts is needed for a debt collector to better plan his/her trips.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-2"><a class="link" href="#implementation-2">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cluster-mechanism"><a class="link" href="#cluster-mechanism">Cluster mechanism</a></h3>
+<div class="paragraph">
+<p>As a debt collector that operates in all parts of Singapore, it would boost efficiency in deciding debt collection trips
+if the contacts can be effectively grouped by <a href="cluster">clusters</a>. It is determined based on the postal code provided
+upon adding a <code>Person</code> into the address book. This can be seen in the constructors of the <code>Person</code> class and the
+<code>Cluster</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> Person(<span class="predefined-type">Name</span> name, Phone phone, Email email, Address address, PostalCode postalCode,
+              Debt debt, Interest interest, Deadline deadline, <span class="predefined-type">Set</span>&lt;Tag&gt; tags) {
+    requireAllNonNull(name, phone, email, address, postalCode, debt, interest, deadline, tags);
+    <span class="comment">// assignment of other fields omitted for brevity</span>
+    <span class="local-variable">this</span>.cluster = <span class="keyword">new</span> SimpleObjectProperty&lt;&gt;(<span class="keyword">new</span> Cluster(postalCode));
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> Cluster(PostalCode postalCode) {
+    requireNonNull(postalCode);
+    <span class="keyword">if</span> (!isValidPostalCode(postalCode.toString())) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(MESSAGE_POSTAL_CODE_CONSTRAINTS);
+    }
+    <span class="predefined-type">String</span> cluster = getCluster(postalCode.toString());
+    clusterNumber = <span class="predefined-type">Integer</span>.parseInt(cluster.substring(<span class="integer">0</span>, <span class="integer">2</span>));
+    <span class="local-variable">this</span>.value = cluster.substring(<span class="integer">4</span>);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>getCluster</code> method resides in the <code>ClusterUtil</code> class, and returns the name of the postal district based on the
+first two numbers of the postal code that is passed into the method. The postal districts are retrieved from [<a href="https://www.ura.gov.sg/realEstateIIWeb/resources/misc/list_of_postal_districts.htm">URA</a>].
+The district number is stored as part of the <code>String</code> for ease of sorting by location.
+Part of the code from <code>ClusterUtil</code> for retrieving the <code>cluster</code> from a postal code starting with <code>01</code> is shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ClusterUtil</span> {
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> CLUSTER_POSTAL_DISTRICT_01 = <span class="string"><span class="delimiter">&quot;</span><span class="content">01. Raffles Place, Cecil, Marina, People's Park</span><span class="delimiter">&quot;</span></span>;
+    <span class="comment">// declaration of other postal districts omitted for brevity</span>
+    <span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> CLUSTER_POSTAL_DISTRICT_UNKNOWN = <span class="string"><span class="delimiter">&quot;</span><span class="content">99. Unknown</span><span class="delimiter">&quot;</span></span>;
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">String</span> getCluster(<span class="predefined-type">String</span> postalCode) {
+        requireNonNull(postalCode);
+        <span class="type">int</span> postalSector = <span class="predefined-type">Integer</span>.parseInt(postalCode.substring(<span class="integer">0</span>, <span class="integer">2</span>));
+        <span class="keyword">switch</span> (postalSector) {
+        <span class="keyword">case</span> <span class="integer">1</span>:
+        <span class="keyword">case</span> <span class="integer">2</span>:
+        <span class="keyword">case</span> <span class="integer">3</span>:
+        <span class="keyword">case</span> <span class="integer">4</span>:
+        <span class="keyword">case</span> <span class="integer">5</span>:
+        <span class="keyword">case</span> <span class="integer">6</span>:
+            <span class="keyword">return</span> CLUSTER_POSTAL_DISTRICT_01;
+        <span class="comment">// cases for all other valid postal districts omitted for brevity</span>
+        <span class="keyword">default</span>:
+            <span class="keyword">return</span> CLUSTER_POSTAL_DISTRICT_UNKNOWN;
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Grouping of contacts.<br>
+<strong>Alternative 1 (current choice):</strong> Create a field that contains the name and district number of the postal districts, based on postal code.<br>
+<strong>Pros:</strong> Easy to implement and extend, requires minimal user input.<br>
+<strong>Cons:</strong> Requires developer to update <code>ClusterUtil</code> whenever a new postal district is drawn by the government, and
+requires users to reset their contacts' <code>cluster</code> via deletion and addition or via editing their <code>postal codes</code>.<br>
+<strong>Alternative 2:</strong> Import contacts' location and find their proximity from one another using Google Maps API.<br>
+<strong>Pros:</strong> Higher precision of geographical location and proximity.<br>
+<strong>Cons:</strong> Tedious to implement proximity. Either takes up too much time in generating nearby contacts or too much space
+ in storing them.<br>
+<strong>Alternative 3:</strong> Assign general location to each contact upon addition into the address book or via editing.<br>
+<strong>Pros:</strong> Easy to implement.<br>
+<strong>Cons:</strong> Tedious for users. They also have to ensure that they do not make spelling mistakes.</p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
 <h3 id="enhancement-added-nearby-command"><a class="link" href="#enhancement-added-nearby-command">Enhancement Added: Nearby command</a></h3>
 <div class="sect3">
 <h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
@@ -265,7 +379,7 @@ Selects the 1st person in the nearby contacts listing of the previously selected
 </div>
 <hr>
 <div class="sect3">
-<h4 id="justification-3"><a class="link" href="#justification-3">Justification</a></h4>
+<h4 id="justification-4"><a class="link" href="#justification-4">Justification</a></h4>
 <div class="paragraph">
 <p>Debt collectors may want to see details of nearby contacts to plan a more effective visiting schedule</p>
 </div>
@@ -289,6 +403,16 @@ Selects the 1st person in the nearby contacts listing of the previously selected
 </ul>
 </div>
 </div>
+<div class="sect3">
+<h4 id="miscellaneous"><a class="link" href="#miscellaneous">Miscellaneous</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Assist teammates with debugging tests</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -303,7 +427,7 @@ Selects the 1st person in the nearby contacts listing of the previously selected
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-02 08:45:08 +00:00
+Last updated 2017-11-02 08:54:22 +00:00
 </div>
 </div>
 </body>
