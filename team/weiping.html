@@ -339,12 +339,15 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 <h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">Selecting a nearby person: <code>nearby</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
-Format: <code>nearby INDEX</code></p>
+Format: <code>nearby [INDEX]</code></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
 <div class="ulist">
 <ul>
+<li>
+<p>A person must be selected before this command is called.</p>
+</li>
 <li>
 <p>Selects the person and loads the full information of the person at the specified <code>INDEX</code>.</p>
 </li>
@@ -353,6 +356,9 @@ Format: <code>nearby INDEX</code></p>
 </li>
 <li>
 <p>The index <strong>must be a positice integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+</li>
+<li>
+<p>If no index is specified, the next person in the nearby contacts listing is selected instead.</p>
 </li>
 </ul>
 </div>
@@ -371,6 +377,10 @@ Selects the 2nd person in the address book.</p>
 <li>
 <p><code>nearby 1</code><br>
 Selects the 1st person in the nearby contacts listing of the previously selected person.</p>
+</li>
+<li>
+<p><code>nearby</code><br>
+Selects the next person in the nearby contacts listing of the previously selected person.</p>
 </li>
 </ul>
 </div>
@@ -427,7 +437,7 @@ Selects the 1st person in the nearby contacts listing of the previously selected
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-05 17:59:29 +00:00
+Last updated 2017-11-06 06:13:40 +00:00
 </div>
 </div>
 </body>

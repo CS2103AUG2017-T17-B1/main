@@ -487,7 +487,7 @@ Decreases the debt of the 2nd person by $1000.10.</p>
 <p><code>list</code><br>
 <code>select 3</code><br>
 <code>payback 234</code><br>
-Increases the debt of the 3rd person by $234.</p>
+Decreases the debt of the 3rd person by $234.</p>
 </li>
 </ul>
 </div>
@@ -496,7 +496,7 @@ Increases the debt of the 3rd person by $234.</p>
 <h3 id="resetting-the-debt-of-a-person-code-repaid-code"><a class="link" href="#resetting-the-debt-of-a-person-code-repaid-code">4.12. Resetting the debt of a person: <code>repaid</code></a></h3>
 <div class="paragraph">
 <p>Resets the debt of a person to zero and sets the date repaid field of that person.<br>
-Format: <code>repaid INDEX</code></p>
+Format: <code>repaid [INDEX]</code></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -504,6 +504,9 @@ Format: <code>repaid INDEX</code></p>
 <ul>
 <li>
 <p>Resets the debt of the person at the specified <code>INDEX</code> to zero. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is resetted instead.</p>
 </li>
 </ul>
 </div>
@@ -516,7 +519,12 @@ Format: <code>repaid INDEX</code></p>
 <ul>
 <li>
 <p><code>repaid 1</code><br>
-Resets the debt of the 1st person to zero and sets the date of repayment in his record.</p>
+Resets the debt of the 1st person to zero and sets the date of repayment in his/her record.</p>
+</li>
+<li>
+<p><code>select 2</code><br>
+<code>repaid</code><br>
+Resets the debt of the 2nd person to zero and sets the date of repayment in his/her record.</p>
 </li>
 </ul>
 </div>
@@ -569,7 +577,7 @@ Deletes the 4th person in the address book.</p>
 <h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">4.14. Banning a debtor : <code>ban</code></a></h3>
 <div class="paragraph">
 <p>Adds the specified debtor from current records to blacklist.<br>
-Format: 'ban INDEX'</p>
+Format: 'ban [INDEX]'</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -583,6 +591,9 @@ Format: 'ban INDEX'</p>
 </li>
 <li>
 <p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the currently selected person is banned instead.</p>
 </li>
 </ul>
 </div>
@@ -603,6 +614,11 @@ Adds the 2nd person in the address book to blacklist.</p>
 <code>ban 1</code><br>
 Adds the 1st person in the results of the <code>find</code> command to blacklist.</p>
 </li>
+<li>
+<p><code>select 3</code><br>
+<code>ban</code>
+Adds the 3rd person in the address book to blacklist.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -610,7 +626,7 @@ Adds the 1st person in the results of the <code>find</code> command to blacklist
 <h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">4.15. Unbanning a blacklisted person : <code>unban</code></a></h3>
 <div class="paragraph">
 <p>Removes the specified person from blacklist.<br>
-Format: 'unban INDEX'</p>
+Format: 'unban [INDEX]'</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -624,6 +640,9 @@ Format: 'unban INDEX'</p>
 </li>
 <li>
 <p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the currently selected person is unbanned instead.</p>
 </li>
 </ul>
 </div>
@@ -644,6 +663,11 @@ Removes the 2nd person from blacklist.</p>
 <code>unban 1</code><br>
 Removes the 1st person in the results of the <code>find</code> command from blacklist.</p>
 </li>
+<li>
+<p><code>select 3</code><br>
+<code>unban</code>
+Removes the 3rd person in the address book from blacklist.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -651,7 +675,7 @@ Removes the 1st person in the results of the <code>find</code> command from blac
 <h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">4.16. Selecting a person : <code>select</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the last person listing.<br>
-Format: <code>select INDEX</code></p>
+Format: <code>select [INDEX]</code></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -665,6 +689,12 @@ Format: <code>select INDEX</code></p>
 </li>
 <li>
 <p>The index <strong>must be a positive integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+</li>
+<li>
+<p>If no index is specified, the next person in the last person listing is selected instead.</p>
+</li>
+<li>
+<p>If no index is specified, and no one was selected, the first person in the last person listing is selected instead.</p>
 </li>
 </ul>
 </div>
@@ -683,7 +713,9 @@ Selects the 2nd person in the address book.</p>
 <li>
 <p><code>find Betsy</code><br>
 <code>select 1</code><br>
-Selects the 1st person in the results of the <code>find</code> command.</p>
+Selects the 1st person in the results of the <code>find</code> command.
+<code>select</code><br>
+Selects the first person in the last person listing.</p>
 </li>
 </ul>
 </div>
@@ -692,12 +724,15 @@ Selects the 1st person in the results of the <code>find</code> command.</p>
 <h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">4.17. Selecting a nearby person: <code>nearby</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
-Format: <code>nearby INDEX</code></p>
+Format: <code>nearby [INDEX]</code></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
 <div class="ulist">
 <ul>
+<li>
+<p>A person must be selected before this command is called.</p>
+</li>
 <li>
 <p>Selects the person and loads the full information of the person at the specified <code>INDEX</code>.</p>
 </li>
@@ -706,6 +741,9 @@ Format: <code>nearby INDEX</code></p>
 </li>
 <li>
 <p>The index <strong>must be a positice integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+</li>
+<li>
+<p>If no index is specified, the next person in the nearby contacts listing is selected instead.</p>
 </li>
 </ul>
 </div>
@@ -724,6 +762,10 @@ Selects the 2nd person in the address book.</p>
 <li>
 <p><code>nearby 1</code><br>
 Selects the 1st person in the nearby contacts listing of the previously selected person.</p>
+</li>
+<li>
+<p><code>nearby</code><br>
+Selects the next person in the nearby contacts listing of the previously selected person.</p>
 </li>
 </ul>
 </div>
@@ -1061,7 +1103,7 @@ e.g. <code>borrow 1 500.50</code></p>
 e.g. <code>payback 1 500.50</code></p>
 </li>
 <li>
-<p><strong>Repaid</strong> : <code>repaid INDEX</code><br>
+<p><strong>Repaid</strong> : <code>repaid [INDEX]</code><br>
 e.g. <code>payback 1</code></p>
 </li>
 <li>
@@ -1069,11 +1111,11 @@ e.g. <code>payback 1</code></p>
 e.g. <code>delete 3</code></p>
 </li>
 <li>
-<p><strong>Ban</strong> : <code>ban INDEX</code><br>
+<p><strong>Ban</strong> : <code>ban [INDEX]</code><br>
 e.g. <code>ban 3</code></p>
 </li>
 <li>
-<p><strong>Unban</strong> : <code>unban INDEX</code><br>
+<p><strong>Unban</strong> : <code>unban [INDEX]</code><br>
 e.g. <code>unban 3</code></p>
 </li>
 <li>
@@ -1097,14 +1139,15 @@ e.g. <code>find James Jake</code></p>
 <p><strong>Help</strong> : <code>help</code></p>
 </li>
 <li>
-<p><strong>Select</strong> : <code>select INDEX</code><br>
+<p><strong>Select</strong> : <code>select [INDEX]</code><br>
 e.g.<code>select 2</code></p>
 </li>
 <li>
 <p><strong>History</strong> : <code>history</code></p>
 </li>
 <li>
-<p><strong>Nearby</strong> : <code>nearby</code></p>
+<p><strong>Nearby</strong> : <code>nearby [INDEX]</code><br>
+e.g. <code>nearby 2</code></p>
 </li>
 <li>
 <p><strong>Sort</strong> : <code>sort [ORDERING]</code><br>
@@ -1284,7 +1327,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-05 17:59:29 +00:00
+Last updated 2017-11-06 06:13:40 +00:00
 </div>
 </div>
 </body>
