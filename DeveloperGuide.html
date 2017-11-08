@@ -52,13 +52,15 @@ This developer guide provides detailed information for future contributors to im
 <li><a href="#implementation">3. Implementation</a>
 <ul class="sectlevel2">
 <li><a href="#undo-redo-mechanism">3.1. Undo/Redo mechanism</a></li>
-<li><a href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></li>
+<li><a href="#borrow-payback-command-mechanism">3.2. Borrow/payback command mechanism</a></li>
 <li><a href="#backup-storage-mechanism">3.3. Backup storage mechanism</a></li>
 <li><a href="#date-storing-mechanism">3.4. Date storing mechanism</a></li>
 <li><a href="#list-masterlist-blacklist-etc-mechanism">3.5. List (Masterlist, Blacklist etc) mechanism</a></li>
 <li><a href="#cluster-mechanism">3.6. Cluster mechanism</a></li>
-<li><a href="#logging">3.7. Logging</a></li>
-<li><a href="#configuration">3.8. Configuration</a></li>
+<li><a href="#filter-by-tags-mechanism">3.7. Filter by tags mechanism</a></li>
+<li><a href="#login-logout-mechanism">3.8. Login/logout mechanism</a></li>
+<li><a href="#logging">3.9. Logging</a></li>
+<li><a href="#configuration">3.10. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">4. Documentation</a>
@@ -812,15 +814,18 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </div>
 </div>
 <div class="sect2">
-<h3 id="borrow-command-mechanism"><a class="link" href="#borrow-command-mechanism">3.2. Borrow command mechanism</a></h3>
+<h3 id="borrow-payback-command-mechanism"><a class="link" href="#borrow-payback-command-mechanism">3.2. Borrow/payback command mechanism</a></h3>
 <div class="paragraph">
-<p>The borrow command allows users to increase the debt of a person should he/she borrow more money. The <code>BorrowCommand</code> class, which handles the updating of the <code>Debt</code> field in a <code>Person</code> object, extends <code>UndoableCommand</code> so that this command can be undone or redone if necessary.</p>
+<p>The <code>borrow</code> command allows users to increase the debt of a person should he/she borrow more money. On the other hand, when a debtor repays a specified amount, the <code>payback</code> command is used to deduct that amount from his/her current debt. The <code>BorrowCommand</code> and <code>PaybackCommand</code> classes, which handle the updating of the <code>Debt</code> field in a <code>Person</code> object, extends <code>UndoableCommand</code> so that these commands can be undone or redone if necessary.</p>
 </div>
 <div class="paragraph">
-<p>The user inputs required are the index (as listed in the person list panel on the left side of the application window) of the person who borrowed money and the amount that the person borrowed. The arguments (index and amount borrowed) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor.</p>
+<p>These two commands require one compulsory argument which is the amount that is borrowed/paid back. Indicating the index (as listed in the person list panel on the left side of the application window) of the person who borrowed or paid back money is optional. If no index is specified, the command will be executed for the person that is currently selected in the person list.
+The arguments (index and amount borrowed/paid back) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor. Input for the <code>payback</code> command is tokenized in the same manner.</p>
 </div>
 <div class="paragraph">
-<p>When <code>BorrowCommand</code> is executed in <code>LogicManager</code>, the <code>Debt</code> attribute in the target <code>Person</code> object is updated in the <code>AddressBook</code> class in the <code>Model</code> component. A new <code>Person</code> object is created with the debt amount updated to reflect the new total debt. The target <code>Person</code> object is then replaced with this new <code>Person</code> object.</p>
+<p>The <code>BorrowCommand</code> and <code>PaybackCommand</code> are executed in <code>LogicManager</code>.
+<code>BorrowCommand</code> updates the <code>debt</code> and <code>totalDebt</code> attributes in the target <code>Person</code> object in the <code>AddressBook</code> class (which is in the <code>Model</code> component). A new <code>Person</code> object is created with the updated <code>debt</code> and <code>totalDebt</code> amount. The target <code>Person</code> object is then replaced with this new <code>Person</code> object.
+<code>PaybackCommand</code> updates the target person&#8217;s debt in the same manner as the <code>BorrowCommand</code>. However, only the <code>debt</code> attribute is updated.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -835,7 +840,7 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 </table>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 3.2.1, shows further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the borrow command is executed:</p>
+<p>The following sequence diagram, Figure 3.2.1, shows further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the <code>borrow</code> command is executed:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -845,15 +850,18 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 <div class="paragraph">
 <p><em>Figure 3.2.1 : Sequence diagram of how the <code>Borrow</code> command works</em></p>
 </div>
+<div class="paragraph">
+<p>The <code>payback</code> command works in a similar way to the <code>borrow</code> command.</p>
+</div>
 <div class="sect3">
 <h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">3.2.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code><br>
+<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code> and <code>PaybackCommandParser</code>+
 <strong>Alternative 1 (current choice):</strong> Tokenize arguments using <code>String#split</code> method<br>
 <strong>Pros:</strong> Easier to parse arguments using <code>String#split</code> method since there are no prefixes in the command input. It is also easier to validate the number of arguments entered by the user. This can be done through checking the length of the <code>String</code> array return by <code>String#split</code>.<br>
 <strong>Cons:</strong> User has to follow the format for entering the command strictly as an extra whitespace between the index and the amount borrowed would invoke a <code>ParseException</code>.<br>
 <strong>Alternative 2:</strong> Modify <code>ArgumentTokenizer#tokenize</code> method to tokenize arguments<br>
-<strong>Pros:</strong> Increased modularity<br>
+<strong>Pros:</strong> Better modularity<br>
 <strong>Cons:</strong> Requires modifications of <code>ArgumentTokenizer#tokenize</code> method since supplying whitespace as a prefix to the current <code>ArgumentTokenizer#tokenize</code> method incorrectly tokenizes arguments.</p>
 </div>
 <div class="paragraph">
@@ -1152,7 +1160,85 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">3.7. Logging</a></h3>
+<h3 id="filter-by-tags-mechanism"><a class="link" href="#filter-by-tags-mechanism">3.7. Filter by tags mechanism</a></h3>
+<div class="paragraph">
+<p>The <code>filter</code> command allows the user to filter contacts by tags. Multiple tags can be entered. The command returns a list of contacts that match <strong>at least one</strong> of the tags that is specified by the user.</p>
+</div>
+<div class="paragraph">
+<p>A <code>PersonContainsTagPredicate</code> is created to check if a person contains the tags of interest. The code implementation below shows how the <code>PersonContainsTagPredicate</code> is implemented to sieve out the relevant contacts. The <code>anyMatch</code> method ensures that the filtered list contains persons who have at least one tag specified by the user.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> <span class="type">boolean</span> test(ReadOnlyPerson person) {
+    <span class="predefined-type">Set</span>&lt;Tag&gt; tagList = person.getTags();
+    <span class="keyword">for</span> (Tag tag : tagList) {
+        <span class="keyword">if</span> (tagKeywords.stream().anyMatch(keyword -&gt; StringUtil.containsWordIgnoreCase(tag.tagName, keyword))) {
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        }
+    }
+    <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The list is filtered and updated through the <code>updateFilteredPersonList</code> method in the <code>Model</code> component. Since the person list is of a <code>FilteredList&lt;&gt;</code> type, filtering of the list can be handled by a Java <code>FilteredList</code> class method called <code>setPredicate</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-7"><a class="link" href="#design-considerations-7">3.7.1. Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Implementation of <code>PersonContainsTagPredicate</code> predicate<br>
+<strong>Alternative 1 (current choice):</strong> Predicate returns true if at least one tag matches the list of tags specified by the user<br>
+<strong>Pros:</strong> User will have more contacts to work with. The additional information may help the user make better decisions.<br>
+<strong>Cons:</strong> The user may find some of the filtered contacts irrelevant.<br>
+<strong>Alternative 2:</strong> Predicate returns true only if the person contains the exact tags that are specified by the user<br>
+<strong>Pros:</strong> Shows the most relevant results if the user wants to search for an exact match.<br>
+<strong>Cons:</strong> If the user remembers one of the tags wrongly (but it is still a valid tag), there will be no contacts found.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="login-logout-mechanism"><a class="link" href="#login-logout-mechanism">3.8. Login/logout mechanism</a></h3>
+<div class="paragraph">
+<p>After a user enters a valid <code>login</code> command, verification of the login information will take place in the <code>Model</code> component. The username and password are verified against the information stored in <code>preferences.json</code>.</p>
+</div>
+<div class="paragraph">
+<p>The password is stored as a SHA-512 hash to conceal the actual password. The salt that is used to generate the hashed password is also stored. Since the stored hash cannot be converted back to the original password, the password that is entered by the user needs to be hashed and verified against the stored hash. Thus, the same salt needs to be used to generate a hash to match with the stored hash. If a different salt is used, then the generated hash will be different from the stored hash even if the password provided is correct.</p>
+</div>
+<div class="paragraph">
+<p>After verifying that the username and password matches the information stored in <code>preferences.json</code>, an event is raised to notify the <code>UI</code> component of the user authentication results. If the user has successfully logged in, the <code>UI</code> component will display the person list, info panel and allow other commands to be executed from the command box.</p>
+</div>
+<div class="paragraph">
+<p>When a user enters the <code>logout</code> command, the <code>LogoutCommand</code> class in the <code>Logic</code> component will raise an even to notify the <code>UI</code> component to go back to the welcome page.</p>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-8"><a class="link" href="#design-considerations-8">3.8.1. Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Implementation of password masking<br>
+<strong>Alternative 1(current choice):</strong> Use the unicode character 'BLACK CIRCLE' (●) for password masking<br>
+<strong>Pros:</strong> Allows other characters to be detected as password input<br>
+<strong>Cons:</strong> None<br>
+<strong>Alternative 2:</strong> Use the asterisk character (*) for password masking<br>
+<strong>Pros:</strong> User may use the asterisk character when entering the password. The asterisk character will be ignored and will not show in the text field when it is entered. This is because the method that handles password masking ignores the character used to mask the password. Refer to the code below for more details:<br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// starts masking password after the second whitespace and prevent the reading of the BLACK_CIRCLE after</span>
+<span class="comment">// replacing a character in the command box text field with a BLACK_CIRCLE</span>
+<span class="keyword">if</span> (numOfSpaces &gt;= <span class="integer">2</span> &amp;&amp; currentInput.charAt(currentInput.length() - <span class="integer">1</span>) != <span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>
+        &amp;&amp; currentInput.charAt(currentInput.length() - <span class="integer">1</span>) != BLACK_CIRCLE) {
+    maskPasswordInput(currentInput);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Cons:</strong> Although '*' is an invalid password character, the user may still use it while entering the password. If the user types '*', the cursor will remain at its original position. The user will be under the impression that the command box is not registering what was typed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">3.9. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -1190,7 +1276,7 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">3.8. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">3.10. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -2844,7 +2930,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-08 13:05:00 +00:00
+Last updated 2017-11-08 17:18:01 +00:00
 </div>
 </div>
 </body>
