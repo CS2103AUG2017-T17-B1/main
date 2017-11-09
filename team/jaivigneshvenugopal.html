@@ -657,9 +657,107 @@ The <code>redo</code> command fails as there are no <code>undo</code> commands e
 </div>
 </div>
 <div class="sect2">
+<h3 id="adding-a-profile-picture-to-a-person-code-addpic-code"><a class="link" href="#adding-a-profile-picture-to-a-person-code-addpic-code">Adding a profile picture to a person : <code>addpic</code></a></h3>
+<div class="paragraph">
+<p>Adds a user specified profile picture to the specified person.<br>
+Format: 'addpic [INDEX]'</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Adds a profile picture to the person at the specified <code>INDEX</code>.</p>
+</li>
+<li>
+<p>The index refers to the index number shown in the most recent listing.</p>
+</li>
+<li>
+<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the command acts on the currently selected person.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>addpic 2</code><br>
+Adds a picture to the 2nd person in masterlist.</p>
+</li>
+<li>
+<p><code>find Betsy</code><br>
+<code>addpic 1</code><br>
+Adds a profile picture to the 1st person from the results of the <code>find</code> command.</p>
+</li>
+<li>
+<p><code>select 3</code><br>
+<code>addpic</code>
+Adds a profile picture to the 3rd person from the masterlist in the address book.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-the-profile-picture-of-a-person-code-delpic-code"><a class="link" href="#deleting-the-profile-picture-of-a-person-code-delpic-code">Deleting the profile picture of a person : <code>delpic</code></a></h3>
+<div class="paragraph">
+<p>Removes the profile picture of the specified person.<br>
+Format: 'delpic [INDEX]'</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Removes the profile picture of the person at the specified <code>INDEX</code>.</p>
+</li>
+<li>
+<p>The index refers to the index number shown in the most recent listing.</p>
+</li>
+<li>
+<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the command acts on currently selected person.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>delpic 2</code><br>
+Deletes the picture of the 2nd person in masterlist.</p>
+</li>
+<li>
+<p><code>find Betsy</code><br>
+<code>delpic 1</code><br>
+Deletes the profile picture of the 1st person from the results of the <code>find</code> command.</p>
+</li>
+<li>
+<p><code>select 3</code><br>
+<code>delpic</code>
+Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
 <h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
 <div class="paragraph">
-<p>Sets the folder location to access debtors profile pictures.<br>
+<p>Sets the folder location to access and import debtors profile pictures.<br>
 Format: <code>setpath</code></p>
 </div>
 <div class="paragraph">
@@ -671,7 +769,13 @@ Format: <code>setpath</code></p>
 <p><code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br></p>
 </li>
 <li>
+<p><code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br></p>
+</li>
+<li>
 <p><code>setpath out/production/resources/images/</code><br></p>
+</li>
+<li>
+<p><code>setpath out\production\resources\images\</code><br></p>
 </li>
 </ul>
 </div>
@@ -905,8 +1009,17 @@ e.g. <code>nearby 2</code></p>
 e.g. <code>sort debt</code></p>
 </li>
 <li>
+<p><strong>Add Picture</strong>  : <code>addpic [INDEX]</code><br>
+e.g. <code>addpic 2</code></p>
+</li>
+<li>
+<p><strong>Delete Picture</strong>  : <code>delpic [INDEX]</code><br>
+e.g. <code>delpic 2</code></p>
+</li>
+<li>
 <p><strong>Setpath</strong> : <code>setpath</code>
-e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic/</code></p>
+e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic/</code>
+e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic\</code></p>
 </li>
 <li>
 <p><strong>Filter</strong> : <code>filter TAG1 TAG2 &#8230;&#8203;</code><br>
@@ -1027,6 +1140,9 @@ e.g <code>filter friendly cooperative</code></p>
 <p>A progress bar to indicate how much of the person&#8217;s debt has been paid off. (since v1.4)</p>
 </li>
 <li>
+<p>Specifically import and save profile pictures to existing database of the application. (since v1.5)</p>
+</li>
+<li>
 <p>Different appearance themes (since v1.5)</p>
 </li>
 </ul>
@@ -1097,11 +1213,109 @@ e.g <code>filter friendly cooperative</code></p>
 <div class="paragraph">
 <p><mark>Start of Extract [from: User Guide]</mark></p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adding-a-profile-picture-to-a-person-code-addpic-code-2"><a class="link" href="#adding-a-profile-picture-to-a-person-code-addpic-code-2">Adding a profile picture to a person : <code>addpic</code></a></h3>
+<div class="paragraph">
+<p>Adds a user specified profile picture to the specified person.<br>
+Format: 'addpic [INDEX]'</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Adds a profile picture to the person at the specified <code>INDEX</code>.</p>
+</li>
+<li>
+<p>The index refers to the index number shown in the most recent listing.</p>
+</li>
+<li>
+<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the command acts on the currently selected person.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>addpic 2</code><br>
+Adds a picture to the 2nd person in masterlist.</p>
+</li>
+<li>
+<p><code>find Betsy</code><br>
+<code>addpic 1</code><br>
+Adds a profile picture to the 1st person from the results of the <code>find</code> command.</p>
+</li>
+<li>
+<p><code>select 3</code><br>
+<code>addpic</code>
+Adds a profile picture to the 3rd person from the masterlist in the address book.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-the-profile-picture-of-a-person-code-delpic-code-2"><a class="link" href="#deleting-the-profile-picture-of-a-person-code-delpic-code-2">Deleting the profile picture of a person : <code>delpic</code></a></h3>
+<div class="paragraph">
+<p>Removes the profile picture of the specified person.<br>
+Format: 'delpic [INDEX]'</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Removes the profile picture of the person at the specified <code>INDEX</code>.</p>
+</li>
+<li>
+<p>The index refers to the index number shown in the most recent listing.</p>
+</li>
+<li>
+<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the command acts on currently selected person.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list</code><br>
+<code>delpic 2</code><br>
+Deletes the picture of the 2nd person in masterlist.</p>
+</li>
+<li>
+<p><code>find Betsy</code><br>
+<code>delpic 1</code><br>
+Deletes the profile picture of the 1st person from the results of the <code>find</code> command.</p>
+</li>
+<li>
+<p><code>select 3</code><br>
+<code>delpic</code>
+Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><mark>End of Extract</mark></p>
 </div>
 <hr>
-</div>
 <div class="sect3">
 <h4 id="justification-2"><a class="link" href="#justification-2">Justification</a></h4>
 <div class="paragraph">
@@ -1135,7 +1349,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-09 08:33:30 +00:00
+Last updated 2017-11-09 08:42:19 +00:00
 </div>
 </div>
 </body>
