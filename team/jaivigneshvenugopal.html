@@ -5,535 +5,193 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Codii - User Guide</title>
-<link rel="stylesheet" href="stylesheets/gh-pages.css">
+<title>Jaivignesh Venugopal - Project Portfolio</title>
+<link rel="stylesheet" href="../stylesheets/gh-pages.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="stylesheets/coderay-asciidoctor.css">
+<link rel="stylesheet" href="../stylesheets/coderay-asciidoctor.css">
 </head>
 <body class="article">
 <div id="header">
-<h1>Codii - User Guide</h1>
+<h1>Jaivignesh Venugopal - Project Portfolio</h1>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>By: <code>CS2103Aug2017 T17-B1</code>      Since: <code>Sep 2017</code>      Licence: <code>MIT</code></p>
-</div>
-</div>
-<div id="toc" class="toc">
-<div id="toctitle"></div>
-<ul class="sectlevel1">
-<li><a href="#about">1. About</a></li>
-<li><a href="#introduction">2. Introduction</a></li>
-<li><a href="#quick-start">3. Quick Start</a></li>
-<li><a href="#features">4. Features</a>
-<ul class="sectlevel2">
-<li><a href="#logging-into-the-address-book-application-code-login-code">4.1. Logging into the address book application : <code>login</code></a></li>
-<li><a href="#logging-into-the-address-book-application-using-graphic-user-interface-gui-code-login-code">4.2. Logging into the address book application using Graphic User Interface (GUI): <code>login</code></a></li>
-<li><a href="#logging-out-of-the-address-book-application-code-logout-code">4.3. Logging out of the address book application : <code>logout</code></a></li>
-<li><a href="#viewing-help-code-help-code">4.4. Viewing help : <code>help</code></a></li>
-<li><a href="#adding-a-debtor-code-add-code">4.5. Adding a debtor: <code>add</code></a></li>
-<li><a href="#listing-all-persons-code-list-code">4.6. Listing all persons : <code>list</code></a></li>
-<li><a href="#listing-all-blacklisted-persons-code-blacklist-code">4.7. Listing all blacklisted persons : <code>blacklist</code></a></li>
-<li><a href="#listing-all-whitelisted-persons-code-whitelist-code">4.8. Listing all whitelisted persons : <code>whitelist</code></a></li>
-<li><a href="#listing-all-persons-with-overdue-debt-code-overduelist-code">4.9. Listing all persons with overdue debt: <code>overduelist</code></a></li>
-<li><a href="#editing-a-person-code-edit-code">4.10. Editing a person : <code>edit</code></a></li>
-<li><a href="#locating-persons-by-name-code-find-code">4.11. Locating persons by name: <code>find</code></a></li>
-<li><a href="#increasing-the-debt-of-a-debtor-code-borrow-code">4.12. Increasing the debt of a debtor: <code>borrow</code></a></li>
-<li><a href="#decreasing-the-debt-of-a-person-code-payback-code">4.13. Decreasing the debt of a person: <code>payback</code></a></li>
-<li><a href="#resetting-the-debt-of-a-person-code-repaid-code">4.14. Resetting the debt of a person: <code>repaid</code></a></li>
-<li><a href="#deleting-a-person-code-delete-code">4.15. Deleting a person : <code>delete</code></a></li>
-<li><a href="#banning-a-debtor-code-ban-code">4.16. Banning a debtor : <code>ban</code></a></li>
-<li><a href="#unbanning-a-blacklisted-person-code-unban-code">4.17. Unbanning a blacklisted person : <code>unban</code></a></li>
-<li><a href="#selecting-a-person-code-select-code">4.18. Selecting a person : <code>select</code></a></li>
-<li><a href="#selecting-a-nearby-person-code-nearby-code">4.19. Selecting a nearby person: <code>nearby</code></a></li>
-<li><a href="#listing-entered-commands-code-history-code">4.20. Listing entered commands : <code>history</code></a></li>
-<li><a href="#sorting-all-contacts-code-sort-code">4.21. Sorting all contacts : <code>sort</code></a></li>
-<li><a href="#filter-contacts-by-tags-code-filter-code">4.22. Filter contacts by tags : <code>filter</code></a></li>
-<li><a href="#undoing-previous-command-code-undo-code">4.23. Undoing previous command : <code>undo</code></a></li>
-<li><a href="#redoing-the-previously-undone-command-code-redo-code">4.24. Redoing the previously undone command : <code>redo</code></a></li>
-<li><a href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">4.25. Setting the path to local profile pictures folder : <code>setpath</code></a></li>
-<li><a href="#clearing-all-entries-code-clear-code">4.26. Clearing all entries : <code>clear</code></a></li>
-<li><a href="#changing-themes-code-theme-code">4.27. Changing themes: <code>theme</code></a></li>
-<li><a href="#exiting-the-program-code-exit-code">4.28. Exiting the program : <code>exit</code></a></li>
-<li><a href="#saving-the-data">4.29. Saving the data</a></li>
-<li><a href="#loading-the-data">4.30. Loading the data</a></li>
-</ul>
-</li>
-<li><a href="#faq">5. FAQ</a></li>
-<li><a href="#command-summary">6. Command Summary</a></li>
-<li><a href="#current-features">7. Current features</a></li>
-<li><a href="#features-to-be-included-by-code-v2-0-code">8. Features to be included by <code>V2.0</code></a></li>
-</ul>
-</div>
-</div>
 <div class="sect1">
-<h2 id="about"><a class="link" href="#about">1. About</a></h2>
+<h2 id="project-codii"><a class="link" href="#project-codii">Project: Codii</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This user guide will give you an overview of how to use Codii.
-This guide includes step-by-step instructions on how each command work, FAQs and a summary of every command you will learn.</p>
+<p>[<a href="https://github.com/CS2103AUG2017-T17-B1/main">Codii</a>] is a desktop address book application specially designed for debt collectors to manage debtors in a simple manner. It has a GUI but most of the user interactions happen using a CLI (Command Line Interface).</p>
 </div>
 <div class="paragraph">
-<p>The terms used in this guide are as follows:<br></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Blacklist - List of people who are banned<br></p>
-</li>
-<li>
-<p>Whitelist - List of people who have cleared their debts<br></p>
-</li>
-<li>
-<p>Overdue list - List of people who have overdue debt<br></p>
-</li>
-<li>
-<p>Index - The ordering of a contact in the list<br></p>
-</li>
-<li>
-<p>Cluster - The general location of a person based on [<a href="https://www.ura.gov.sg/realEstateIIWeb/resources/misc/list_of_postal_districts.htm">postal districts</a>]</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="introduction"><a class="link" href="#introduction">2. Introduction</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Codii is a free to use address book catered to suit the needs of debt collectors. You can enter debtors into Codii,
-track the amount of debt owed, manage deadlines, ban and unban debtors and even organise them by location.</p>
+<p>Debt collectors can store information such as the amount owed, debt borrow date and debt cleared date in addition to debtor’s personal information.</p>
 </div>
 <div class="paragraph">
-<p>Codii is available for the Linux, Windows, and Mac OS operating systems.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="quick-start"><a class="link" href="#quick-start">3. Quick Start</a></h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Ensure you have Java version <code>1.8.0_60</code> or later installed in your Computer.</p>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Having any Java 8 version is not enough.<br>
-This app will not work with earlier versions of Java 8.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Download the latest <code>codii.jar</code> <a href="https://github.com/CS2103AUG2017-T17-B1/main/releases">here</a>.</p>
-</li>
-<li>
-<p>Copy the file to the folder you want to use as the home folder for your Codii.</p>
-</li>
-<li>
-<p>Double-click the file to start the app. The GUI, as seen in Figure 1.1 below, should appear in a few seconds.</p>
-<div class="imageblock">
-<div class="content">
-<img src="images/UiStartUp.PNG" alt="UiStartUp" width="790">
-</div>
+<p>Unique features such as an interest calculator help debt collectors manage debts more efficiently.</p>
 </div>
 <div class="paragraph">
-<p><em>Figure 1.1 : Codii login page</em></p>
-</div>
-</li>
-<li>
-<p>Log into the app using the format specified in the welcome screen. The application should look similar to Figure 1.2 after clicking on a person in the left panel.</p>
-<div class="imageblock">
-<div class="content">
-<img src="images/Ui.png" alt="Ui" width="790">
-</div>
+<p>Codii is evolved from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
 </div>
 <div class="paragraph">
-<p><em>Figure 1.2 : Full information of the person that is selected in the left panel</em></p>
+<p><strong>Code contributed</strong>: [<a href="https://github.com/CS2103AUG2017-T17-B1/main/blob/master/collated/main/jaivigneshvenugopal.md">Functional code</a>] [<a href="https://github.com/CS2103AUG2017-T17-B1/main/blob/master/collated/test/jaivigneshvenugopal.md">Test code</a>]</p>
 </div>
-</li>
-<li>
-<p>Type the command in the command box and press <kbd>Enter</kbd> to execute it.<br>
-e.g. typing <strong><code>help</code></strong> and pressing <kbd>Enter</kbd> will open the help window.</p>
-</li>
-<li>
-<p>Some example commands you can try:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><strong><code>list</code></strong> : lists all contacts</p>
-</li>
-<li>
-<p><strong><code>add</code></strong><code>n/John Doe hp/98765432 home/60773707 e/johnd@example.com a/John street, block 123, #01-01 pc/321123 d/123 dl/11-12-2018</code> : adds a contact named <code>John Doe</code> to the Address Book.</p>
-</li>
-<li>
-<p><strong><code>delete</code></strong><code>3</code> : deletes the 3rd contact shown in the current list</p>
-</li>
-<li>
-<p><strong><code>exit</code></strong> : exits the app</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Refer to the <a href="#features">Features</a> section below for details of each command.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="features"><a class="link" href="#features">4. Features</a></h2>
-<div class="sectionbody">
-<div class="exampleblock">
-<div class="content">
+<div class="sect2">
+<h3 id="enhancement-added-blacklist-whitelist-command"><a class="link" href="#enhancement-added-blacklist-whitelist-command">Enhancement Added: Blacklist/Whitelist command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior"><a class="link" href="#external-behavior">External behavior</a></h4>
+<hr>
 <div class="paragraph">
-<p><strong>Command Format</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Words in <code>UPPER_CASE</code> are the parameters to be supplied by the user e.g. in <code>add n/NAME</code>, <code>NAME</code> is a parameter which can be used as <code>add n/John Doe</code>.</p>
-</li>
-<li>
-<p>Items in square brackets are optional e.g <code>n/NAME [t/TAG]</code> can be used as <code>n/John Doe t/friend</code> or as <code>n/John Doe</code>.</p>
-</li>
-<li>
-<p>Items with <code>…</code>​ after them can be used multiple times including zero times e.g. <code>[t/TAG]&#8230;&#8203;</code> can be used as <code>&#160;</code> (i.e. 0 times), <code>t/friend</code>, <code>t/friend t/family</code> etc.</p>
-</li>
-<li>
-<p>Parameters can be in any order e.g. if the command specifies <code>n/NAME hp/HANDPHONE_NUMBER</code>, <code>hp/HANDPHONE_NUMBER n/NAME</code> is also acceptable.</p>
-</li>
-</ul>
+<p><mark>Start of Extract [from: User Guide]</mark></p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging-into-the-address-book-application-code-login-code"><a class="link" href="#logging-into-the-address-book-application-code-login-code">4.1. Logging into the address book application : <code>login</code></a></h3>
-<div class="paragraph">
-<p>Logs into the address book.<br>
-Format: <code>login USERNAME PASSWORD</code></p>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>login userAcc_123 pa$$_Word!@#&amp;</code></p>
-</li>
-<li>
-<p><code>login batMan_111 (Batcave.327+-)</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Sample account to log into address book:<br>
-Username: loanShark97<br>
-Password: hitMeUp123<br></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="logging-into-the-address-book-application-using-graphic-user-interface-gui-code-login-code"><a class="link" href="#logging-into-the-address-book-application-using-graphic-user-interface-gui-code-login-code">4.2. Logging into the address book application using Graphic User Interface (GUI): <code>login</code></a></h3>
-<div class="paragraph">
-<p>Logs into the address book.<br>
-Format: <code>login</code></p>
-</div>
-<div class="paragraph">
-<p>1) Type <code>login</code> in the command box.<br>
-2) Enter username and password in the respective fields<br>
-3) Press <code>Enter</code> on keyboard or click the <code>Log in</code> button<br></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/loginView.png" alt="loginView" width="790">
-</div>
-</div>
-<div class="paragraph">
-<p>Sample account to log into address book:<br>
-Username: loanShark97<br>
-Password: hitMeUp123<br></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="logging-out-of-the-address-book-application-code-logout-code"><a class="link" href="#logging-out-of-the-address-book-application-code-logout-code">4.3. Logging out of the address book application : <code>logout</code></a></h3>
-<div class="paragraph">
-<p>Logs out of the address book.<br>
-Format: <code>logout</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="viewing-help-code-help-code"><a class="link" href="#viewing-help-code-help-code">4.4. Viewing help : <code>help</code></a></h3>
-<div class="paragraph">
-<p>Format: <code>help</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="adding-a-debtor-code-add-code"><a class="link" href="#adding-a-debtor-code-add-code">4.5. Adding a debtor: <code>add</code></a></h3>
-<div class="paragraph">
-<p>Adds a debtor to the address book. Date borrowed for debtor is automatically<br>
-noted down. The <code>Office phone</code>, <code>Deadline</code>, <code>Interest</code> and <code>Tag</code> fields are optional.<br>
-Format: <code>add n/NAME hp/HANDPHONE_NUMBER home/HOME_PHONE_NUMBER e/EMAIL a/ADDRESS pc/POSTAL_CODE d/DEBT [op/OFFICE_PHONE_NUMBER] [dl/DEADLINE] [int/INTEREST] [t/TAG]&#8230;&#8203;</code></p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-A debtor can have any number of tags (including 0)
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>add n/John Doe hp/98765432 home/60773707 op/60073007 e/johnd@example.com a/John street, block 123, #01-01 pc/321123 d/123 dl/11-11-2018</code></p>
-</li>
-<li>
-<p><code>add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison hp/81234567 home/61018123 pc/000001 d/1234 t/criminal</code></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="listing-all-persons-code-list-code"><a class="link" href="#listing-all-persons-code-list-code">4.6. Listing all persons : <code>list</code></a></h3>
-<div class="paragraph">
-<p>Shows a list of all persons in the address book.<br>
-Format: <code>list</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="listing-all-blacklisted-persons-code-blacklist-code"><a class="link" href="#listing-all-blacklisted-persons-code-blacklist-code">4.7. Listing all blacklisted persons : <code>blacklist</code></a></h3>
+<h3 id="listing-all-blacklisted-persons-code-blacklist-code"><a class="link" href="#listing-all-blacklisted-persons-code-blacklist-code">Listing all blacklisted persons : <code>blacklist</code></a></h3>
 <div class="paragraph">
 <p>Shows a list of all blacklisted persons in the address book.<br>
 Format: <code>blacklist</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="listing-all-whitelisted-persons-code-whitelist-code"><a class="link" href="#listing-all-whitelisted-persons-code-whitelist-code">4.8. Listing all whitelisted persons : <code>whitelist</code></a></h3>
+<h3 id="listing-all-whitelisted-persons-code-whitelist-code"><a class="link" href="#listing-all-whitelisted-persons-code-whitelist-code">Listing all whitelisted persons : <code>whitelist</code></a></h3>
 <div class="paragraph">
 <p>Shows a list of all whitelisted persons in the address book.<br>
 Format: <code>whitelist</code></p>
 </div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-blacklist"><a class="link" href="#justification-blacklist">Justification (Blacklist)</a></h4>
+<div class="paragraph">
+<p>As a debt collector, there is an important requirement to categorize debtors into different categories. One of these categories include debtors who have been blacklisted. This branding could have been given by the client banks or the debt collection agencies themselves. Nonetheless, the message is clear; these blacklisted debtors must be handled with caution.</p>
+</div>
+<div class="paragraph">
+<p>Thus, it is a requirement to have access to a list of blacklisted people. That is essentially what the <code>blacklist</code> command does. Moreover, working in the blacklist gives exclusive and focused control over the debtors in this list alone. Meaning, when working in the blacklist, users will not be able to access non-blacklisted persons. This is because the commands work exclusively on blacklisted debtors alone.</p>
+</div>
+<div class="paragraph">
+<p>To access other lists, specific commands have to be used to toggle.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="justification-whitelist"><a class="link" href="#justification-whitelist">Justification (Whitelist)</a></h4>
+<div class="paragraph">
+<p>As a debt collector, it is also important to identify and categorize debtors who have repaid all their debts. Ultimately, that is the purpose of the <code>whitelist</code> command. Debt collection agencies regularly need to liase with client banks to submit reports on debtors' activities and repayment amounts. Thus, having a list of debtors who have repaid their debts, along with the date that they repaid the full amount, essentially helps to track debtors' activities.</p>
+</div>
+<div class="paragraph">
+<p>If the debt collection agency happens to be a subsidiary institution to a bank, this whitelist feature will also aid in allowing the voice-call sectors to contact people for additional loan-signups.</p>
+</div>
+<div class="paragraph">
+<p>As aforementioned, to access other lists, specific commands have to be used to toggle.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation"><a class="link" href="#implementation">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="listing-all-persons-with-overdue-debt-code-overduelist-code"><a class="link" href="#listing-all-persons-with-overdue-debt-code-overduelist-code">4.9. Listing all persons with overdue debt: <code>overduelist</code></a></h3>
+<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">List (Masterlist, Blacklist etc) mechanism</a></h3>
 <div class="paragraph">
-<p>shows a list of all persons with overdue debt in the address book.<br>
-Format: <code>overduelist</code></p>
+<p>Having multiple lists is useful for debt collectors to view debtors of different categories. Currently, these different lists include masterlist and blacklist.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="editing-a-person-code-edit-code"><a class="link" href="#editing-a-person-code-edit-code">4.10. Editing a person : <code>edit</code></a></h3>
 <div class="paragraph">
-<p>Edits an existing debtor, blacklisted/whitelisted contact in the address book.<br>
-Format: <code>edit [INDEX] [n/NAME] [hp/HANDPHONE_NUMBER] [home/HOME_PHONE_NUMBER] [op/OFFICE_PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [pc/POSTAL_CODE] [d/DEBT] [td/TOTAL DEBT] [dl/DEADLINE] [int/INTEREST] [t/TAG]&#8230;&#8203;</code></p>
+<p>These lists could be viewed with the respective commands that will update the panel that is currently displayed. The commands to display these lists are named after the lists themselves. For example, to view the <code>blacklist</code>, the command typed is "blacklist" or "bl".</p>
 </div>
-<div class="sidebarblock">
+<div class="paragraph">
+<p>The following sequence diagram, Figure 3.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
+</div>
+<div class="imageblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Edits the person at the specified <code>INDEX</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
-</li>
-<li>
-<p>If no index is specified, the currently selected person is edited instead.</p>
-</li>
-<li>
-<p>At least one of the optional fields, other than <code>INDEX</code>, must be provided.</p>
-</li>
-<li>
-<p>Existing values will be updated to the input values.</p>
-</li>
-<li>
-<p>The date of debt borrowed cannot be edited.</p>
-</li>
-<li>
-<p>When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.</p>
-</li>
-<li>
-<p>You can remove all the person&#8217;s tags by typing <code>t/</code> without specifying any tags after it.</p>
-</li>
-</ul>
-</div>
+<img src="../images/BlacklistCommandSequenceDiagram1.PNG" alt="BlacklistCommandSequenceDiagram1" width="800">
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p><em>Figure 3.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>edit 1 p/91234567 pc/333111 e/johndoe@example.com</code><br>
-Edits the phone number, postal code, and email address of the 1st person to be <code>91234567</code>, <code>333111</code>, and <code>johndoe@example.com</code> respectively.</p>
-</li>
-<li>
-<p><code>edit 2 n/Betsy Crower t/</code><br>
-Edits the name of the 2nd person to be <code>Betsy Crower</code> and clears all existing tags.</p>
-</li>
-<li>
-<p><code>list</code><br>
-<code>select 1</code><br>
-<code>edit n/Peeta Pen</code><br>
-Edits the name of the 1st person in the address book to be <code>Peeta Pen</code>.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="locating-persons-by-name-code-find-code"><a class="link" href="#locating-persons-by-name-code-find-code">4.11. Locating persons by name: <code>find</code></a></h3>
 <div class="paragraph">
-<p>Finds persons whose names contain any of the given keywords.<br>
-Format: <code>find KEYWORD [MORE_KEYWORDS]</code></p>
+<p>The following sequence diagram, Figure 3.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
 </div>
-<div class="sidebarblock">
+<div class="imageblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>The search is case insensitive. e.g <code>hans</code> will match <code>Hans</code></p>
-</li>
-<li>
-<p>The order of the keywords does not matter. e.g. <code>Hans Bo</code> will match <code>Bo Hans</code></p>
-</li>
-<li>
-<p>Only the name is searched.</p>
-</li>
-<li>
-<p>Only full words will be matched e.g. <code>Han</code> will not match <code>Hans</code></p>
-</li>
-<li>
-<p>Persons matching at least one keyword will be returned (i.e. <code>OR</code> search). e.g. <code>Hans Bo</code> will return <code>Hans Gruber</code>, <code>Bo Yang</code></p>
-</li>
-</ul>
-</div>
+<img src="../images/BlacklistCommandSequenceDiagram2.png" alt="BlacklistCommandSequenceDiagram2" width="800">
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p><em>Figure 3.5.2 : Sequence diagram of how <code>ModelManager</code> interacts with <code>ReadOnlyAddressBook</code> To generate blacklist From all persons</em></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>find John</code><br>
-Returns <code>john</code> and <code>John Doe</code></p>
-</li>
-<li>
-<p><code>find Betsy Tim John</code><br>
-Returns any person having names <code>Betsy</code>, <code>Tim</code>, or <code>John</code></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="increasing-the-debt-of-a-debtor-code-borrow-code"><a class="link" href="#increasing-the-debt-of-a-debtor-code-borrow-code">4.12. Increasing the debt of a debtor: <code>borrow</code></a></h3>
 <div class="paragraph">
-<p>Increase the debt of a debtor by the amount entered.<br>
-Format: <code>borrow [INDEX] AMOUNT</code></p>
+<p>The List mechanism is facilitated by commands which use <code>Logic</code> interface to obtain the copy of the list that is required. As seen from Figure 3.5.1 and Figure 3.5.2 above, to obtain the current blacklist of the addressbook, "blacklist" <code>String</code> is first captured by the <code>CommandBox</code> class. The <code>CommandBox</code> class then passes this <code>String</code> to the <code>Logic</code> interface for execution.</p>
 </div>
-<div class="sidebarblock">
+<div class="paragraph">
+<p><code>Logic</code> interface uses <code>LogicManager</code> class to validate the written command and package it as a <code>Command</code> object. The respective command is then executed in <code>LogicManager</code> class. These are the instructions that are executed for this command:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
-</li>
-<li>
-<p>If no index is specified, the debt of the currently selected person is increased instead.</p>
-</li>
-<li>
-<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>500.50</code> which represents $500.50.</p>
-</li>
-</ul>
-</div>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
+        model.changeListTo(COMMAND_WORD);
+        model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
+        <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>LogicManager</code> subsequently calls <code>Model</code> interface. <code>Model</code> uses <code>ModelManager</code> class to handle the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>ReadOnlyAddressBook</code> uses <code>AddressBook</code> class to handle this request.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>borrow 1 500</code><br>
-Increases the debt of the 1st person by $500.</p>
-</li>
-<li>
-<p><code>borrow 2 1000.10</code><br>
-Increases the debt of the 2nd person by $1000.10.</p>
-</li>
-<li>
-<p><code>list</code><br>
-<code>select 2</code><br>
-<code>borrow 234</code><br>
-Increases the debt of the 2nd person by $234.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="decreasing-the-debt-of-a-person-code-payback-code"><a class="link" href="#decreasing-the-debt-of-a-person-code-payback-code">4.13. Decreasing the debt of a person: <code>payback</code></a></h3>
 <div class="paragraph">
-<p>Decrease the debt of a person by the amount entered.<br>
-Format: <code>payback [INDEX] AMOUNT</code></p>
+<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>ReadOnlyPerson#getIsBlacklisted()</code> method, as shown below:</p>
 </div>
-<div class="sidebarblock">
+<div class="listingblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Decreases the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
-</li>
-<li>
-<p>If no index is specified, the debt of the currently selected person is decreased instead.</p>
-</li>
-<li>
-<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600</code> which represents $600.</p>
-</li>
-<li>
-<p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code></p>
-</li>
-</ul>
-</div>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> UniquePersonList getBlacklistedPersons() {
+    UniquePersonList blacklistedPersons = <span class="keyword">new</span> UniquePersonList();
+    <span class="keyword">for</span> (Person person : persons.getInternalList()) {
+        <span class="keyword">if</span> (person.getIsBlacklisted()) {
+            <span class="keyword">try</span> {
+                blacklistedPersons.add(person);
+            } <span class="keyword">catch</span> (DuplicatePersonException e) {
+                <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>;
+            }
+        }
+    }
+    <span class="keyword">return</span> blacklistedPersons;
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p>Although this way of implementation seems inefficient, it supports robust synchronisation among the various other lists. For example, if a person is deleted from the masterlist, he will also be deleted from the blacklist. Likewise for various other commands that changes the <code>ReadOnlyPerson</code> object. Thus, it is efficient in this aspect. Moreover, this implementation sets the groundwork for future implementations of various other lists.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>payback 1 500</code><br>
-Decreases the debt of the 1st person by $500.</p>
-</li>
-<li>
-<p><code>payback 2 1000.10</code><br>
-Decreases the debt of the 2nd person by $1000.10.</p>
-</li>
-<li>
-<p><code>list</code><br>
-<code>select 3</code><br>
-<code>payback 234</code><br>
-Decreases the debt of the 3rd person by $234.</p>
-</li>
-</ul>
+<div class="sect3">
+<h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations:</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command).<br>
+<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list.<br>
+<strong>Pros:</strong> Easy to implement.<br>
+<strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
+<strong>Alternative 2:</strong> Restrict other command usages in certain lists.<br>
+<strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
+<strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
 </div>
 </div>
 <div class="sect2">
-<h3 id="resetting-the-debt-of-a-person-code-repaid-code"><a class="link" href="#resetting-the-debt-of-a-person-code-repaid-code">4.14. Resetting the debt of a person: <code>repaid</code></a></h3>
+<h3 id="enhancement-added-repaid-command"><a class="link" href="#enhancement-added-repaid-command">Enhancement Added: Repaid command</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-2"><a class="link" href="#external-behavior-2">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resetting-the-debt-of-a-person-code-repaid-code"><a class="link" href="#resetting-the-debt-of-a-person-code-repaid-code">Resetting the debt of a person: <code>repaid</code></a></h3>
 <div class="paragraph">
 <p>Resets the debt of a person to zero and sets the date repaid field of that person.<br>
 Format: <code>repaid [INDEX]</code></p>
@@ -570,7 +228,7 @@ Resets the debt of the 2nd person to zero and sets the date of repayment in his/
 </div>
 </div>
 <div class="sect2">
-<h3 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">4.15. Deleting a person : <code>delete</code></a></h3>
+<h3 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">Deleting a person : <code>delete</code></a></h3>
 <div class="paragraph">
 <p>Deletes the specified person from the address book.<br>
 Format: <code>delete [INDEX]</code></p>
@@ -614,7 +272,7 @@ Deletes the 4th person in the address book.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">4.16. Banning a debtor : <code>ban</code></a></h3>
+<h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">Banning a debtor : <code>ban</code></a></h3>
 <div class="paragraph">
 <p>Adds the specified debtor from current records to blacklist.<br>
 Format: 'ban [INDEX]'</p>
@@ -663,7 +321,7 @@ Adds the 3rd person in the address book to blacklist.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">4.17. Unbanning a blacklisted person : <code>unban</code></a></h3>
+<h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">Unbanning a blacklisted person : <code>unban</code></a></h3>
 <div class="paragraph">
 <p>Removes the specified person from blacklist.<br>
 Format: 'unban [INDEX]'</p>
@@ -712,7 +370,7 @@ Removes the 3rd person in the address book from blacklist.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">4.18. Selecting a person : <code>select</code></a></h3>
+<h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">Selecting a person : <code>select</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the last person listing.<br>
 Format: <code>select [INDEX]</code></p>
@@ -761,7 +419,7 @@ Selects the first person in the last person listing.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">4.19. Selecting a nearby person: <code>nearby</code></a></h3>
+<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">Selecting a nearby person: <code>nearby</code></a></h3>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
 Format: <code>nearby [INDEX]</code></p>
@@ -825,7 +483,7 @@ Selects the next person in the same <code>cluster</code> as the previously selec
 </div>
 </div>
 <div class="sect2">
-<h3 id="listing-entered-commands-code-history-code"><a class="link" href="#listing-entered-commands-code-history-code">4.20. Listing entered commands : <code>history</code></a></h3>
+<h3 id="listing-entered-commands-code-history-code"><a class="link" href="#listing-entered-commands-code-history-code">Listing entered commands : <code>history</code></a></h3>
 <div class="paragraph">
 <p>Lists all the commands that you have entered in reverse chronological order.<br>
 Format: <code>history</code></p>
@@ -846,7 +504,7 @@ Format: <code>history</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">4.21. Sorting all contacts : <code>sort</code></a></h3>
+<h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">Sorting all contacts : <code>sort</code></a></h3>
 <div class="paragraph">
 <p>Sorts all the contacts in the address book in specified order. If no order is specified, the contacts are sorted in ascending lexographical order.<br>
 Format: <code>sort [ORDERING]</code></p>
@@ -882,7 +540,7 @@ Sorts the contacts in the address book by their postal districts.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="filter-contacts-by-tags-code-filter-code"><a class="link" href="#filter-contacts-by-tags-code-filter-code">4.22. Filter contacts by tags : <code>filter</code></a></h3>
+<h3 id="filter-contacts-by-tags-code-filter-code"><a class="link" href="#filter-contacts-by-tags-code-filter-code">Filter contacts by tags : <code>filter</code></a></h3>
 <div class="paragraph">
 <p>Filter contacts in the address book according to the tags specified.<br>
 Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
@@ -922,7 +580,7 @@ Displays contacts who have at least one of these three tags: <code>tricky</code>
 </div>
 </div>
 <div class="sect2">
-<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">4.23. Undoing previous command : <code>undo</code></a></h3>
+<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">Undoing previous command : <code>undo</code></a></h3>
 <div class="paragraph">
 <p>Restores the address book to the state before the previous <em>undoable</em> command was executed.<br>
 Format: <code>undo</code></p>
@@ -967,7 +625,7 @@ The <code>undo</code> command fails as there are no undoable commands executed p
 </div>
 </div>
 <div class="sect2">
-<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">4.24. Redoing the previously undone command : <code>redo</code></a></h3>
+<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">Redoing the previously undone command : <code>redo</code></a></h3>
 <div class="paragraph">
 <p>Reverses the most recent <code>undo</code> command.<br>
 Format: <code>redo</code></p>
@@ -999,7 +657,7 @@ The <code>redo</code> command fails as there are no <code>undo</code> commands e
 </div>
 </div>
 <div class="sect2">
-<h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">4.25. Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
+<h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
 <div class="paragraph">
 <p>Sets the folder location to access debtors profile pictures.<br>
 Format: <code>setpath</code></p>
@@ -1019,21 +677,21 @@ Format: <code>setpath</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">4.26. Clearing all entries : <code>clear</code></a></h3>
+<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">Clearing all entries : <code>clear</code></a></h3>
 <div class="paragraph">
 <p>Clears all entries from the address book.<br>
 Format: <code>clear</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="changing-themes-code-theme-code"><a class="link" href="#changing-themes-code-theme-code">4.27. Changing themes: <code>theme</code></a></h3>
+<h3 id="changing-themes-code-theme-code"><a class="link" href="#changing-themes-code-theme-code">Changing themes: <code>theme</code></a></h3>
 <div class="paragraph">
 <p>Changes between the two available themes.<br>
 Format: <code>theme</code></p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/UI.png" alt="UI" width="790">
+<img src="../images/UI.png" alt="UI" width="790">
 </div>
 </div>
 <div class="paragraph">
@@ -1041,7 +699,7 @@ Format: <code>theme</code></p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/BrightTheme.png" alt="BrightTheme" width="790">
+<img src="../images/BrightTheme.png" alt="BrightTheme" width="790">
 </div>
 </div>
 <div class="paragraph">
@@ -1049,14 +707,14 @@ Format: <code>theme</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">4.28. Exiting the program : <code>exit</code></a></h3>
+<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">Exiting the program : <code>exit</code></a></h3>
 <div class="paragraph">
 <p>Exits the program.<br>
 Format: <code>exit</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="saving-the-data"><a class="link" href="#saving-the-data">4.29. Saving the data</a></h3>
+<h3 id="saving-the-data"><a class="link" href="#saving-the-data">Saving the data</a></h3>
 <div class="paragraph">
 <p>Address book data are saved in the hard disk automatically after any command that changes the data.<br>
 There is no need to save manually.<br>
@@ -1064,7 +722,7 @@ If address book data can be loaded successfully, backup address book data is sav
 </div>
 </div>
 <div class="sect2">
-<h3 id="loading-the-data"><a class="link" href="#loading-the-data">4.30. Loading the data</a></h3>
+<h3 id="loading-the-data"><a class="link" href="#loading-the-data">Loading the data</a></h3>
 <div class="paragraph">
 <p>If the data file does not exist or cannot be read:</p>
 </div>
@@ -1123,7 +781,7 @@ If address book data can be loaded successfully, backup address book data is sav
 </div>
 </div>
 <div class="sect1">
-<h2 id="faq"><a class="link" href="#faq">5. FAQ</a></h2>
+<h2 id="faq"><a class="link" href="#faq">FAQ</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
@@ -1153,7 +811,7 @@ transferred to whitelist and date repaid is set to the date the command is execu
 </div>
 </div>
 <div class="sect1">
-<h2 id="command-summary"><a class="link" href="#command-summary">6. Command Summary</a></h2>
+<h2 id="command-summary"><a class="link" href="#command-summary">Command Summary</a></h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -1169,7 +827,7 @@ e.g.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/loginView.png" alt="loginView" width="790">
+<img src="../images/loginView.png" alt="loginView" width="790">
 </div>
 </div>
 <div class="ulist">
@@ -1268,7 +926,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="current-features"><a class="link" href="#current-features">7. Current features</a></h2>
+<h2 id="current-features"><a class="link" href="#current-features">Current features</a></h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -1376,7 +1034,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="features-to-be-included-by-code-v2-0-code"><a class="link" href="#features-to-be-included-by-code-v2-0-code">8. Features to be included by <code>V2.0</code></a></h2>
+<h2 id="features-to-be-included-by-code-v2-0-code"><a class="link" href="#features-to-be-included-by-code-v2-0-code">Features to be included by <code>V2.0</code></a></h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -1417,6 +1075,60 @@ e.g <code>filter friendly cooperative</code></p>
 <p>Feature to create a custom field.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification"><a class="link" href="#justification">Justification</a></h4>
+<div class="paragraph">
+<p>A debt collector will have the job to record down the collections for the day from each debtor. If a debtor has paid off his/her total debt, there should be an easy way for the debt collector to update`debt`, <code>totalDebt</code>, <code>dateRepaid</code> and <code>isWhitelisted</code> fields of the debtor. That is the purpose of the <code>Repaid</code> command.</p>
+</div>
+<div class="paragraph">
+<p>This is very similar to the <code>Payback</code> command, however, <code>Repaid</code> command excels in automating three different tasks so that life is indeed simpler for debt collectors to key in information in the system.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="enhancement-added-add-remove-profile-picture"><a class="link" href="#enhancement-added-add-remove-profile-picture">Enhancement Added: Add/Remove Profile Picture</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+<div class="sect3">
+<h4 id="justification-2"><a class="link" href="#justification-2">Justification</a></h4>
+<div class="paragraph">
+<p>A debt collector might need to conduct house visits to collect debts from people. Thus, having commands that allow the user to add/remove pictures for each individual debtors helps him/her quickly identify a specific debtor during official house visits.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Set up sync between all commands and all lists (masterlist/blacklist/whitelist) (<a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/166" class="bare">https://github.com/CS2103AUG2017-T17-B1/main/pull/166</a>)</p>
+</li>
+<li>
+<p>Create a dateRepaid field (<a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/54" class="bare">https://github.com/CS2103AUG2017-T17-B1/main/pull/54</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="project-wiredin"><a class="link" href="#project-wiredin">Project: WiredIn</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>[<a href="https://github.com/archthegit/wiredInV0/">WiredIn</a>] is a web application that collates raw csv files from various banks and displays the information variedly in a visually pleasing manner. This application was developed with [<a href="https://github.com/archthegit/">Archana Pradeep</a>] for [<a href="http://nusskylab-dev.comp.nus.edu.sg/">CP2106 Independent Software Development Project (Orbital)</a>].</p>
 </div>
 </div>
 </div>
