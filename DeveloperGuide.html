@@ -1185,7 +1185,7 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 </div>
 </div>
 <div class="paragraph">
-<p>The list is filtered and updated through the <code>updateFilteredPersonList</code> method in the <code>Model</code> component. Since the person list is of a <code>FilteredList&lt;&gt;</code> type, filtering of the list can be handled by a Java <code>FilteredList</code> class method called <code>setPredicate</code>.</p>
+<p>The list is filtered and updated through the <code>ListObserver#updateCurrentFilteredList</code> method in the <code>Logic</code> component so that it works across all lists (master list, blacklist, whitelist and overdue list). Since the person list is of a <code>FilteredList&lt;&gt;</code> type, filtering of the list can be handled by Java&#8217;s <code>FilteredList</code> class method called <code>setPredicate</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="design-considerations-7"><a class="link" href="#design-considerations-7">3.7.1. Design Considerations</a></h4>
@@ -3189,7 +3189,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-09 14:17:48 +00:00
+Last updated 2017-11-09 14:43:49 +00:00
 </div>
 </div>
 </body>
