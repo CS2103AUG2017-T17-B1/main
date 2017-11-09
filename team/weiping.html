@@ -216,13 +216,110 @@ Sorts the contacts in the address book by their postal districts.</p>
 <p>Debt collectors would want to sort their contacts in various ways for easier viewing.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="implementation-2"><a class="link" href="#implementation-2">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sorting-mechanism"><a class="link" href="#sorting-mechanism">Sorting mechanism</a></h3>
+<div class="paragraph">
+<p>Sorting is done within the <code>UniquePersonList</code> class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> sortBy(<span class="predefined-type">String</span> order) <span class="directive">throws</span> <span class="exception">IllegalArgumentException</span> {
+    <span class="keyword">switch</span> (order) {
+    <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:
+        internalList.sort((Person p1, Person p2) -&gt; p1.getName().compareTo(p2.getName()));
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">debt</span><span class="delimiter">&quot;</span></span>:
+        internalList.sort((Person p1, Person p2) -&gt; p2.getDebt().compareTo(p1.getDebt()));
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">cluster</span><span class="delimiter">&quot;</span></span>:
+        internalList.sort((Person p1, Person p2) -&gt; p1.getCluster().compareTo(p2.getCluster()));
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">deadline</span><span class="delimiter">&quot;</span></span>:
+        internalList.sort((Person p1, Person p2) -&gt; p1.getDeadline().compareTo(p2.getDeadline()));
+        internalList.sort((Person p1, Person p2) -&gt; <span class="predefined-type">Boolean</span>.compare(p1.isWhitelisted(), p2.isWhitelisted()));
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IllegalArgumentException</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Invalid sort ordering</span><span class="delimiter">&quot;</span></span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>sort</code> command can take in a <code>String</code> that determines how the contacts should be sorted. If no ordering is
+specified, the contacts will be sorted by ascending lexicographical order by default.<br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">SortCommandParser</span> <span class="directive">implements</span> <span class="predefined-type">Parser</span>&lt;SortCommand&gt; {
+    <span class="directive">public</span> SortCommand parse(<span class="predefined-type">String</span> args) <span class="directive">throws</span> <span class="exception">ParseException</span> {
+        requireNonNull(args);
+        <span class="predefined-type">String</span> trimmedArgs = args.trim().toLowerCase();
+        <span class="keyword">switch</span> (trimmedArgs) {
+        <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>:
+        <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>:
+        <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">debt</span><span class="delimiter">&quot;</span></span>:
+        <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">cluster</span><span class="delimiter">&quot;</span></span>:
+        <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">deadline</span><span class="delimiter">&quot;</span></span>:
+            <span class="keyword">return</span> <span class="keyword">new</span> SortCommand(trimmedArgs);
+        <span class="keyword">default</span>:
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">ParseException</span>(<span class="predefined-type">String</span>.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> DEFAULT_ORDERING = <span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>;
+
+<span class="directive">public</span> SortCommand(<span class="predefined-type">String</span> order) {
+    <span class="comment">//validity of order to sort is checked in {@code SortCommandParser}</span>
+    <span class="keyword">if</span> (order.equals(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
+        order = DEFAULT_ORDERING;
+    }
+    <span class="local-variable">this</span>.order = order;
+}
+
+<span class="directive">public</span> CommandResult execute() <span class="directive">throws</span> CommandException {
+    <span class="keyword">try</span> {
+        model.sortBy(order);
+    } <span class="comment">// irrelevant parts of the method omitted for brevity</span>
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">Design considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Default <code>sort</code><br>
+<strong>Alternative 1 (current choice):</strong> <code>Sort</code> by <code>name</code> by default<br>
+<strong>Pros:</strong> Relatively easy to implement, extremely intuitive.<br>
+<strong>Alternative 2:</strong> <code>Sort</code> by <code>debt</code> by default<br>
+<strong>Pros:</strong> Equally easy to implement.<br>
+<strong>Cons:</strong> Slightly less intuitive as sorting by <code>name</code> is the most prevalent way of sorting contacts.<br>
+<strong>Alternative 3:</strong> No default <code>sort</code>.<br>
+<strong>Pros:</strong> Extremely easy to implement.<br>
+<strong>Cons:</strong> Not user-friendly.</p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
 </div>
 <div class="sect2">
 <h3 id="enhancement-added-cluster-field"><a class="link" href="#enhancement-added-cluster-field">Enhancement Added: Cluster field</a></h3>
 <div class="sect3">
 <h4 id="external-behaviour"><a class="link" href="#external-behaviour">External behaviour</a></h4>
 <div class="paragraph">
-<p><code>Clusters</code> are generated based on postal districts.</p>
+<p><code>Clusters</code> are generated based on based on [<a href="https://www.ura.gov.sg/realEstateIIWeb/resources/misc/list_of_postal_districts.htm">postal districts</a>].</p>
 </div>
 </div>
 <div class="sect3">
@@ -232,7 +329,7 @@ Sorts the contacts in the address book by their postal districts.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="implementation-2"><a class="link" href="#implementation-2">Implementation</a></h4>
+<h4 id="implementation-3"><a class="link" href="#implementation-3">Implementation</a></h4>
 <hr>
 <div class="paragraph">
 <p><mark>Start of Extract [from: Developer Guide]</mark></p>
@@ -304,7 +401,7 @@ Part of the code from <code>ClusterUtil</code> for retrieving the <code>cluster<
 </div>
 </div>
 <div class="sect3">
-<h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">Design Considerations</a></h4>
+<h4 id="design-considerations-3"><a class="link" href="#design-considerations-3">Design Considerations</a></h4>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Grouping of contacts.<br>
 <strong>Alternative 1 (current choice):</strong> Create a field that contains the name and district number of the postal districts, based on postal code.<br>
@@ -410,19 +507,173 @@ Selects the next person in the same <code>cluster</code> as the previously selec
 </div>
 </div>
 <div class="sect2">
+<h3 id="enhancement-added-making-index-optional-for-commands"><a class="link" href="#enhancement-added-making-index-optional-for-commands">Enhancement Added: Making index optional for commands</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-4"><a class="link" href="#external-behavior-4">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide] written by Jelena Neo Hui Ling</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="increasing-the-debt-of-a-debtor-code-borrow-code"><a class="link" href="#increasing-the-debt-of-a-debtor-code-borrow-code">Increasing the debt of a debtor: <code>borrow</code></a></h3>
+<div class="paragraph">
+<p>Increase the debt of a debtor by the amount entered.<br>
+Format: <code>borrow [INDEX] AMOUNT</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+</li>
+<li>
+<p>If no index is specified, the debt of the currently selected person is increased instead.</p>
+</li>
+<li>
+<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>500.50</code> which represents $500.50.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>borrow 1 500</code><br>
+Increases the debt of the 1st person by $500.</p>
+</li>
+<li>
+<p><code>borrow 2 1000.10</code><br>
+Increases the debt of the 2nd person by $1000.10.</p>
+</li>
+<li>
+<p><code>list</code><br>
+<code>select 2</code><br>
+<code>borrow 234</code><br>
+Increases the debt of the 2nd person by $234.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-5"><a class="link" href="#justification-5">Justification</a></h4>
+<div class="paragraph">
+<p>Calling commands directly on the currently selected person makes much more intuitive sense than always supplying an
+<code>INDEX</code> each time. This also increases the flexibility and convenience of Codii.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-4"><a class="link" href="#implementation-4">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="optional-command-indexes"><a class="link" href="#optional-command-indexes">Optional command indexes</a></h3>
+<div class="paragraph">
+<p>It is intuitive to allow commands such as <code>edit</code>, <code>delete</code>, <code>borrow</code> and others to be called on the currently selected
+person instead of always having to supply the <code>INDEX</code>.<br>
+Parsers of commands call a constructor of the commands without an index. Take the <code>RepaidCommandParser</code> and <code>RepaidCommand</code> for example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> RepaidCommand parse(<span class="predefined-type">String</span> args) <span class="directive">throws</span> <span class="exception">ParseException</span> {
+    <span class="keyword">try</span> {
+        <span class="keyword">if</span> (args.trim().equals(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
+            <span class="keyword">return</span> <span class="keyword">new</span> RepaidCommand();
+        } <span class="keyword">else</span> {
+            Index index = ParserUtil.parseIndex(args);
+            <span class="keyword">return</span> <span class="keyword">new</span> RepaidCommand(index);
+        }
+    } <span class="keyword">catch</span> (IllegalValueException ive) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">ParseException</span>(
+            <span class="predefined-type">String</span>.format(MESSAGE_INVALID_COMMAND_FORMAT, RepaidCommand.MESSAGE_USAGE));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> RepaidCommand() {
+    <span class="local-variable">this</span>.targetIndex = <span class="predefined-constant">null</span>;
+}
+<span class="directive">public</span> CommandResult executeUndoableCommand() <span class="directive">throws</span> CommandException {
+    ReadOnlyPerson personToWhitelist = selectPerson(targetIndex);
+    <span class="comment">// Perform the command operation as per normal.</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>selectPerson(Index)</code> method is placed in the <code>Command</code> class, and is used by such index-based commands to select
+the currently selected person to apply the command on if no index is provided.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson selectPerson(Index index) <span class="directive">throws</span> CommandException {
+    ReadOnlyPerson selectedPerson;
+    <span class="keyword">if</span> (index == <span class="predefined-constant">null</span>) {
+        <span class="keyword">if</span> (model.getSelectedPerson() == <span class="predefined-constant">null</span>) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_NO_PERSON_SELECTED);
+        } <span class="keyword">else</span> {
+            selectedPerson = model.getSelectedPerson();
+        }
+    } <span class="keyword">else</span> {
+        <span class="predefined-type">List</span>&lt;ReadOnlyPerson&gt; lastShownList = listObserver.getCurrentFilteredList();
+
+        <span class="keyword">if</span> (index.getZeroBased() &gt;= lastShownList.size()) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+        selectedPerson = lastShownList.get(index.getZeroBased());
+    }
+    <span class="keyword">return</span> selectedPerson;
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-4"><a class="link" href="#design-considerations-4">Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Executing index-based commands without index.<br>
+<strong>Alternative 1 (current choice):</strong> Calling a constructor of the <code>command</code> without an <code>Index</code> initialises its <code>targetIndex</code>
+to null, and the null index is handled as a special value during execution.<br>
+<strong>Pros:</strong> Easy to implement, easy to extend.<br>
+<strong>Cons:</strong> Although highly unlikely, it may be possible for a <code>command</code> to have an unintended null <code>targetIndex</code>, which
+will then cause it to behave as an indexless command instead of an error.<br>
+<strong>Alternative 2:</strong> Find and use the current selection index within the constructor with no parameters.<br>
+<strong>Pros:</strong> Easier to maintain and test.<br>
+<strong>Cons:</strong> Difficult to implement as the <code>model</code> of a <code>command</code> is only set during execution, so it will be hard or even
+impossible to retrieve the current selection in the constructor of a <code>command</code>.</p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
 <h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
 <div class="sect3">
 <h4 id="various-ui-enhancements"><a class="link" href="#various-ui-enhancements">Various UI enhancements</a></h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Resizing the result display panel</p>
+<p>Adding a display for current list and selected index (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/249">#249</a>)</p>
 </li>
 <li>
-<p>Replacing the browser with full information panel</p>
+<p>Replacing the browser with full information panel (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/48">#48</a>)</p>
 </li>
 <li>
-<p>Creating the nearby persons panel inside the full information panel</p>
+<p>Creating the nearby persons panel inside the full information panel (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/128">#128</a>)</p>
 </li>
 </ul>
 </div>
@@ -451,7 +702,7 @@ Selects the next person in the same <code>cluster</code> as the previously selec
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-08 17:19:05 +00:00
+Last updated 2017-11-09 06:32:03 +00:00
 </div>
 </div>
 </body>
