@@ -62,8 +62,9 @@ This developer guide provides detailed information for future contributors to im
 <li><a href="#sorting-mechanism">3.9. Sorting mechanism</a></li>
 <li><a href="#optional-command-indexes">3.10. Optional command indexes</a></li>
 <li><a href="#interest-calculator-mechanism">3.11. Interest Calculator Mechanism</a></li>
-<li><a href="#logging">3.12. Logging</a></li>
-<li><a href="#configuration">3.13. Configuration</a></li>
+<li><a href="#theme-changing-mechanism">3.12. Theme Changing Mechanism</a></li>
+<li><a href="#logging">3.13. Logging</a></li>
+<li><a href="#configuration">3.14. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">4. Documentation</a>
@@ -1497,7 +1498,77 @@ handler than calls another method to update the <code>Person</code> 's debt by p
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">3.12. Logging</a></h3>
+<h3 id="theme-changing-mechanism"><a class="link" href="#theme-changing-mechanism">3.12. Theme Changing Mechanism</a></h3>
+<div class="paragraph">
+<p>The changing of themes is done in the <code>MainWindow</code> class, which is the class that holds all the <code>UI</code> parts.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> changeTheme() {
+    <span class="keyword">for</span> (<span class="predefined-type">String</span> stylesheet : getRoot().getStylesheets()) {
+        <span class="keyword">if</span> (stylesheet.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">DarkTheme.css</span><span class="delimiter">&quot;</span></span>)) {
+            getRoot().getStylesheets().remove(stylesheet);
+            getRoot().getStylesheets().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">/view/BrightTheme.css</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (stylesheet.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">BrightTheme.css</span><span class="delimiter">&quot;</span></span>)) {
+            getRoot().getStylesheets().remove(stylesheet);
+            getRoot().getStylesheets().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">/view/DarkTheme.css</span><span class="delimiter">&quot;</span></span>);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>changeTheme</code> method is called when a <code>ChangeThemeRequestEvent</code> is raised from <code>ThemeCommand</code>.</p>
+</div>
+<div class="paragraph">
+<p>In <code>MainWindow</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Subscribe</span>
+<span class="directive">private</span> <span class="type">void</span> handleChangeThemeRequestEvent(ChangeThemeRequestEvent event) {
+    logger.info(LogsCenter.getEventHandlingLogMessage(event));
+    changeTheme();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <code>ThemeCommand</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
+    EventsCenter.getInstance().post(<span class="keyword">new</span> ChangeThemeRequestEvent());
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-12"><a class="link" href="#design-considerations-12">3.12.1. Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Condition for changing themes.<br>
+<strong>Alternative 1 (current choice):</strong> Use <code>String#endsWith()</code>.<br>
+<strong>Pros:</strong> Foolproof, guaranteed to work if the theme exists.<br>
+<strong>Alternative 2:</strong> Use file paths.<br>
+<strong>Pros:</strong> Likely to work most of the time if handled well.<br>
+<strong>Cons:</strong> When debugging, it was found that the path started in the <code>build</code> folder instead of the <code>src</code> folder. Using
+this method seemed to cause inconsistencies between running the app from an IDE and from the <code>.jar</code> file.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Switching of themes.<br>
+<strong>Alternative 1 (current choice):</strong> Simple toggle between two themes.<br>
+<strong>Pros:</strong> Easy to implement.<br>
+<strong>Cons:</strong> Troublesome to extend.<br>
+<strong> Alternative 2:</strong> Use an <code>int</code> to keep track of the current theme, assign each theme to a number, and use <code>+</code> and <code>%</code>
+to cycle through the themes.<br>
+<strong>Pros:</strong> Easy to extend.<br>
+<strong>Cons:</strong> Troublesome to implement considering that we intend to use only two themes.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">3.13. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -1535,7 +1606,7 @@ handler than calls another method to update the <code>Person</code> 's debt by p
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">3.13. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">3.14. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -3189,7 +3260,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-10 13:47:56 +00:00
+Last updated 2017-11-10 13:57:19 +00:00
 </div>
 </div>
 </body>

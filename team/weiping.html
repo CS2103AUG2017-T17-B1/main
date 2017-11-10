@@ -28,7 +28,7 @@
 <p>Unique features such as an interest calculator help debt collectors manage debts more efficiently.</p>
 </div>
 <div class="paragraph">
-<p>Codii is evolved from [<a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>] which is a desktop address book application used for teaching Software Engineering principles.</p>
+<p>Codii is evolved from <a href="https://github.com/nus-cs2103-AY1718S1/addressbook-level4">AddressBook - Level 4</a>, which is a desktop address book application used for teaching Software Engineering principles.</p>
 </div>
 <div class="paragraph">
 <p><strong>Code contributed</strong>: [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/main/khooroko.md">Functional code</a>] [<a href="https://github.com/CS2103AUG2017-T17-B1/main/tree/master/collated/test/khooroko.md">Test code</a>]</p>
@@ -319,7 +319,7 @@ specified, the contacts will be sorted by ascending lexicographical order by def
 <div class="sect3">
 <h4 id="external-behaviour"><a class="link" href="#external-behaviour">External behaviour</a></h4>
 <div class="paragraph">
-<p><code>Clusters</code> are generated based on based on [<a href="https://www.ura.gov.sg/realEstateIIWeb/resources/misc/list_of_postal_districts.htm">postal districts</a>].</p>
+<p><code>Clusters</code> are generated based on based on <a href="https://www.ura.gov.sg/realEstateIIWeb/resources/misc/list_of_postal_districts.htm">postal districts</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -661,19 +661,144 @@ impossible to retrieve the current selection in the constructor of a <code>comma
 </div>
 </div>
 <div class="sect2">
+<h3 id="enhancement-added-switching-themes"><a class="link" href="#enhancement-added-switching-themes">Enhancement Added: Switching themes</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-5"><a class="link" href="#external-behavior-5">External behavior</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: User Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="changing-themes-code-theme-code"><a class="link" href="#changing-themes-code-theme-code">Changing themes: <code>theme</code></a></h3>
+<div class="paragraph">
+<p>Changes between the two available themes shown below in Figures 4.25.1 and 4.25.2 below.<br>
+Format: <code>theme</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/Ui.png" alt="Ui" width="790">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 4.25.1 : Dark theme (default)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../images/BrightTheme.PNG" alt="BrightTheme" width="790">
+</div>
+</div>
+<div class="paragraph">
+<p><em>Figure 4.25.2 : Bright theme</em></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification-6"><a class="link" href="#justification-6">Justification</a></h4>
+<div class="paragraph">
+<p>The ability to change themes can make the user feel more as though the app belongs to him/her as it is a form of
+customisation. It allows for a much better user experience.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-5"><a class="link" href="#implementation-5">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="theme-changing-mechanism"><a class="link" href="#theme-changing-mechanism">Theme Changing Mechanism</a></h3>
+<div class="paragraph">
+<p>The changing of themes is done in the <code>MainWindow</code> class, which is the class that holds all the <code>UI</code> parts.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">private</span> <span class="type">void</span> changeTheme() {
+    <span class="keyword">for</span> (<span class="predefined-type">String</span> stylesheet : getRoot().getStylesheets()) {
+        <span class="keyword">if</span> (stylesheet.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">DarkTheme.css</span><span class="delimiter">&quot;</span></span>)) {
+            getRoot().getStylesheets().remove(stylesheet);
+            getRoot().getStylesheets().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">/view/BrightTheme.css</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (stylesheet.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">BrightTheme.css</span><span class="delimiter">&quot;</span></span>)) {
+            getRoot().getStylesheets().remove(stylesheet);
+            getRoot().getStylesheets().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">/view/DarkTheme.css</span><span class="delimiter">&quot;</span></span>);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>changeTheme</code> method is called when a <code>ChangeThemeRequestEvent</code> is raised from <code>ThemeCommand</code>.</p>
+</div>
+<div class="paragraph">
+<p>In <code>MainWindow</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Subscribe</span>
+<span class="directive">private</span> <span class="type">void</span> handleChangeThemeRequestEvent(ChangeThemeRequestEvent event) {
+    logger.info(LogsCenter.getEventHandlingLogMessage(event));
+    changeTheme();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <code>ThemeCommand</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
+    EventsCenter.getInstance().post(<span class="keyword">new</span> ChangeThemeRequestEvent());
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="design-considerations-5"><a class="link" href="#design-considerations-5">Design Considerations</a></h4>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Condition for changing themes.<br>
+<strong>Alternative 1 (current choice):</strong> Use <code>String#endsWith()</code>.<br>
+<strong>Pros:</strong> Foolproof, guaranteed to work if the theme exists.<br>
+<strong>Alternative 2:</strong> Use file paths.<br>
+<strong>Pros:</strong> Likely to work most of the time if handled well.<br>
+<strong>Cons:</strong> When debugging, it was found that the path started in the <code>build</code> folder instead of the <code>src</code> folder. Using
+this method seemed to cause inconsistencies between running the app from an IDE and from the <code>.jar</code> file.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Switching of themes.<br>
+<strong>Alternative 1 (current choice):</strong> Simple toggle between two themes.<br>
+<strong>Pros:</strong> Easy to implement.<br>
+<strong>Cons:</strong> Troublesome to extend.<br>
+<strong> Alternative 2:</strong> Use an <code>int</code> to keep track of the current theme, assign each theme to a number, and use <code>+</code> and <code>%</code>
+to cycle through the themes.<br>
+<strong>Pros:</strong> Easy to extend.<br>
+<strong>Cons:</strong> Troublesome to implement considering that we intend to use only two themes.</p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
 <h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
 <div class="sect3">
 <h4 id="various-ui-enhancements"><a class="link" href="#various-ui-enhancements">Various UI enhancements</a></h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Adding a display for current list and selected index (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/249">#249</a>)</p>
-</li>
-<li>
 <p>Replacing the browser with full information panel (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/48">#48</a>)</p>
 </li>
 <li>
 <p>Creating the nearby persons panel inside the full information panel (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/128">#128</a>)</p>
+</li>
+<li>
+<p>Adding a display for current list and selected index (Pull request <a href="https://github.com/CS2103AUG2017-T17-B1/main/pull/249">#249</a>)</p>
 </li>
 </ul>
 </div>
@@ -685,6 +810,25 @@ impossible to retrieve the current selection in the constructor of a <code>comma
 <li>
 <p>Assist teammates with debugging tests</p>
 </li>
+<li>
+<p>Report bugs and raise suggestions for another team (Issues <a href="https://github.com/CS2103AUG2017-T10-B3/main/issues/78">#78</a>, <a href="https://github.com/CS2103AUG2017-T10-B3/main/issues/76">#76</a>, <a href="https://github.com/CS2103AUG2017-T10-B3/main/issues/82">#82</a>)</p>
+</li>
+<li>
+<p>Offer a bug fix for reuse (Issue <a href="https://github.com/nus-cs2103-AY1718S1/forum/issues/196">#196</a>)</p>
+</li>
+<li>
+<p>Help others on Slack</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Suggest alternative for importing Address Book level 4 for those facing issues with gradle</p>
+</li>
+<li>
+<p>Remind others to delete .json files and the data/ folder if they were doing acceptance testing for another team in the same folder that they saved their own .jar file.</p>
+</li>
+</ul>
+</div>
+</li>
 </ul>
 </div>
 </div>
@@ -695,14 +839,14 @@ impossible to retrieve the current selection in the constructor of a <code>comma
 <h2 id="project-dog-mario"><a class="link" href="#project-dog-mario">Project: Dog Mario</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>[<a href="https://github.com/DogMario/Dog-Mario">Dog Mario</a>] is a game developed with [<a href="https://github.com/tbhbhbh">Tan Bing Hwang</a>] as an independent project for Orbital 2017.</p>
+<p><a href="https://github.com/DogMario/Dog-Mario">Dog Mario</a> is a PC game developed with <a href="https://github.com/tbhbhbh">Tan Bing Hwang</a> as an independent project for <a href="http://nusskylab-dev.comp.nus.edu.sg/">CP2106 Independent Software Development Project (Orbital)</a>.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-10 13:47:56 +00:00
+Last updated 2017-11-10 13:57:19 +00:00
 </div>
 </div>
 </body>
