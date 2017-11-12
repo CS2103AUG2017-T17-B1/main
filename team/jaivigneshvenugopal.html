@@ -101,7 +101,7 @@ Format: <code>whitelist</code></p>
 <p>These lists could be viewed with the respective commands that will update the panel that is currently displayed. The commands to display these lists are named after the lists themselves. For example, to view the <code>blacklist</code>, the command typed is "blacklist" or "bl".</p>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 3.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
+<p>The following sequence diagram, Figure 4.5.1, shows further details of the interaction between the user and various application components as a whole, when the blacklist command is executed:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -109,10 +109,10 @@ Format: <code>whitelist</code></p>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Figure 3.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
+<p><em>Figure 4.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 3.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
+<p>The following sequence diagram, Figure 4.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -120,10 +120,10 @@ Format: <code>whitelist</code></p>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Figure 3.5.2 : Sequence diagram of how <code>ModelManager</code> interacts with <code>ReadOnlyAddressBook</code> To generate blacklist From all persons</em></p>
+<p><em>Figure 4.5.2 : Sequence diagram of how <code>ModelManager</code> interacts with <code>ReadOnlyAddressBook</code> To generate blacklist From all persons</em></p>
 </div>
 <div class="paragraph">
-<p>The List mechanism is facilitated by commands which use <code>Logic</code> interface to obtain the copy of the list that is required. As seen from Figure 3.5.1 and Figure 3.5.2 above, to obtain the current blacklist of the addressbook, "blacklist" <code>String</code> is first captured by the <code>CommandBox</code> class. The <code>CommandBox</code> class then passes this <code>String</code> to the <code>Logic</code> interface for execution.</p>
+<p>The List mechanism is facilitated by commands which use <code>Logic</code> interface to obtain the copy of the list that is required. As seen from Figure 4.5.1 and Figure 4.5.2 above, to obtain the current blacklist of the addressbook, "blacklist" <code>String</code> is first captured by the <code>CommandBox</code> class. The <code>CommandBox</code> class then passes this <code>String</code> to the <code>Logic</code> interface for execution.</p>
 </div>
 <div class="paragraph">
 <p><code>Logic</code> interface uses <code>LogicManager</code> class to validate the written command and package it as a <code>Command</code> object. The respective command is then executed in <code>LogicManager</code> class. These are the instructions that are executed for this command:</p>
@@ -910,6 +910,9 @@ transferred to whitelist and date repaid is set to the date the command is execu
 <div class="sect1">
 <h2 id="command-summary"><a class="link" href="#command-summary">Command Summary</a></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>A quick summary of all available commands for your easy reference:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -1342,7 +1345,7 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-12 14:21:23 +00:00
+Last updated 2017-11-12 14:26:29 +00:00
 </div>
 </div>
 </body>

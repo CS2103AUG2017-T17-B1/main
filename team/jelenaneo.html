@@ -329,7 +329,7 @@ The <code>borrow</code> and <code>payback</code> command eliminates this hassle 
 </div>
 <div class="paragraph">
 <p>These two commands require one compulsory argument which is the amount that is borrowed/paid back. Indicating the index (as listed in the person list panel on the left side of the application window) of the person who borrowed or paid back money is optional. If no index is specified, the command will be executed for the person that is currently selected in the person list.
-The arguments (index and amount borrowed/paid back) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 3.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor. Input for the <code>payback</code> command is tokenized in the same manner.</p>
+The arguments (index and amount borrowed/paid back) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 4.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor. Input for the <code>payback</code> command is tokenized in the same manner.</p>
 </div>
 <div class="paragraph">
 <p>The <code>BorrowCommand</code> and <code>PaybackCommand</code> are executed in <code>LogicManager</code>.
@@ -349,7 +349,7 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 </table>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 3.2.1, shows further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the <code>borrow</code> command is executed:</p>
+<p>The following sequence diagram, Figure 4.2.1, shows further details of the interaction between the <code>Logic</code> and <code>Model</code> component when the <code>borrow</code> command is executed:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -357,7 +357,7 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 </div>
 </div>
 <div class="paragraph">
-<p><em>Figure 3.2.1 : Sequence diagram of how the <code>Borrow</code> command works</em></p>
+<p><em>Figure 4.2.1 : Sequence diagram of how the <code>Borrow</code> command works</em></p>
 </div>
 <div class="paragraph">
 <p>The <code>payback</code> command works in a similar way to the <code>borrow</code> command.</p>
@@ -545,7 +545,7 @@ Displays contacts who have at least one of these three tags: <code>tricky</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-12 14:21:23 +00:00
+Last updated 2017-11-12 14:26:29 +00:00
 </div>
 </div>
 </body>

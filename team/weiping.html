@@ -128,7 +128,7 @@ If address book data can be loaded successfully, backup address book data is sav
 <div class="sect2">
 <h3 id="backup-storage-mechanism"><a class="link" href="#backup-storage-mechanism">Backup storage mechanism</a></h3>
 <div class="paragraph">
-<p>The backup storage mechanism is facilitated by the <code>StorageManager</code>. It backs up the address book data automatically each time the application starts up, if there is existing data available. The backup file is saved in the same location as the main file as <code>addressbook.xml-backup.xml</code>.</p>
+<p>The backup storage mechanism is facilitated by the <code>StorageManager</code>. It backs up the address book data automatically each time the application starts up, if there is existing data available. The sequence diagram for this is shown below in Figure 4.3.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -136,10 +136,10 @@ If address book data can be loaded successfully, backup address book data is sav
 </div>
 </div>
 <div class="paragraph">
-<p><em>Figure 3.3.1: Sequence diagram for backing up address book data</em></p>
+<p><em>Figure 4.3.1: Sequence diagram for backing up address book data</em></p>
 </div>
 <div class="paragraph">
-<p>The <code>backupAddressBook</code> method is called in <code>MainApp#init()</code> which is called each time the application starts. The sequence diagram for this method is shown above in Figure 3.3.1. No backup is made if there is no existing data.</p>
+<p>The <code>backupAddressBook</code> method is called in <code>MainApp#init()</code> which is called each time the application starts. No backup is made if there is no existing data.</p>
 </div>
 <div class="sect3">
 <h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations</a></h4>
@@ -836,7 +836,7 @@ to cycle through the themes.<br>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-12 14:21:23 +00:00
+Last updated 2017-11-12 14:26:29 +00:00
 </div>
 </div>
 </body>
