@@ -1353,38 +1353,34 @@ Parsers of commands call a constructor of the commands without an index. Take th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> RepaidCommand() {
-    <span class="local-variable">this</span>.targetIndex = <span class="predefined-constant">null</span>;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> RepaidCommand() <span class="directive">throws</span> CommandException {
+    personToWhitelist = selectPersonForCommand();
 }
-<span class="directive">public</span> CommandResult executeUndoableCommand() <span class="directive">throws</span> CommandException {
-    ReadOnlyPerson personToWhitelist = selectPerson(targetIndex);
-    <span class="comment">// Perform the command operation as per normal.</span>
+
+<span class="directive">public</span> RepaidCommand(Index targetIndex) <span class="directive">throws</span> CommandException {
+    personToWhitelist = selectPersonForCommand(targetIndex);
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>selectPerson(Index)</code> method is placed in the <code>Command</code> class, and is used by such index-based commands to select
+<p>The <code>selectPersonForCommand()</code> and <code>selectPersonForCommand(Index)</code> methods are placed in the <code>Command</code> class, and is used by such index-based commands to select
 the currently selected person to apply the command on if no index is provided.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson selectPerson(Index index) <span class="directive">throws</span> CommandException {
-    ReadOnlyPerson selectedPerson;
-    <span class="keyword">if</span> (index == <span class="predefined-constant">null</span>) {
-        <span class="keyword">if</span> (model.getSelectedPerson() == <span class="predefined-constant">null</span>) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_NO_PERSON_SELECTED);
-        } <span class="keyword">else</span> {
-            selectedPerson = model.getSelectedPerson();
-        }
-    } <span class="keyword">else</span> {
-        <span class="predefined-type">List</span>&lt;ReadOnlyPerson&gt; lastShownList = listObserver.getCurrentFilteredList();
-
-        <span class="keyword">if</span> (index.getZeroBased() &gt;= lastShownList.size()) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-        }
-        selectedPerson = lastShownList.get(index.getZeroBased());
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson selectPersonForCommand() <span class="directive">throws</span> CommandException {
+    <span class="keyword">if</span> (ListObserver.getSelectedPerson() == <span class="predefined-constant">null</span>) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_NO_PERSON_SELECTED);
     }
-    <span class="keyword">return</span> selectedPerson;
+    <span class="keyword">return</span> ListObserver.getSelectedPerson();
+}
+
+<span class="directive">public</span> ReadOnlyPerson selectPersonForCommand(Index index) <span class="directive">throws</span> CommandException {
+    <span class="predefined-type">List</span>&lt;ReadOnlyPerson&gt; lastShownList = ListObserver.getCurrentFilteredList();
+    <span class="keyword">if</span> (index.getZeroBased() &gt;= lastShownList.size()) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+    <span class="keyword">return</span> lastShownList.get(index.getZeroBased());
 }</code></pre>
 </div>
 </div>
@@ -1392,15 +1388,14 @@ the currently selected person to apply the command on if no index is provided.</
 <h4 id="design-considerations-10"><a class="link" href="#design-considerations-10">3.10.1. Design Considerations</a></h4>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Executing index-based commands without index.<br>
-<strong>Alternative 1 (current choice):</strong> Calling a constructor of the <code>command</code> without an <code>Index</code> initialises its <code>targetIndex</code>
+<strong>Alternative 1 (current choice):</strong> These person to apply the commands on are determined in the constructors.<br>
+<strong>Pros:</strong> Allows for proper <code>redo</code>.<br>
+<strong>Cons:</strong> Hard to test as Command Exceptions are being thrown from the constructors.<br>
+<strong>Alternative 2:</strong> Calling a constructor of the <code>command</code> without an <code>Index</code> initialises its <code>targetIndex</code>
 to null, and the null index is handled as a special value during execution.<br>
 <strong>Pros:</strong> Easy to implement, easy to extend.<br>
 <strong>Cons:</strong> Although highly unlikely, it may be possible for a <code>command</code> to have an unintended null <code>targetIndex</code>, which
-will then cause it to behave as an indexless command instead of an error.<br>
-<strong>Alternative 2:</strong> Find and use the current selection index within the constructor with no parameters.<br>
-<strong>Pros:</strong> Easier to maintain and test.<br>
-<strong>Cons:</strong> Difficult to implement as the <code>model</code> of a <code>command</code> is only set during execution, so it will be hard or even
-impossible to retrieve the current selection in the constructor of a <code>command</code>.</p>
+will then cause it to behave as an indexless command instead of an error. May also cause problems with <code>redo</code>.</p>
 </div>
 </div>
 </div>
@@ -3260,7 +3255,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-11 15:50:31 +00:00
+Last updated 2017-11-12 07:08:47 +00:00
 </div>
 </div>
 </body>
