@@ -130,10 +130,14 @@ Format: <code>whitelist</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
-        model.changeListTo(COMMAND_WORD);
-        model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
-        <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> CommandResult execute() {
+    requireNonNull(model);
+    model.deselectPerson();
+    model.changeListTo(COMMAND_WORD);
+    model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
+    <span class="predefined-type">String</span> currentList = ListObserver.getCurrentListName();
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(currentList + MESSAGE_SUCCESS);
 }</code></pre>
 </div>
 </div>
@@ -141,38 +145,35 @@ Format: <code>whitelist</code></p>
 <p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>LogicManager</code> subsequently calls <code>Model</code> interface. <code>Model</code> uses <code>ModelManager</code> class to handle the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>ReadOnlyAddressBook</code> uses <code>AddressBook</code> class to handle this request.</p>
 </div>
 <div class="paragraph">
-<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>ReadOnlyPerson#getIsBlacklisted()</code> method, as shown below:</p>
+<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>asObservableBlacklist()</code> method, as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> UniquePersonList getBlacklistedPersons() {
-    UniquePersonList blacklistedPersons = <span class="keyword">new</span> UniquePersonList();
-    <span class="keyword">for</span> (Person person : persons.getInternalList()) {
-        <span class="keyword">if</span> (person.getIsBlacklisted()) {
-            <span class="keyword">try</span> {
-                blacklistedPersons.add(person);
-            } <span class="keyword">catch</span> (DuplicatePersonException e) {
-                <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>;
-            }
-        }
-    }
-    <span class="keyword">return</span> blacklistedPersons;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ObservableList&lt;ReadOnlyPerson&gt; asObservableBlacklist() {
+    <span class="keyword">return</span> FXCollections.unmodifiableObservableList(mappedList.stream()
+            .filter(person -&gt; person.isBlacklisted()).collect(toCollection(FXCollections::observableArrayList)));
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Although this way of implementation seems inefficient, it supports robust synchronisation among the various other lists. For example, if a person is deleted from the masterlist, he will also be deleted from the blacklist. Likewise for various other commands that changes the <code>ReadOnlyPerson</code> object. Thus, it is efficient in this aspect. Moreover, this implementation sets the groundwork for future implementations of various other lists.</p>
 </div>
+<div class="paragraph">
+<p>One other important aspect to this implementation is that commands now have exclusive control over the list. This means that commands will only work on the persons in the current displayed list. For example, <code>find</code> command will only search and find persons in the current displayed list. It will not try to search in the masterlist, where all the contacts are stored. <code>sort</code> command will only sort the persons in the current displayed list. If the current displayed list is the blacklist, the output of the <code>sort</code> command will just be a list of sorted blacklisted persons.</p>
+</div>
+<div class="paragraph">
+<p>However, if a <code>Person</code> is modified by a command, the modification will be reflected across all other lists. For example, if a person exists in both the blacklist and the overdue list, modifications done by an <code>edit</code> command in the blacklist will also update the overdue list. These changes can be observed when the user switches to the overdue list using the <code>overduelist</code> command.</p>
+</div>
 <div class="sect3">
 <h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations:</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command)<br>
-<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list<br>
-<strong>Pros:</strong> Easy to implement.<br>
-<strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
-<strong>Alternative 2:</strong> Restrict other command usages in certain lists<br>
-<strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
-<strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
+<p><strong>Aspect:</strong> Syncing of lists<br>
+<strong>Alternative 1 (current choice):</strong> Use manual syncing methods to ensure lists are in sync<br>
+<strong>Pros:</strong> Easy to extend for future implementations.<br>
+<strong>Cons:</strong> Methods used for syncing are less intuitive and difficult to comprehend.<br>
+<strong>Alternative 2:</strong> Create new <code>persons</code> variable for each list in <code>Addressbook</code> class<br>
+<strong>Pros:</strong> Implementation is easier to comprehend.<br>
+<strong>Cons:</strong> Waste of memory compared to current implementation which only has 1 <code>persons</code> variable in <code>Addressbook</code> class.</p>
 </div>
 <div class="paragraph">
 <p><mark>End of Extract</mark></p>
@@ -226,464 +227,137 @@ Resets the debt of the 2nd person to zero and sets the date of repayment in his/
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
+<div class="sect3">
+<h4 id="justification"><a class="link" href="#justification">Justification</a></h4>
+<div class="paragraph">
+<p>A debt collector will have the job to record down the collections for the day from each debtor. If a debtor has paid off his/her total debt, there should be an easy way for the debt collector to update`debt`, <code>totalDebt</code>, <code>dateRepaid</code> and <code>isWhitelisted</code> fields of the debtor. That is the purpose of the <code>Repaid</code> command.</p>
+</div>
+<div class="paragraph">
+<p>This is very similar to the <code>Payback</code> command, however, <code>Repaid</code> command excels in automating three different tasks so that life is indeed simpler for debt collectors to key in information in the system.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="implementation-2"><a class="link" href="#implementation-2">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">Deleting a person : <code>delete</code></a></h3>
+<h3 id="repaid-command-mechanism"><a class="link" href="#repaid-command-mechanism">Repaid command mechanism</a></h3>
 <div class="paragraph">
-<p>Deletes the specified person from the address book.<br>
-Format: <code>delete [INDEX]</code></p>
+<p>The <code>repaid</code> command allow users to indicate that the specified debtor has completely repaid all of his/her debt. The <code>RepaidCommand</code> extends <code>UndoableCommand</code> so that it can be undone and redone if necessary.</p>
 </div>
-<div class="sidebarblock">
+<div class="paragraph">
+<p>The command executes using the index of the person the user wishes to update. However, indicating the index is optional if the person is the current selected person in the person list panel, as the index is internally provided by the selected person card.</p>
+</div>
+<div class="paragraph">
+<p>The <code>RepaidCommand</code> is executed in <code>LogicManager</code>. It checks if the person selected has already repaid all his/her debt. If the person has done so, the command will then throw an <code>Exception</code> indicating that he/she has already repaid his/her debt.</p>
+</div>
+<div class="paragraph">
+<p>If the person has not completely repaid his/her debt, <code>LogicManager</code> will then call the <code>Model</code> interface to execute a three-step process on that person, using a single method. <code>ModelManager</code> will firstly reset the person&#8217;s debt to zero.</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the currently selected person is deleted instead.</p>
-</li>
-</ul>
-</div>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson resetPersonDebt(ReadOnlyPerson p) <span class="directive">throws</span> PersonNotFoundException {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person existingPerson = <span class="keyword">new</span> Person(p);
+    <span class="keyword">try</span> {
+        existingPerson.setDebt(<span class="keyword">new</span> Debt(Debt.DEBT_ZER0_VALUE));
+    } <span class="keyword">catch</span> (IllegalValueException e) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">The target value cannot be of illegal value</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    persons.remove(p);
+
+    <span class="keyword">try</span> {
+        persons.add(index, existingPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException dpe) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">There should be no duplicate when resetting the debt of a person</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p>Secondly, it will set the <code>dateRepaid</code> field of the person to the date the command was called.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>delete 2</code><br>
-Deletes the 2nd person in the address book.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>delete 1</code><br>
-Deletes the 1st person in the results of the <code>find</code> command.</p>
-</li>
-<li>
-<p><code>list</code><br>
-<code>select 4</code><br>
-<code>delete</code><br>
-Deletes the 4th person in the address book.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="banning-a-debtor-code-ban-code"><a class="link" href="#banning-a-debtor-code-ban-code">Banning a debtor : <code>ban</code></a></h3>
-<div class="paragraph">
-<p>Adds the specified debtor from current records to blacklist.<br>
-Format: 'ban [INDEX]'</p>
-</div>
-<div class="sidebarblock">
+<div class="listingblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Bans the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the currently selected person is banned instead.</p>
-</li>
-</ul>
-</div>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson setDateRepaid(ReadOnlyPerson p) <span class="directive">throws</span> PersonNotFoundException {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person existingPerson = <span class="keyword">new</span> Person(p);
+    existingPerson.setDateRepaid(<span class="keyword">new</span> DateRepaid(formatDate(<span class="keyword">new</span> <span class="predefined-type">Date</span>())));
+
+    persons.remove(p);
+
+    <span class="keyword">try</span> {
+        persons.add(index, existingPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException dpe) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">There should be no duplicate when resetting the date repaid field of a person</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p>Finally, the person will be added into a list called <code>Whitelist</code>, given that he was not initially blacklisted.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>ban 2</code><br>
-Adds the 2nd person in the address book to blacklist.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>ban 1</code><br>
-Adds the 1st person in the results of the <code>find</code> command to blacklist.</p>
-</li>
-<li>
-<p><code>select 3</code><br>
-<code>ban</code><br>
-Adds the 3rd person in the address book to blacklist.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="unbanning-a-blacklisted-person-code-unban-code"><a class="link" href="#unbanning-a-blacklisted-person-code-unban-code">Unbanning a blacklisted person : <code>unban</code></a></h3>
-<div class="paragraph">
-<p>Removes the specified person from blacklist.<br>
-Format: 'unban [INDEX]'</p>
-</div>
-<div class="sidebarblock">
+<div class="listingblock">
 <div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Unbans the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the currently selected person is unbanned instead.</p>
-</li>
-</ul>
-</div>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson addWhitelistedPerson(ReadOnlyPerson p) {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person newWhitelistedPerson = <span class="keyword">new</span> Person(p);
+    newWhitelistedPerson.setIsWhitelisted(<span class="predefined-constant">true</span>);
+    <span class="keyword">try</span> {
+        updatePerson(p, newWhitelistedPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+    } <span class="keyword">catch</span> (PersonNotFoundException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+    }
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Examples:</p>
+<p><code>ModelManager</code> will then return the updated <code>ReadOnlyPerson</code> <code>Object</code> back to <code>LogicManager</code>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>blacklist</code><br>
-<code>unban 2</code><br>
-Removes the 2nd person from blacklist.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>unban 1</code><br>
-Removes the 1st person in the results of the <code>find</code> command from blacklist.</p>
-</li>
-<li>
-<p><code>select 3</code><br>
-<code>unban</code><br>
-Removes the 3rd person in the address book from blacklist.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Three-step process in one <code>Command</code><br>
+<strong>Alternative 1 (current choice):</strong> The three-step process happens in a single method<br>
+<strong>Pros:</strong> Faster and simpler to implement the method.<br>
+<strong>Cons:</strong> Some methods will fail to update the person as intended. If the person is blacklisted, he/she will not be added into the whitelist.<br>
+<strong>Alternative 2:</strong> Include three separate methods in <code>Model</code> interface to execute the three-step process<br>
+<strong>Pros:</strong> Easy to observe the methods that will fail.<br>
+<strong>Cons:</strong> Methods in <code>Model</code> interface will seem to have less abstraction than intended.<br></p>
 </div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
 </div>
 <div class="sect2">
-<h3 id="selecting-a-person-code-select-code"><a class="link" href="#selecting-a-person-code-select-code">Selecting a person : <code>select</code></a></h3>
+<h3 id="enhancement-added-add-remove-profile-picture"><a class="link" href="#enhancement-added-add-remove-profile-picture">Enhancement Added: Add/Remove Profile Picture</a></h3>
+<div class="sect3">
+<h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
+<hr>
 <div class="paragraph">
-<p>Selects the person identified by the index number used in the last person listing.<br>
-Format: <code>select [INDEX]</code></p>
+<p><mark>Start of Extract [from: User Guide]</mark></p>
 </div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Selects the person and loads the full information of the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the next person in the last person listing is selected instead.</p>
-</li>
-<li>
-<p>If no index is specified, and no one was selected, the first person in the last person listing is selected instead.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>select 2</code><br>
-Selects the 2nd person in the address book.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>select 1</code><br>
-Selects the 1st person in the results of the <code>find</code> command.<br>
-<code>select</code><br>
-Selects the first person in the last person listing.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="selecting-a-nearby-person-code-nearby-code"><a class="link" href="#selecting-a-nearby-person-code-nearby-code">Selecting a nearby person: <code>nearby</code></a></h3>
-<div class="paragraph">
-<p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
-Format: <code>nearby INDEX</code></p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>A person must be selected before this command is called.</p>
-</li>
-<li>
-<p>Selects the person and loads the full information of the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the nearby contacts listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>select 2</code><br>
-<code>nearby 1</code><br>
-Selects the 1st person in the same <code>cluster</code> as the previously selected person.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="listing-entered-commands-code-history-code"><a class="link" href="#listing-entered-commands-code-history-code">Listing entered commands : <code>history</code></a></h3>
-<div class="paragraph">
-<p>Lists all the commands that you have entered in reverse chronological order.<br>
-Format: <code>history</code></p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Pressing the <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> arrows will display the previous and next input respectively in the command box.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">Sorting all contacts : <code>sort</code></a></h3>
-<div class="paragraph">
-<p>Sorts all the contacts in the address book in specified order. If no order is specified, the contacts are sorted in ascending lexographical order.<br>
-Format: <code>sort [ORDERING]</code></p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Valid orderings are: <code>name</code>, <code>cluster</code>, <code>deadline</code> and <code>debt</code>.</p>
-</li>
-<li>
-<p>If no ordering is specified, the address book will be sorted by name.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>sort</code><br>
-Sorts the contacts in the address book by name.</p>
-</li>
-<li>
-<p><code>sort cluster</code><br>
-Sorts the contacts in the address book by their postal districts.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="filter-contacts-by-tags-code-filter-code"><a class="link" href="#filter-contacts-by-tags-code-filter-code">Filter contacts by tags : <code>filter</code></a></h3>
-<div class="paragraph">
-<p>Filters contacts in the address book according to the tags specified.<br>
-Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Contacts which contain <strong>at least one</strong> of the tags specified will be shown in the list.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>e.g. A person in the address book, Alex, has two tags: <code>friendly</code> and <code>cooperative</code>. When the command <code>filter friendly</code> is entered, Alex will be shown in the filtered list.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>filter friendly</code><br>
-Displays contacts with the <code>friendly</code> tag.</p>
-</li>
-<li>
-<p><code>filter tricky violent dishonest</code><br>
-Displays contacts who have at least one of these three tags: <code>tricky</code>, <code>violent</code>, <code>dishonest</code>.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">Undoing previous command : <code>undo</code></a></h3>
-<div class="paragraph">
-<p>Restores the address book to the state before the previous <em>undoable</em> command was executed.<br>
-Format: <code>undo</code></p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Undoable commands: those commands that modify the address book&#8217;s content (<code>add</code>, <code>delete</code>, <code>edit</code> and <code>clear</code>).</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>delete 1</code><br>
-<code>list</code><br>
-<code>undo</code> (reverses the <code>delete 1</code> command)<br></p>
-</li>
-<li>
-<p><code>select 1</code><br>
-<code>list</code><br>
-<code>undo</code><br>
-The <code>undo</code> command fails as there are no undoable commands executed previously.</p>
-</li>
-<li>
-<p><code>delete 1</code><br>
-<code>clear</code><br>
-<code>undo</code> (reverses the <code>clear</code> command)<br>
-<code>undo</code> (reverses the <code>delete 1</code> command)<br></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">Redoing the previously undone command : <code>redo</code></a></h3>
-<div class="paragraph">
-<p>Reverses the most recent <code>undo</code> command.<br>
-Format: <code>redo</code></p>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>delete 1</code><br>
-<code>undo</code> (reverses the <code>delete 1</code> command)<br>
-<code>redo</code> (reapplies the <code>delete 1</code> command)<br></p>
-</li>
-<li>
-<p><code>delete 1</code><br>
-<code>redo</code><br>
-The <code>redo</code> command fails as there are no <code>undo</code> commands executed previously.</p>
-</li>
-<li>
-<p><code>delete 1</code><br>
-<code>clear</code><br>
-<code>undo</code> (reverses the <code>clear</code> command)<br>
-<code>undo</code> (reverses the <code>delete 1</code> command)<br>
-<code>redo</code> (reapplies the <code>delete 1</code> command)<br>
-<code>redo</code> (reapplies the <code>clear</code> command)<br></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
-<div class="paragraph">
-<p>Sets the folder location to access and import debtors' profile pictures.<br>
-Paths should be absolute paths and not relative ones. Also, paths should point to the folder rather than the picture itself.<br></p>
-</div>
-<div class="paragraph">
-<p>It is recommended to create a folder and fill it up with the necessary profile pictures for the application. If there is a need to add a new picture, it should be added into this specific folder.<br></p>
-</div>
-<div class="paragraph">
-<p>The folder should only contain pictures with the <code>.jpg</code> extension. Moreover, the pictures should be named after the debtors in the application&#8217;s database.<br></p>
-</div>
-<div class="paragraph">
-<p>For example, for the debtor Alex Yeoh, the name of her picture should be <code>AlexYeoh.jpg</code><br>
-As for the debtor Bernice Yu, the name of her picture should be <code>BerniceYu.jpg</code><br></p>
-</div>
-<div class="paragraph">
-<p>If it is necessary to change the location of the folder, the <code>setpath</code> command should be used again to indicate this change in location of the profile pictures folder.<br></p>
-</div>
-<div class="paragraph">
-<p>Format: <code>setpath [PATH]</code></p>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br></p>
-</li>
-<li>
-<p><code>setpath C:/Users/acer/Desktop/SE/profilepic</code><br></p>
-</li>
-<li>
-<p><code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br></p>
-</li>
-<li>
-<p><code>setpath C:\Users\acer\Desktop\SE\profilepic</code><br></p>
-</li>
-<li>
-<p><code>setpath out/production/resources/images/</code><br></p>
-</li>
-<li>
-<p><code>setpath out/production/resources/images</code><br></p>
-</li>
-<li>
-<p><code>setpath out\production\resources\images\</code><br></p>
-</li>
-<li>
-<p><code>setpath out\production\resources\images</code><br></p>
-</li>
-</ul>
 </div>
 </div>
 <div class="sect2">
@@ -807,571 +481,6 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">Clearing all entries : <code>clear</code></a></h3>
-<div class="paragraph">
-<p>Clears all entries from the address book.<br>
-Format: <code>clear</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="changing-themes-code-theme-code"><a class="link" href="#changing-themes-code-theme-code">Changing themes: <code>theme</code></a></h3>
-<div class="paragraph">
-<p>Changes between the two available themes shown below in Figures 4.25.1 and 4.25.2 below.<br>
-Format: <code>theme</code></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="../images/Ui.png" alt="Ui" width="790">
-</div>
-</div>
-<div class="paragraph">
-<p><em>Figure 4.25.1 : Dark theme (default)</em></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="../images/BrightTheme.PNG" alt="BrightTheme" width="790">
-</div>
-</div>
-<div class="paragraph">
-<p><em>Figure 4.25.2 : Bright theme</em></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">Exiting the program : <code>exit</code></a></h3>
-<div class="paragraph">
-<p>Exits the program.<br>
-Format: <code>exit</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="saving-the-data"><a class="link" href="#saving-the-data">Saving the data</a></h3>
-<div class="paragraph">
-<p>Address book data is saved in the hard disk automatically after any command that changes the data.<br>
-There is no need to save manually.<br>
-If address book data can be loaded successfully, backup address book data is saved upon starting the program.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="loading-the-data"><a class="link" href="#loading-the-data">Loading the data</a></h3>
-<div class="paragraph">
-<p>If the data file does not exist or cannot be read:</p>
-</div>
-<div class="ulist none">
-<ul class="none">
-<li>
-<p>Backup data file will be loaded, if available and readable.</p>
-</li>
-<li>
-<p>If backup data is unavailable:</p>
-<div class="ulist none">
-<ul class="none">
-<li>
-<p>You will be given a sample address book.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>If backup data exists but cannot be read :</p>
-<div class="ulist none">
-<ul class="none">
-<li>
-<p>You will be given an empty address book.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>To quickly revert address book data to the state of last use:</p>
-</div>
-<div class="ulist none">
-<ul class="none">
-<li>
-<p>1. Delete addressbook.xml.</p>
-</li>
-<li>
-<p>2. Rename addressbook.xml-backup.xml to addressbook.xml.</p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="faq"><a class="link" href="#faq">FAQ</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
-<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous address book.<br></p>
-</div>
-<div class="paragraph">
-<p><strong>Q</strong>: What is the difference between <code>repaid</code> command and <code>payback</code> command?<br>
-<strong>A</strong>: <code>repaid</code> command completely clears a debtor&#8217;s debt while <code>payback</code> clears a specified amount. In both cases, when the debt reaches zero, the person is
-transferred to whitelist and date repaid is set to the date the command is executed.<br></p>
-</div>
-<div class="paragraph">
-<p><strong>Q</strong>: If I <code>delete</code> someone from the <code>masterlist</code>, will he/she be deleted from the other lists as well?<br>
-<strong>A</strong>: Yes.<br></p>
-</div>
-<div class="paragraph">
-<p><strong>Q</strong>: Is it possible to send a blacklisted person to the <code>whitelist</code>?<br>
-<strong>A</strong>: No. You have to <code>unban</code> the person prior to sending him/her to the <code>whitelist</code>.<br></p>
-</div>
-<div class="paragraph">
-<p><strong>Q</strong>: When will a debtor&#8217;s <code>debt</code> be accrued by his/her loan&#8217;s interest rate?<br>
-<strong>A</strong>: As of now, the default date to accrue is on the first day of the month.<br></p>
-</div>
-<div class="paragraph">
-<p><strong>Q</strong>: If I execute the <code>sort</code> command in the <code>masterlist</code>, will the other lists be sorted as well?<br>
-<strong>A</strong>: Yes.<br></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="command-summary"><a class="link" href="#command-summary">Command Summary</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A quick summary of all available commands for your easy reference:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Login</strong> : <code>login USERNAME PASSWORD</code><br>
-e.g. <code>login userAcc_123 pa$$_Word!@#&amp;</code></p>
-</li>
-<li>
-<p><strong>Login using GUI</strong> : <code>login</code><br>
-e.g. See Figure 1.3:</p>
-</li>
-</ul>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="../images/loginView.PNG" alt="loginView" width="790">
-</div>
-</div>
-<div class="paragraph">
-<p><em>Figure 1.3 : How the welcome screen looks like after <code>login</code> is entered in the command box</em></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Logout</strong> : <code>logout</code></p>
-</li>
-<li>
-<p><strong>Add</strong> : <code>add n/NAME hp/HANDPHONE_NUMBER home/HOME_PHONE_NUMBER e/EMAIL a/ADDRESS pc/POSTAL_CODE d/DEBT [op/OFFICE_PHONE_NUMBER] [dl/DEADLINE] [int/INTEREST] [t/TAG]&#8230;&#8203;</code><br>
-e.g. <code>add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd pc/123466 d/123 dl/11-03-2017 t/friend t/colleague</code></p>
-</li>
-<li>
-<p><strong>Clear</strong> : <code>clear</code></p>
-</li>
-<li>
-<p><strong>Borrow</strong> : <code>borrow [INDEX] AMOUNT</code><br>
-e.g. <code>borrow 1 500.50</code></p>
-</li>
-<li>
-<p><strong>Pay back</strong> : <code>payback [INDEX] AMOUNT</code><br>
-e.g. <code>payback 1 500.50</code></p>
-</li>
-<li>
-<p><strong>Repaid</strong> : <code>repaid [INDEX]</code><br>
-e.g. <code>payback 1</code></p>
-</li>
-<li>
-<p><strong>Delete</strong> : <code>delete [INDEX]</code><br>
-e.g. <code>delete 3</code></p>
-</li>
-<li>
-<p><strong>Ban</strong> : <code>ban [INDEX]</code><br>
-e.g. <code>ban 3</code></p>
-</li>
-<li>
-<p><strong>Unban</strong> : <code>unban [INDEX]</code><br>
-e.g. <code>unban 3</code></p>
-</li>
-<li>
-<p><strong>Edit</strong> : <code>edit [INDEX] [n/NAME] [hp/HANDPHONE_NUMBER] [home/HOME_PHONE_NUMBER] [op/OFFICE_PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [pc/POSTAL_CODE] [d/DEBT] [td/TOTAL DEBT] [dl/DEADLINE] [int/INTEREST] [t/TAG]&#8230;&#8203;</code><br>
-e.g. <code>edit 2 n/James Lee e/jameslee@example.com</code></p>
-</li>
-<li>
-<p><strong>Find</strong> : <code>find KEYWORD [MORE_KEYWORDS]</code><br>
-e.g. <code>find James Jake</code></p>
-</li>
-<li>
-<p><strong>List</strong> : <code>list</code></p>
-</li>
-<li>
-<p><strong>Blacklist</strong> : <code>blacklist</code></p>
-</li>
-<li>
-<p><strong>Whitelist</strong> : <code>whitelist</code></p>
-</li>
-<li>
-<p><strong>Overduelist</strong> : <code>overduelist</code></p>
-</li>
-<li>
-<p><strong>Help</strong> : <code>help</code></p>
-</li>
-<li>
-<p><strong>Select</strong> : <code>select [INDEX]</code><br>
-e.g.<code>select 2</code></p>
-</li>
-<li>
-<p><strong>History</strong> : <code>history</code></p>
-</li>
-<li>
-<p><strong>Nearby</strong> : <code>nearby INDEX</code><br>
-e.g. <code>nearby 2</code></p>
-</li>
-<li>
-<p><strong>Sort</strong> : <code>sort [ORDERING]</code><br>
-e.g. <code>sort debt</code></p>
-</li>
-<li>
-<p><strong>Add Picture</strong>  : <code>addpic [INDEX]</code><br>
-e.g. <code>addpic 2</code></p>
-</li>
-<li>
-<p><strong>Delete Picture</strong>  : <code>delpic [INDEX]</code><br>
-e.g. <code>delpic 2</code></p>
-</li>
-<li>
-<p><strong>Setpath</strong> : <code>setpath [PATH]</code><br>
-e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br>
-e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic</code><br>
-e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br>
-e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic</code><br></p>
-</li>
-<li>
-<p><strong>Filter</strong> : <code>filter TAG1 TAG2 &#8230;&#8203;</code><br>
-e.g <code>filter friendly cooperative</code></p>
-</li>
-<li>
-<p><strong>Undo</strong> : <code>undo</code></p>
-</li>
-<li>
-<p><strong>Redo</strong> : <code>redo</code></p>
-</li>
-<li>
-<p><strong>Theme</strong> : <code>theme</code></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="current-features"><a class="link" href="#current-features">Current features</a></h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><code>Add</code> a person (since v1.0)</p>
-</li>
-<li>
-<p><code>Delete</code> a person (since v1.0)</p>
-</li>
-<li>
-<p>Have a help screen with detailed instructions (since v1.0)</p>
-</li>
-<li>
-<p>Add tags to contacts (since v1.0)</p>
-</li>
-<li>
-<p><code>Edit</code> contacts (since v1.0)</p>
-</li>
-<li>
-<p><code>Find</code> contacts by name (since v1.0)</p>
-</li>
-<li>
-<p>Automatic backup storage (since v1.0)</p>
-</li>
-<li>
-<p><code>Debt</code> field (since v1.0)</p>
-</li>
-<li>
-<p>Prevent duplicate contacts (since v1.0)</p>
-</li>
-<li>
-<p><code>Login</code> command (since v1.1)</p>
-</li>
-<li>
-<p>Password masking (since v1.1)</p>
-</li>
-<li>
-<p><code>Postal code</code> field (since v1.1)</p>
-</li>
-<li>
-<p><code>Deadline</code> field (since v1.1)</p>
-</li>
-<li>
-<p><code>Date borrowed</code> field (since v1.1)</p>
-</li>
-<li>
-<p><code>Blacklist</code> (since v1.1)</p>
-</li>
-<li>
-<p>Full info panel (since v1.1)</p>
-</li>
-<li>
-<p><code>Ban</code> and <code>Unban</code> a person (since v1.1)</p>
-</li>
-<li>
-<p><code>Nearby</code> command (since v1.2)</p>
-</li>
-<li>
-<p><code>Borrow</code> command (since v1.2)</p>
-</li>
-<li>
-<p>Display nearby contacts (since v1.2)</p>
-</li>
-<li>
-<p><code>Interest</code> field (since v1.2)</p>
-</li>
-<li>
-<p><code>Sort</code> by various fields (since v1.3)</p>
-</li>
-<li>
-<p><code>Payback</code> command (since v1.3)</p>
-</li>
-<li>
-<p><code>Repaid</code> command (since v1.3)</p>
-</li>
-<li>
-<p><code>Whitelist</code> command (since v1.3)</p>
-</li>
-<li>
-<p><code>Logout</code> command (since v1.3)</p>
-</li>
-<li>
-<p>Person&#8217;s debts are automatically incremented according to the interest rate of their loan (since v1.3)</p>
-</li>
-<li>
-<p>Filter contacts by tags (since v1.4)</p>
-</li>
-<li>
-<p>Replace <code>Phone</code> field with <code>Handphone</code>, <code>Home phone</code> and <code>Office phone</code> (since v1.4)</p>
-</li>
-<li>
-<p>List of people who have overdue debts. (since v1.4)</p>
-</li>
-<li>
-<p>A progress bar to indicate how much of the person&#8217;s debt has been paid off. (since v1.4)</p>
-</li>
-<li>
-<p>Profile pictures of clients shown next to their details. (since v1.5)</p>
-</li>
-<li>
-<p>Different appearance themes (since v1.5)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="features-to-be-included-by-code-v2-0-code"><a class="link" href="#features-to-be-included-by-code-v2-0-code">Features to be included by <code>V2.0</code></a></h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Export a person&#8217;s contact in another format.</p>
-</li>
-<li>
-<p><code>Help</code> command that displays screenshots of positive examples.</p>
-</li>
-<li>
-<p>View the last login time.</p>
-</li>
-<li>
-<p>Impose different periods of ban on a specified person in the blacklist</p>
-</li>
-<li>
-<p>2FA authentication for login and every other important action.</p>
-</li>
-<li>
-<p>Validity checks on client&#8217;s personal information.</p>
-</li>
-<li>
-<p>Send an email notification to the user when the user&#8217;s account is logged in from an unknown device.</p>
-</li>
-<li>
-<p>An automated journey scheduler.</p>
-</li>
-<li>
-<p>'Add log' button that generates specific date and time.</p>
-</li>
-<li>
-<p>A file uploading feature.</p>
-</li>
-<li>
-<p>Random generation of a contact from the cleared list.</p>
-</li>
-<li>
-<p>Allow the creation a custom fields.</p>
-</li>
-<li>
-<p>Have unique tag colors for each tag and synchronise tag colors in the info panel with the ones in the person card.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><mark>End of Extract</mark></p>
-</div>
-<hr>
-<div class="sect3">
-<h4 id="justification"><a class="link" href="#justification">Justification</a></h4>
-<div class="paragraph">
-<p>A debt collector will have the job to record down the collections for the day from each debtor. If a debtor has paid off his/her total debt, there should be an easy way for the debt collector to update`debt`, <code>totalDebt</code>, <code>dateRepaid</code> and <code>isWhitelisted</code> fields of the debtor. That is the purpose of the <code>Repaid</code> command.</p>
-</div>
-<div class="paragraph">
-<p>This is very similar to the <code>Payback</code> command, however, <code>Repaid</code> command excels in automating three different tasks so that life is indeed simpler for debt collectors to key in information in the system.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="enhancement-added-add-remove-profile-picture"><a class="link" href="#enhancement-added-add-remove-profile-picture">Enhancement Added: Add/Remove Profile Picture</a></h3>
-<div class="sect3">
-<h4 id="external-behavior-3"><a class="link" href="#external-behavior-3">External behavior</a></h4>
-<hr>
-<div class="paragraph">
-<p><mark>Start of Extract [from: User Guide]</mark></p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="adding-a-profile-picture-to-a-person-code-addpic-code-2"><a class="link" href="#adding-a-profile-picture-to-a-person-code-addpic-code-2">Adding a profile picture to a person : <code>addpic</code></a></h3>
-<div class="paragraph">
-<p>Adds a user specified profile picture to the specified person.<br></p>
-</div>
-<div class="paragraph">
-<p>A path to the pictures folder must first be set using the <code>setpath</code> command<br>
-The picture of the debtor should already be present in this folder and should be named after the debtor himself.<br></p>
-</div>
-<div class="paragraph">
-<p>Examples:<br></p>
-</div>
-<div class="paragraph">
-<p>Roy Balakrishnan&#8217;s picture should be named as <code>RoyBalakrishnan</code> and the extension of the file should be <code>.jpg</code><br></p>
-</div>
-<div class="paragraph">
-<p>Full file name: <code>RoyBalakrishnan.jpg</code><br></p>
-</div>
-<div class="paragraph">
-<p>Herbert He&#8217;s picture should be named as <code>HerbertHe</code> and the extension of the file should be <code>.jpg</code><br></p>
-</div>
-<div class="paragraph">
-<p>Full file name: <code>HerbertHe.jpg</code><br></p>
-</div>
-<div class="paragraph">
-<p>Format to add picture to the selected person : 'addpic [INDEX]'</p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Adds a profile picture to the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the command acts on the currently selected person.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>setpath C:\Users\acer\Desktop\SE1\profilepic</code><br>
-<code>addpic 2</code><br>
-Adds a picture to the 2nd person in masterlist.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>setpath C:\Users\acer\Desktop\SE2\profilepic</code><br>
-<code>addpic 1</code><br>
-Adds a profile picture to the 1st person from the results of the <code>find</code> command.</p>
-</li>
-<li>
-<p><code>select 3</code><br>
-<code>setpath C:\Users\acer\Desktop\SE7\profilepic</code><br>
-<code>addpic</code><br>
-Adds a profile picture to the 3rd person from the masterlist in the address book.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="deleting-the-profile-picture-of-a-person-code-delpic-code-2"><a class="link" href="#deleting-the-profile-picture-of-a-person-code-delpic-code-2">Deleting the profile picture of a person : <code>delpic</code></a></h3>
-<div class="paragraph">
-<p>Removes the profile picture of the specified person.<br>
-Format: 'delpic [INDEX]'</p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Removes the profile picture of the person at the specified <code>INDEX</code>.</p>
-</li>
-<li>
-<p>The index refers to the index number shown in the most recent listing.</p>
-</li>
-<li>
-<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
-</li>
-<li>
-<p>If no index is specified, the command acts on currently selected person.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>list</code><br>
-<code>delpic 2</code><br>
-Deletes the picture of the 2nd person in masterlist.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>delpic 1</code><br>
-Deletes the profile picture of the 1st person from the results of the <code>find</code> command.</p>
-</li>
-<li>
-<p><code>select 3</code><br>
-<code>delpic</code><br>
-Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
-</li>
-</ul>
-</div>
 <div class="paragraph">
 <p><mark>End of Extract</mark></p>
 </div>
@@ -1382,6 +491,149 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 <p>A debt collector might need to conduct house visits to collect debts from people. Thus, having commands that allow the user to add/remove pictures for each individual debtors helps him/her quickly identify a specific debtor during official house visits.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="implementation-3"><a class="link" href="#implementation-3">Implementation</a></h4>
+<hr>
+<div class="paragraph">
+<p><mark>Start of Extract [from: Developer Guide]</mark></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setpath-addpic-delpic-command-mechanism"><a class="link" href="#setpath-addpic-delpic-command-mechanism">Setpath/Addpic/Delpic command mechanism</a></h3>
+<div class="paragraph">
+<p><code>Setpath</code>, <code>Addpic</code> and <code>Delpic</code> commands facilitate updating a debtor&#8217;s display picture. <code>Setpath</code> command sets the <code>path</code> to a folder that contains <code>JPG</code> format images of the debtors. This folder resides in the user&#8217;s workspace.</p>
+</div>
+<div class="paragraph">
+<p>The images in the folder must initially be named after the debtors themselves. For example, a debtor named Alex Yeoh should have an image titled <code>AlexYeoh.jpg</code> in this folder.</p>
+</div>
+<div class="paragraph">
+<p><code>Setpath</code> command modifies the destined <code>path</code> in the <code>ProfilePicturesFolder</code> <code>class</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult executeUndoableCommand() <span class="directive">throws</span> CommandException {
+    ProfilePicturesFolder.setPath(reformatPath(path));
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Addpic</code> command takes in an index as the input and uses <code>Logic</code> interface to execute a two-step process to update the person&#8217;s display picture status. <code>LogicManager</code> calls <code>Model</code> interface to first search for the image in the path directory set by the <code>SetPath</code> command. This is done by first establishing the name of the image, and then searching for it in the required folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> addProfilePicture(ReadOnlyPerson person) <span class="directive">throws</span> ProfilePictureNotFoundException {
+        <span class="predefined-type">String</span> imageName = person.getName().toString().replaceAll(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">s+</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">File</span> imageFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(ProfilePicturesFolder.getPath() + imageName + JPG_EXTENSION);
+
+        <span class="keyword">if</span> (imageFile.exists()) {
+            addressBook.addProfilePic(person);
+            indicateAddressBookChanged();
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="keyword">new</span> ProfilePictureNotFoundException();
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ModelManager</code> checks if the image exists in the path directory. If it does, it will then set the boolean value of the person&#8217;s <code>hasDisplayPicture</code> variable to true.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson addProfilePic(ReadOnlyPerson person) {
+        <span class="type">int</span> index;
+        index = persons.getIndexOf(person);
+
+        Person newUpdatedPerson = <span class="keyword">new</span> Person(person);
+        newUpdatedPerson.setHasDisplayPicture(<span class="predefined-constant">true</span>);
+        <span class="keyword">try</span> {
+            updatePerson(person, newUpdatedPerson);
+        } <span class="keyword">catch</span> (DuplicatePersonException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (PersonNotFoundException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>PersonCard</code> corresponding to the person is selected, <code>hasDisplayPicture</code> boolean value is obtained. If the value is <code>true</code>, the image will be retrieved from the previously set <code>path</code>. If it does not exist, a default image will be displayed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> DebtorProfilePicture(ReadOnlyPerson person) {
+        <span class="local-variable">super</span>(FXML);
+        <span class="predefined-type">String</span> imageName = person.getName().toString().replaceAll(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">s+</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">String</span> imagePath = DEFAULT_PROFILEPIC_PATH;
+        <span class="predefined-type">Image</span> image = <span class="keyword">new</span> <span class="predefined-type">Image</span>(getClass().getResource(imagePath).toExternalForm());
+
+        <span class="keyword">if</span> (person.hasDisplayPicture()) {
+
+            imagePath = ProfilePicturesFolder.getPath() + imageName + JPG_EXTENSION;
+            <span class="predefined-type">File</span> imageFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(imagePath);
+
+            <span class="keyword">if</span> (!imageFile.exists()) {
+                person.setHasDisplayPicture(<span class="predefined-constant">false</span>);
+                raise(<span class="keyword">new</span> MissingDisplayPictureEvent(person));
+            } <span class="keyword">else</span> {
+                <span class="keyword">try</span> {
+                    image = <span class="keyword">new</span> <span class="predefined-type">Image</span>(imageFile.toURI().toURL().toExternalForm());
+                } <span class="keyword">catch</span> (<span class="exception">MalformedURLException</span> e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        profilePic.setImage(image);
+        profilePic.setFitWidth(<span class="integer">450</span>);
+        profilePic.setFitHeight(<span class="integer">450</span>);
+        profilePicPlaceHolder.setTopAnchor(<span class="local-variable">this</span>.getImageView(), <span class="float">20.0</span>);
+        profilePicPlaceHolder.setRightAnchor(<span class="local-variable">this</span>.getImageView(), <span class="float">50.0</span>);
+        registerAsAnEventHandler(<span class="local-variable">this</span>);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Delpic</code> command, similarly, resets the person&#8217;s <code>hasDisplayPicture</code> boolean value to false.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson removeProfilePic(ReadOnlyPerson person) {
+        <span class="type">int</span> index;
+        index = persons.getIndexOf(person);
+
+        Person newUpdatedPerson = <span class="keyword">new</span> Person(person);
+        newUpdatedPerson.setHasDisplayPicture(<span class="predefined-constant">false</span>);
+        <span class="keyword">try</span> {
+            updatePerson(person, newUpdatedPerson);
+        } <span class="keyword">catch</span> (DuplicatePersonException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (PersonNotFoundException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Storage of profile pictures in Codii<br>
+<strong>Alternative 1 (current choice):</strong> Images are not stored in Codii as they are read from the path directory provided by the user<br>
+<strong>Pros:</strong> Straightforward and simpler to implement.<br>
+<strong>Cons:</strong> Application cannot be easily transferred from one workstation to another.<br>
+<strong>Alternative 2:</strong> Store images in Codii similar to how XML files are stored<br>
+<strong>Pros:</strong> Far less hassle in transferring application content to another workstation.<br>
+<strong>Cons:</strong> The result of both implementations are very similar. However, this implementation is harder to execute.<br></p>
+</div>
+<div class="paragraph">
+<p><mark>End of Extract</mark></p>
+</div>
+<hr>
 </div>
 <div class="sect2">
 <h3 id="other-contributions"><a class="link" href="#other-contributions">Other contributions</a></h3>
@@ -1409,7 +661,7 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 13:09:08 +00:00
+Last updated 2017-11-13 13:21:38 +00:00
 </div>
 </div>
 </body>

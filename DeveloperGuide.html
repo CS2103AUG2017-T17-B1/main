@@ -57,8 +57,10 @@
 <li><a href="#optional-command-indexes">4.10. Optional command indexes</a></li>
 <li><a href="#interest-calculator-mechanism">4.11. Interest Calculator Mechanism</a></li>
 <li><a href="#theme-changing-mechanism">4.12. Theme Changing Mechanism</a></li>
-<li><a href="#logging">4.13. Logging</a></li>
-<li><a href="#configuration">4.14. Configuration</a></li>
+<li><a href="#repaid-command-mechanism">4.13. Repaid command mechanism</a></li>
+<li><a href="#setpath-addpic-delpic-command-mechanism">4.14. Setpath/Addpic/Delpic command mechanism</a></li>
+<li><a href="#logging">4.15. Logging</a></li>
+<li><a href="#configuration">4.16. Configuration</a></li>
 </ul>
 </li>
 <li><a href="#documentation">5. Documentation</a>
@@ -1035,10 +1037,14 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult execute() {
-        model.changeListTo(COMMAND_WORD);
-        model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
-        <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<span class="directive">public</span> CommandResult execute() {
+    requireNonNull(model);
+    model.deselectPerson();
+    model.changeListTo(COMMAND_WORD);
+    model.updateFilteredBlacklistedPersonList(PREDICATE_SHOW_ALL_BLACKLISTED_PERSONS);
+    <span class="predefined-type">String</span> currentList = ListObserver.getCurrentListName();
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(currentList + MESSAGE_SUCCESS);
 }</code></pre>
 </div>
 </div>
@@ -1046,38 +1052,35 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 <p>Specifically for <code>blacklist</code> command, it calls the <code>getFiltererdBlacklistedPersons()</code> method residing in the <code>Logic</code> interface. <code>LogicManager</code> subsequently calls <code>Model</code> interface. <code>Model</code> uses <code>ModelManager</code> class to handle the command and thereafter calls <code>ReadOnlyAddressBook</code> interface to handle the request. <code>ReadOnlyAddressBook</code> uses <code>AddressBook</code> class to handle this request.</p>
 </div>
 <div class="paragraph">
-<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>ReadOnlyPerson#getIsBlacklisted()</code> method, as shown below:</p>
+<p>In the <code>AddressBook</code> class, there is only one <code>persons</code> variable that stores all <code>ReadOnlyPerson</code> class objects. The blacklisted persons are obtained by running a check on all debtors residing in this variable. The check is executed using the <code>asObservableBlacklist()</code> method, as shown below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> UniquePersonList getBlacklistedPersons() {
-    UniquePersonList blacklistedPersons = <span class="keyword">new</span> UniquePersonList();
-    <span class="keyword">for</span> (Person person : persons.getInternalList()) {
-        <span class="keyword">if</span> (person.getIsBlacklisted()) {
-            <span class="keyword">try</span> {
-                blacklistedPersons.add(person);
-            } <span class="keyword">catch</span> (DuplicatePersonException e) {
-                <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>;
-            }
-        }
-    }
-    <span class="keyword">return</span> blacklistedPersons;
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ObservableList&lt;ReadOnlyPerson&gt; asObservableBlacklist() {
+    <span class="keyword">return</span> FXCollections.unmodifiableObservableList(mappedList.stream()
+            .filter(person -&gt; person.isBlacklisted()).collect(toCollection(FXCollections::observableArrayList)));
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Although this way of implementation seems inefficient, it supports robust synchronisation among the various other lists. For example, if a person is deleted from the masterlist, he will also be deleted from the blacklist. Likewise for various other commands that changes the <code>ReadOnlyPerson</code> object. Thus, it is efficient in this aspect. Moreover, this implementation sets the groundwork for future implementations of various other lists.</p>
 </div>
+<div class="paragraph">
+<p>One other important aspect to this implementation is that commands now have exclusive control over the list. This means that commands will only work on the persons in the current displayed list. For example, <code>find</code> command will only search and find persons in the current displayed list. It will not try to search in the masterlist, where all the contacts are stored. <code>sort</code> command will only sort the persons in the current displayed list. If the current displayed list is the blacklist, the output of the <code>sort</code> command will just be a list of sorted blacklisted persons.</p>
+</div>
+<div class="paragraph">
+<p>However, if a <code>Person</code> is modified by a command, the modification will be reflected across all other lists. For example, if a person exists in both the blacklist and the overdue list, modifications done by an <code>edit</code> command in the blacklist will also update the overdue list. These changes can be observed when the user switches to the overdue list using the <code>overduelist</code> command.</p>
+</div>
 <div class="sect3">
 <h4 id="design-considerations-5"><a class="link" href="#design-considerations-5">4.5.1. Design Considerations:</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command)<br>
-<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list<br>
-<strong>Pros:</strong> Easy to implement.<br>
-<strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
-<strong>Alternative 2:</strong> Restrict other command usages in certain lists<br>
-<strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
-<strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
+<p><strong>Aspect:</strong> Syncing of lists<br>
+<strong>Alternative 1 (current choice):</strong> Use manual syncing methods to ensure lists are in sync<br>
+<strong>Pros:</strong> Easy to extend for future implementations.<br>
+<strong>Cons:</strong> Methods used for syncing are less intuitive and difficult to comprehend.<br>
+<strong>Alternative 2:</strong> Create new <code>persons</code> variable for each list in <code>Addressbook</code> class<br>
+<strong>Pros:</strong> Implementation is easier to comprehend.<br>
+<strong>Cons:</strong> Waste of memory compared to current implementation which only has 1 <code>persons</code> variable in <code>Addressbook</code> class.</p>
 </div>
 </div>
 </div>
@@ -1582,7 +1585,237 @@ to cycle through the themes<br>
 </div>
 </div>
 <div class="sect2">
-<h3 id="logging"><a class="link" href="#logging">4.13. Logging</a></h3>
+<h3 id="repaid-command-mechanism"><a class="link" href="#repaid-command-mechanism">4.13. Repaid command mechanism</a></h3>
+<div class="paragraph">
+<p>The <code>repaid</code> command allow users to indicate that the specified debtor has completely repaid all of his/her debt. The <code>RepaidCommand</code> extends <code>UndoableCommand</code> so that it can be undone and redone if necessary.</p>
+</div>
+<div class="paragraph">
+<p>The command executes using the index of the person the user wishes to update. However, indicating the index is optional if the person is the current selected person in the person list panel, as the index is internally provided by the selected person card.</p>
+</div>
+<div class="paragraph">
+<p>The <code>RepaidCommand</code> is executed in <code>LogicManager</code>. It checks if the person selected has already repaid all his/her debt. If the person has done so, the command will then throw an <code>Exception</code> indicating that he/she has already repaid his/her debt.</p>
+</div>
+<div class="paragraph">
+<p>If the person has not completely repaid his/her debt, <code>LogicManager</code> will then call the <code>Model</code> interface to execute a three-step process on that person, using a single method. <code>ModelManager</code> will firstly reset the person&#8217;s debt to zero.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson resetPersonDebt(ReadOnlyPerson p) <span class="directive">throws</span> PersonNotFoundException {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person existingPerson = <span class="keyword">new</span> Person(p);
+    <span class="keyword">try</span> {
+        existingPerson.setDebt(<span class="keyword">new</span> Debt(Debt.DEBT_ZER0_VALUE));
+    } <span class="keyword">catch</span> (IllegalValueException e) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">The target value cannot be of illegal value</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    persons.remove(p);
+
+    <span class="keyword">try</span> {
+        persons.add(index, existingPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException dpe) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">There should be no duplicate when resetting the debt of a person</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Secondly, it will set the <code>dateRepaid</code> field of the person to the date the command was called.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson setDateRepaid(ReadOnlyPerson p) <span class="directive">throws</span> PersonNotFoundException {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person existingPerson = <span class="keyword">new</span> Person(p);
+    existingPerson.setDateRepaid(<span class="keyword">new</span> DateRepaid(formatDate(<span class="keyword">new</span> <span class="predefined-type">Date</span>())));
+
+    persons.remove(p);
+
+    <span class="keyword">try</span> {
+        persons.add(index, existingPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException dpe) {
+        <span class="keyword">assert</span> <span class="predefined-constant">false</span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">There should be no duplicate when resetting the date repaid field of a person</span><span class="delimiter">&quot;</span></span>;
+    }
+
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the person will be added into a list called <code>Whitelist</code>, given that he was not initially blacklisted.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson addWhitelistedPerson(ReadOnlyPerson p) {
+    <span class="type">int</span> index;
+    index = persons.getIndexOf(p);
+
+    Person newWhitelistedPerson = <span class="keyword">new</span> Person(p);
+    newWhitelistedPerson.setIsWhitelisted(<span class="predefined-constant">true</span>);
+    <span class="keyword">try</span> {
+        updatePerson(p, newWhitelistedPerson);
+    } <span class="keyword">catch</span> (DuplicatePersonException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+    } <span class="keyword">catch</span> (PersonNotFoundException e) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+    }
+    <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ModelManager</code> will then return the updated <code>ReadOnlyPerson</code> <code>Object</code> back to <code>LogicManager</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Three-step process in one <code>Command</code><br>
+<strong>Alternative 1 (current choice):</strong> The three-step process happens in a single method<br>
+<strong>Pros:</strong> Faster and simpler to implement the method.<br>
+<strong>Cons:</strong> Some methods will fail to update the person as intended. If the person is blacklisted, he/she will not be added into the whitelist.<br>
+<strong>Alternative 2:</strong> Include three separate methods in <code>Model</code> interface to execute the three-step process<br>
+<strong>Pros:</strong> Easy to observe the methods that will fail.<br>
+<strong>Cons:</strong> Methods in <code>Model</code> interface will seem to have less abstraction than intended.<br></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setpath-addpic-delpic-command-mechanism"><a class="link" href="#setpath-addpic-delpic-command-mechanism">4.14. Setpath/Addpic/Delpic command mechanism</a></h3>
+<div class="paragraph">
+<p><code>Setpath</code>, <code>Addpic</code> and <code>Delpic</code> commands facilitate updating a debtor&#8217;s display picture. <code>Setpath</code> command sets the <code>path</code> to a folder that contains <code>JPG</code> format images of the debtors. This folder resides in the user&#8217;s workspace.</p>
+</div>
+<div class="paragraph">
+<p>The images in the folder must initially be named after the debtors themselves. For example, a debtor named Alex Yeoh should have an image titled <code>AlexYeoh.jpg</code> in this folder.</p>
+</div>
+<div class="paragraph">
+<p><code>Setpath</code> command modifies the destined <code>path</code> in the <code>ProfilePicturesFolder</code> <code>class</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> CommandResult executeUndoableCommand() <span class="directive">throws</span> CommandException {
+    ProfilePicturesFolder.setPath(reformatPath(path));
+    <span class="keyword">return</span> <span class="keyword">new</span> CommandResult(MESSAGE_SUCCESS);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Addpic</code> command takes in an index as the input and uses <code>Logic</code> interface to execute a two-step process to update the person&#8217;s display picture status. <code>LogicManager</code> calls <code>Model</code> interface to first search for the image in the path directory set by the <code>SetPath</code> command. This is done by first establishing the name of the image, and then searching for it in the required folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">boolean</span> addProfilePicture(ReadOnlyPerson person) <span class="directive">throws</span> ProfilePictureNotFoundException {
+        <span class="predefined-type">String</span> imageName = person.getName().toString().replaceAll(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">s+</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">File</span> imageFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(ProfilePicturesFolder.getPath() + imageName + JPG_EXTENSION);
+
+        <span class="keyword">if</span> (imageFile.exists()) {
+            addressBook.addProfilePic(person);
+            indicateAddressBookChanged();
+            <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="keyword">new</span> ProfilePictureNotFoundException();
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ModelManager</code> checks if the image exists in the path directory. If it does, it will then set the boolean value of the person&#8217;s <code>hasDisplayPicture</code> variable to true.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson addProfilePic(ReadOnlyPerson person) {
+        <span class="type">int</span> index;
+        index = persons.getIndexOf(person);
+
+        Person newUpdatedPerson = <span class="keyword">new</span> Person(person);
+        newUpdatedPerson.setHasDisplayPicture(<span class="predefined-constant">true</span>);
+        <span class="keyword">try</span> {
+            updatePerson(person, newUpdatedPerson);
+        } <span class="keyword">catch</span> (DuplicatePersonException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (PersonNotFoundException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>PersonCard</code> corresponding to the person is selected, <code>hasDisplayPicture</code> boolean value is obtained. If the value is <code>true</code>, the image will be retrieved from the previously set <code>path</code>. If it does not exist, a default image will be displayed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> DebtorProfilePicture(ReadOnlyPerson person) {
+        <span class="local-variable">super</span>(FXML);
+        <span class="predefined-type">String</span> imageName = person.getName().toString().replaceAll(<span class="string"><span class="delimiter">&quot;</span><span class="char">\\</span><span class="content">s+</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        <span class="predefined-type">String</span> imagePath = DEFAULT_PROFILEPIC_PATH;
+        <span class="predefined-type">Image</span> image = <span class="keyword">new</span> <span class="predefined-type">Image</span>(getClass().getResource(imagePath).toExternalForm());
+
+        <span class="keyword">if</span> (person.hasDisplayPicture()) {
+
+            imagePath = ProfilePicturesFolder.getPath() + imageName + JPG_EXTENSION;
+            <span class="predefined-type">File</span> imageFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(imagePath);
+
+            <span class="keyword">if</span> (!imageFile.exists()) {
+                person.setHasDisplayPicture(<span class="predefined-constant">false</span>);
+                raise(<span class="keyword">new</span> MissingDisplayPictureEvent(person));
+            } <span class="keyword">else</span> {
+                <span class="keyword">try</span> {
+                    image = <span class="keyword">new</span> <span class="predefined-type">Image</span>(imageFile.toURI().toURL().toExternalForm());
+                } <span class="keyword">catch</span> (<span class="exception">MalformedURLException</span> e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        profilePic.setImage(image);
+        profilePic.setFitWidth(<span class="integer">450</span>);
+        profilePic.setFitHeight(<span class="integer">450</span>);
+        profilePicPlaceHolder.setTopAnchor(<span class="local-variable">this</span>.getImageView(), <span class="float">20.0</span>);
+        profilePicPlaceHolder.setRightAnchor(<span class="local-variable">this</span>.getImageView(), <span class="float">50.0</span>);
+        registerAsAnEventHandler(<span class="local-variable">this</span>);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Delpic</code> command, similarly, resets the person&#8217;s <code>hasDisplayPicture</code> boolean value to false.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> ReadOnlyPerson removeProfilePic(ReadOnlyPerson person) {
+        <span class="type">int</span> index;
+        index = persons.getIndexOf(person);
+
+        Person newUpdatedPerson = <span class="keyword">new</span> Person(person);
+        newUpdatedPerson.setHasDisplayPicture(<span class="predefined-constant">false</span>);
+        <span class="keyword">try</span> {
+            updatePerson(person, newUpdatedPerson);
+        } <span class="keyword">catch</span> (DuplicatePersonException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">The target person cannot be a duplicate</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (PersonNotFoundException e) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">AssertionError</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">This is not possible as prior checks have been done</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="keyword">return</span> persons.getReadOnlyPerson(index);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Aspect:</strong> Storage of profile pictures in Codii<br>
+<strong>Alternative 1 (current choice):</strong> Images are not stored in Codii as they are read from the path directory provided by the user<br>
+<strong>Pros:</strong> Straightforward and simpler to implement.<br>
+<strong>Cons:</strong> Application cannot be easily transferred from one workstation to another.<br>
+<strong>Alternative 2:</strong> Store images in Codii similar to how XML files are stored<br>
+<strong>Pros:</strong> Far less hassle in transferring application content to another workstation.<br>
+<strong>Cons:</strong> The result of both implementations are very similar. However, this implementation is harder to execute.<br></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logging"><a class="link" href="#logging">4.15. Logging</a></h3>
 <div class="paragraph">
 <p>We are using <code>java.util.logging</code> package for logging. The <code>LogsCenter</code> class is used to manage the logging levels and logging destinations.</p>
 </div>
@@ -1620,7 +1853,7 @@ to cycle through the themes<br>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="link" href="#configuration">4.14. Configuration</a></h3>
+<h3 id="configuration"><a class="link" href="#configuration">4.16. Configuration</a></h3>
 <div class="paragraph">
 <p>Certain properties of the application can be controlled (e.g App name, logging level) through the configuration file (default: <code>config.json</code>).</p>
 </div>
@@ -3268,7 +3501,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 13:09:08 +00:00
+Last updated 2017-11-13 13:21:38 +00:00
 </div>
 </div>
 </body>
