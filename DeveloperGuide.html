@@ -912,9 +912,9 @@ Outcome: prefix <code>" "</code> will be mapped to <code>1 500</code> in <code>a
 <h4 id="design-considerations-3"><a class="link" href="#design-considerations-3">4.3.1. Design Considerations</a></h4>
 <div class="paragraph">
 <p><strong>Aspect:</strong> When to create the backup<br>
-<strong>Alternative 1 (current choice):</strong> on startup of the application<br>
+<strong>Alternative 1 (current choice):</strong> Create it on application start up<br>
 <strong>Pros:</strong> Guarantees that a backup is made only of a working version of the address book that the user can easily revert to, should he/she mess up the main copy while using the application.<br>
-<strong>Cons:</strong> If the user tends to make many changes within one session, none of the changes are saved in the backup.<br>
+<strong>Cons:</strong> Not suitable for users who tend to make many changes within one session, as too many changes will not be backed up.<br>
 <strong>Alternative 2:</strong> Implement a command to create backup<br>
 <strong>Pros:</strong> The backup is only created when the user desires to.<br>
 <strong>Cons:</strong> This makes the implementation pointless altogether as it is meant as a safety net for clumsy users. This alternative would only benefit the careful users, who do not require it as much in the first place.<br>
@@ -3268,7 +3268,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 13:02:06 +00:00
+Last updated 2017-11-13 13:11:15 +00:00
 </div>
 </div>
 </body>
