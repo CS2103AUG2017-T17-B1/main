@@ -650,10 +650,85 @@ The <code>redo</code> command fails as there are no <code>undo</code> commands e
 </div>
 </div>
 <div class="sect2">
+<h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
+<div class="paragraph">
+<p>Sets the folder location to access and import debtors' profile pictures.<br>
+Paths should be absolute paths and not relative ones. Also, paths should point to the folder rather than the picture itself.<br></p>
+</div>
+<div class="paragraph">
+<p>It is recommended to create a folder and fill it up with the necessary profile pictures for the application. If there is a need to add a new picture, it should be added into this specific folder.<br></p>
+</div>
+<div class="paragraph">
+<p>The folder should only contain pictures with the <code>.jpg</code> extension. Moreover, the pictures should be named after the debtors in the application&#8217;s database.<br></p>
+</div>
+<div class="paragraph">
+<p>For example, for the debtor Alex Yeoh, the name of her picture should be <code>AlexYeoh.jpg</code><br>
+As for the debtor Bernice Yu, the name of her picture should be <code>BerniceYu.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>If it is necessary to change the location of the folder, the <code>setpath</code> command should be used again to indicate this change in location of the profile pictures folder.<br></p>
+</div>
+<div class="paragraph">
+<p>Format: <code>setpath [PATH]</code></p>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br></p>
+</li>
+<li>
+<p><code>setpath C:/Users/acer/Desktop/SE/profilepic</code><br></p>
+</li>
+<li>
+<p><code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br></p>
+</li>
+<li>
+<p><code>setpath C:\Users\acer\Desktop\SE\profilepic</code><br></p>
+</li>
+<li>
+<p><code>setpath out/production/resources/images/</code><br></p>
+</li>
+<li>
+<p><code>setpath out/production/resources/images</code><br></p>
+</li>
+<li>
+<p><code>setpath out\production\resources\images\</code><br></p>
+</li>
+<li>
+<p><code>setpath out\production\resources\images</code><br></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
 <h3 id="adding-a-profile-picture-to-a-person-code-addpic-code"><a class="link" href="#adding-a-profile-picture-to-a-person-code-addpic-code">Adding a profile picture to a person : <code>addpic</code></a></h3>
 <div class="paragraph">
-<p>Adds a user specified profile picture to the specified person.<br>
-Format: 'addpic [INDEX]'</p>
+<p>Adds a user specified profile picture to the specified person.<br></p>
+</div>
+<div class="paragraph">
+<p>A path to the pictures folder must first be set using the <code>setpath</code> command<br>
+The picture of the debtor should already be present in this folder and should be named after the debtor himself.<br></p>
+</div>
+<div class="paragraph">
+<p>Examples:<br></p>
+</div>
+<div class="paragraph">
+<p>Roy Balakrishnan&#8217;s picture should be named as <code>RoyBalakrishnan</code> and the extension of the file should be <code>.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Full file name: <code>RoyBalakrishnan.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Herbert He&#8217;s picture should be named as <code>HerbertHe</code> and the extension of the file should be <code>.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Full file name: <code>HerbertHe.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Format to add picture to the selected person : 'addpic [INDEX]'</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -682,17 +757,20 @@ Format: 'addpic [INDEX]'</p>
 <ul>
 <li>
 <p><code>list</code><br>
+<code>setpath C:\Users\acer\Desktop\SE1\profilepic</code><br>
 <code>addpic 2</code><br>
 Adds a picture to the 2nd person in masterlist.</p>
 </li>
 <li>
 <p><code>find Betsy</code><br>
+<code>setpath C:\Users\acer\Desktop\SE2\profilepic</code><br>
 <code>addpic 1</code><br>
 Adds a profile picture to the 1st person from the results of the <code>find</code> command.</p>
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>addpic</code>
+<code>setpath C:\Users\acer\Desktop\SE7\profilepic</code><br>
+<code>addpic</code><br>
 Adds a profile picture to the 3rd person from the masterlist in the address book.</p>
 </li>
 </ul>
@@ -743,32 +821,6 @@ Deletes the profile picture of the 1st person from the results of the <code>find
 <p><code>select 3</code><br>
 <code>delpic</code>
 Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="setting-the-path-to-local-profile-pictures-folder-code-setpath-code"><a class="link" href="#setting-the-path-to-local-profile-pictures-folder-code-setpath-code">Setting the path to local profile pictures folder : <code>setpath</code></a></h3>
-<div class="paragraph">
-<p>Sets the folder location to access and import debtors profile pictures.<br>
-Format: <code>setpath</code></p>
-</div>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br></p>
-</li>
-<li>
-<p><code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br></p>
-</li>
-<li>
-<p><code>setpath out/production/resources/images/</code><br></p>
-</li>
-<li>
-<p><code>setpath out\production\resources\images\</code><br></p>
 </li>
 </ul>
 </div>
@@ -1013,9 +1065,11 @@ e.g. <code>addpic 2</code></p>
 e.g. <code>delpic 2</code></p>
 </li>
 <li>
-<p><strong>Setpath</strong> : <code>setpath</code>
-e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic/</code>
-e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic\</code></p>
+<p><strong>Setpath</strong> : <code>setpath [PATH]</code><br>
+e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic/</code><br>
+e.g. <code>setpath C:/Users/acer/Desktop/SE/profilepic</code><br>
+e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic\</code><br>
+e.g. <code>setpath C:\Users\acer\Desktop\SE\profilepic</code><br></p>
 </li>
 <li>
 <p><strong>Filter</strong> : <code>filter TAG1 TAG2 &#8230;&#8203;</code><br>
@@ -1127,16 +1181,13 @@ e.g <code>filter friendly cooperative</code></p>
 <p>Replace <code>Phone</code> field with <code>Handphone</code>, <code>Home phone</code> and <code>Office phone</code> (since v1.4)</p>
 </li>
 <li>
-<p>Profile pictures of clients shown next to their details. (since v1.4)</p>
-</li>
-<li>
 <p>List of people who have overdue debts. (since v1.4)</p>
 </li>
 <li>
 <p>A progress bar to indicate how much of the person&#8217;s debt has been paid off. (since v1.4)</p>
 </li>
 <li>
-<p>Specifically import and save profile pictures to existing database of the application. (since v1.5)</p>
+<p>Profile pictures of clients shown next to their details. (since v1.5)</p>
 </li>
 <li>
 <p>Different appearance themes (since v1.5)</p>
@@ -1214,8 +1265,29 @@ e.g <code>filter friendly cooperative</code></p>
 <div class="sect2">
 <h3 id="adding-a-profile-picture-to-a-person-code-addpic-code-2"><a class="link" href="#adding-a-profile-picture-to-a-person-code-addpic-code-2">Adding a profile picture to a person : <code>addpic</code></a></h3>
 <div class="paragraph">
-<p>Adds a user specified profile picture to the specified person.<br>
-Format: 'addpic [INDEX]'</p>
+<p>Adds a user specified profile picture to the specified person.<br></p>
+</div>
+<div class="paragraph">
+<p>A path to the pictures folder must first be set using the <code>setpath</code> command<br>
+The picture of the debtor should already be present in this folder and should be named after the debtor himself.<br></p>
+</div>
+<div class="paragraph">
+<p>Examples:<br></p>
+</div>
+<div class="paragraph">
+<p>Roy Balakrishnan&#8217;s picture should be named as <code>RoyBalakrishnan</code> and the extension of the file should be <code>.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Full file name: <code>RoyBalakrishnan.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Herbert He&#8217;s picture should be named as <code>HerbertHe</code> and the extension of the file should be <code>.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Full file name: <code>HerbertHe.jpg</code><br></p>
+</div>
+<div class="paragraph">
+<p>Format to add picture to the selected person : 'addpic [INDEX]'</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -1244,17 +1316,20 @@ Format: 'addpic [INDEX]'</p>
 <ul>
 <li>
 <p><code>list</code><br>
+<code>setpath C:\Users\acer\Desktop\SE1\profilepic</code><br>
 <code>addpic 2</code><br>
 Adds a picture to the 2nd person in masterlist.</p>
 </li>
 <li>
 <p><code>find Betsy</code><br>
+<code>setpath C:\Users\acer\Desktop\SE2\profilepic</code><br>
 <code>addpic 1</code><br>
 Adds a profile picture to the 1st person from the results of the <code>find</code> command.</p>
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>addpic</code>
+<code>setpath C:\Users\acer\Desktop\SE7\profilepic</code><br>
+<code>addpic</code><br>
 Adds a profile picture to the 3rd person from the masterlist in the address book.</p>
 </li>
 </ul>
@@ -1345,7 +1420,7 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 04:19:09 +00:00
+Last updated 2017-11-13 04:29:45 +00:00
 </div>
 </div>
 </body>
