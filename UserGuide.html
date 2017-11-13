@@ -237,7 +237,8 @@ Format: <code>login USERNAME PASSWORD</code></p>
 It is advisable to use the GUI login instead of the CLI login.<br>
 The current implementation for password masking in the CLI login is less sophisticated than the GUI login.
 This can lead to unexpected or incorrect behaviors such as inconsistent masking of password or being unable to log in when username and password are entered correctly.<br>
-The CLI login is option is available for convenience only.
+To reduce unexpected behaviors, users are advised to add or delete characters from the end of the command only.<br>
+<strong>The CLI login option is available for convenience only given that we want the user to be able to accomplish tasks faster using CLI than a GUI.</strong>
 </td>
 </tr>
 </table>
@@ -280,6 +281,9 @@ Format: <code>login</code></p>
 <p>1) Type <code>login</code> and press <kbd>Enter</kbd> in the command box. You should see the same welcome page as shown in Figure 1.3.<br>
 2) Enter username and password in the respective fields.<br>
 3) Press <kbd>Enter</kbd> or click the <code>Log in</code> button.<br></p>
+</div>
+<div class="paragraph">
+<p>To return to the command box, click the <code>Back to command box</code> button.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -374,7 +378,7 @@ Format: <code>whitelist</code></p>
 <div class="sect2">
 <h3 id="listing-all-persons-with-overdue-debt-code-overduelist-code"><a class="link" href="#listing-all-persons-with-overdue-debt-code-overduelist-code">4.9. Listing all persons with overdue debt: <code>overduelist</code></a></h3>
 <div class="paragraph">
-<p>shows a list of all persons with overdue debt in the address book.<br>
+<p>Shows a list of all persons with overdue debt in the address book.<br>
 Format: <code>overduelist</code></p>
 </div>
 </div>
@@ -389,7 +393,7 @@ Format: <code>edit [INDEX] [n/NAME] [hp/HANDPHONE_NUMBER] [home/HOME_PHONE_NUMBE
 <div class="ulist">
 <ul>
 <li>
-<p>Edits the person at the specified <code>INDEX</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>Edits the person at the specified <code>INDEX</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is edited instead.</p>
@@ -402,6 +406,9 @@ Format: <code>edit [INDEX] [n/NAME] [hp/HANDPHONE_NUMBER] [home/HOME_PHONE_NUMBE
 </li>
 <li>
 <p>The date of debt borrowed cannot be edited.</p>
+</li>
+<li>
+<p>The total debt cannot be set to zero.</p>
 </li>
 <li>
 <p>When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.</p>
@@ -483,7 +490,7 @@ Returns any person having names <code>Betsy</code>, <code>Tim</code>, or <code>J
 <div class="sect2">
 <h3 id="increasing-the-debt-of-a-debtor-code-borrow-code"><a class="link" href="#increasing-the-debt-of-a-debtor-code-borrow-code">4.12. Increasing the debt of a debtor: <code>borrow</code></a></h3>
 <div class="paragraph">
-<p>Increase the debt of a debtor by the amount entered.<br>
+<p>Increases the debt of a debtor by the amount entered.<br>
 Format: <code>borrow [INDEX] AMOUNT</code></p>
 </div>
 <div class="sidebarblock">
@@ -491,13 +498,16 @@ Format: <code>borrow [INDEX] AMOUNT</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Increases the debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>Increases the debt and total debt of the debtor at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
-<p>If no index is specified, the debt of the currently selected person is increased instead.</p>
+<p>If no index is specified, the debt of the currently selected person is updated instead.</p>
 </li>
 <li>
 <p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>500.50</code> which represents $500.50.</p>
+</li>
+<li>
+<p>This command also sets the date repaid to <code>NOT REPAID</code> if the person previously fully repaid his/her debts.</p>
 </li>
 </ul>
 </div>
@@ -528,7 +538,7 @@ Increases the debt of the 2nd person by $234.</p>
 <div class="sect2">
 <h3 id="decreasing-the-debt-of-a-person-code-payback-code"><a class="link" href="#decreasing-the-debt-of-a-person-code-payback-code">4.13. Decreasing the debt of a person: <code>payback</code></a></h3>
 <div class="paragraph">
-<p>Decrease the debt of a person by the amount entered.<br>
+<p>Decreases the debt of a person by the amount entered.<br>
 Format: <code>payback [INDEX] AMOUNT</code></p>
 </div>
 <div class="sidebarblock">
@@ -536,16 +546,19 @@ Format: <code>payback [INDEX] AMOUNT</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Decreases the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>Decreases the debt of the person at the specified <code>INDEX</code> by <code>AMOUNT</code>. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
-<p>If no index is specified, the debt of the currently selected person is decreased instead.</p>
+<p>If no index is specified, the debt of the currently selected person is updated instead.</p>
 </li>
 <li>
-<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600</code> which represents $600.</p>
+<p><code>AMOUNT</code> has to be in dollars and cents. For example: <code>600.15</code> which represents $600.15.</p>
 </li>
 <li>
-<p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code></p>
+<p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code>.</p>
+</li>
+<li>
+<p>If a person fully repays his/her debts, the date repaid will be set to the day that this command was entered. Also, the person will be listed in the whitelist if he/she is not blacklisted.</p>
 </li>
 </ul>
 </div>
@@ -584,7 +597,7 @@ Format: <code>repaid [INDEX]</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Resets the debt of the person at the specified <code>INDEX</code> to zero. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+<p>Resets the debt of the person at the specified <code>INDEX</code> to zero. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, …​)</p>
 </li>
 <li>
 <p>If no index is specified, the debt of the currently selected person is resetted instead.</p>
@@ -621,7 +634,7 @@ Format: <code>delete [INDEX]</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is deleted instead.</p>
@@ -671,7 +684,7 @@ Format: 'ban [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is banned instead.</p>
@@ -697,7 +710,7 @@ Adds the 1st person in the results of the <code>find</code> command to blacklist
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>ban</code>
+<code>ban</code><br>
 Adds the 3rd person in the address book to blacklist.</p>
 </li>
 </ul>
@@ -720,7 +733,7 @@ Format: 'unban [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is unbanned instead.</p>
@@ -746,7 +759,7 @@ Removes the 1st person in the results of the <code>find</code> command from blac
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>unban</code>
+<code>unban</code><br>
 Removes the 3rd person in the address book from blacklist.</p>
 </li>
 </ul>
@@ -769,7 +782,7 @@ Format: <code>select [INDEX]</code></p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the next person in the last person listing is selected instead.</p>
@@ -794,7 +807,7 @@ Selects the 2nd person in the address book.</p>
 <li>
 <p><code>find Betsy</code><br>
 <code>select 1</code><br>
-Selects the 1st person in the results of the <code>find</code> command.
+Selects the 1st person in the results of the <code>find</code> command.<br>
 <code>select</code><br>
 Selects the first person in the last person listing.</p>
 </li>
@@ -806,21 +819,6 @@ Selects the first person in the last person listing.</p>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
 Format: <code>nearby INDEX</code></p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you do not see a secondary person list panel labelled "All contacts in this area" at the bottom of the information
-of the currently selected contact, you might need to change your resolution settings to view it.<br>
-On Windows, go to Settings &#8594; Display &#8594; Set "Change the size of text, apps and other items" to 125%, then restart the
-app.
-</td>
-</tr>
-</table>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -836,7 +834,7 @@ app.
 <p>The index refers to the index number shown in the nearby contacts listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positice integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 </ul>
 </div>
@@ -849,10 +847,8 @@ app.
 <ul>
 <li>
 <p><code>list</code><br>
-<code>select 2</code><br></p>
-</li>
-<li>
-<p><code>nearby 1</code><br>
+<code>select 2</code><br>
+<code>nearby 1</code><br>
 Selects the 1st person in the same <code>cluster</code> as the previously selected person.</p>
 </li>
 </ul>
@@ -918,7 +914,7 @@ Sorts the contacts in the address book by their postal districts.</p>
 <div class="sect2">
 <h3 id="filter-contacts-by-tags-code-filter-code"><a class="link" href="#filter-contacts-by-tags-code-filter-code">4.22. Filter contacts by tags : <code>filter</code></a></h3>
 <div class="paragraph">
-<p>Filter contacts in the address book according to the tags specified.<br>
+<p>Filters contacts in the address book according to the tags specified.<br>
 Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
 </div>
 <div class="sidebarblock">
@@ -926,7 +922,7 @@ Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Contacts which contain at least one of the tags specified will be shown in the list.</p>
+<p>Contacts which contain <strong>at least one</strong> of the tags specified will be shown in the list.</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1124,7 +1120,7 @@ The picture of the debtor should already be present in this folder and should be
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on the currently selected person.</p>
@@ -1176,7 +1172,7 @@ Format: 'delpic [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on currently selected person.</p>
@@ -1202,7 +1198,7 @@ Deletes the profile picture of the 1st person from the results of the <code>find
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>delpic</code>
+<code>delpic</code><br>
 Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
 </li>
 </ul>
@@ -1317,7 +1313,7 @@ If address book data can be loaded successfully, backup address book data is sav
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
-<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder.<br></p>
+<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous address book.<br></p>
 </div>
 <div class="paragraph">
 <p><strong>Q</strong>: What is the difference between <code>repaid</code> command and <code>payback</code> command?<br>
@@ -1356,14 +1352,17 @@ e.g. <code>login userAcc_123 pa$$_Word!@#&amp;</code></p>
 </li>
 <li>
 <p><strong>Login using GUI</strong> : <code>login</code><br>
-e.g.</p>
+e.g. See Figure 1.3:</p>
 </li>
 </ul>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/loginView.png" alt="loginView" width="790">
+<img src="images/loginView.PNG" alt="loginView" width="790">
 </div>
+</div>
+<div class="paragraph">
+<p><em>Figure 1.3 : How the welcome screen looks like after <code>login</code> is entered in the command box</em></p>
 </div>
 <div class="ulist">
 <ul>
@@ -1585,31 +1584,31 @@ e.g <code>filter friendly cooperative</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>A feature to export a person&#8217;s contact in another format.</p>
+<p>Export a person&#8217;s contact in another format.</p>
 </li>
 <li>
 <p><code>Help</code> command that displays screenshots of positive examples.</p>
 </li>
 <li>
-<p>Able to view the last login time.</p>
+<p>View the last login time.</p>
 </li>
 <li>
-<p>Able to impose different periods of ban on a specified person in the blacklist</p>
+<p>Impose different periods of ban on a specified person in the blacklist</p>
 </li>
 <li>
-<p>Two FA authentication for login and every other important actions.</p>
+<p>2FA authentication for login and every other important action.</p>
 </li>
 <li>
 <p>Validity checks on client&#8217;s personal information.</p>
 </li>
 <li>
-<p>Email notifications when the user&#8217;s account in logged in from an unknown device.</p>
+<p>Send an email notification to the user when the user&#8217;s account is logged in from an unknown device.</p>
 </li>
 <li>
 <p>An automated journey scheduler.</p>
 </li>
 <li>
-<p>'Add-log' button that generates specific date and time.</p>
+<p>'Add log' button that generates specific date and time.</p>
 </li>
 <li>
 <p>A file uploading feature.</p>
@@ -1618,7 +1617,10 @@ e.g <code>filter friendly cooperative</code></p>
 <p>Random generation of a contact from the cleared list.</p>
 </li>
 <li>
-<p>Feature to create a custom field.</p>
+<p>Allow the creation a custom fields.</p>
+</li>
+<li>
+<p>Have unique tag colors for each tag and synchronise tag colors in the info panel with the ones in the person card.</p>
 </li>
 </ul>
 </div>
@@ -1627,7 +1629,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 10:02:05 +00:00
+Last updated 2017-11-13 11:22:44 +00:00
 </div>
 </div>
 </body>

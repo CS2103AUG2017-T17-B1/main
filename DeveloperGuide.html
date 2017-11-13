@@ -49,7 +49,7 @@
 <li><a href="#borrow-payback-command-mechanism">4.2. Borrow/payback command mechanism</a></li>
 <li><a href="#backup-storage-mechanism">4.3. Backup storage mechanism</a></li>
 <li><a href="#date-storing-mechanism">4.4. Date storing mechanism</a></li>
-<li><a href="#list-masterlist-blacklist-etc-mechanism">4.5. List (Masterlist, Blacklist etc) mechanism</a></li>
+<li><a href="#list-masterlist-blacklist-etc-mechanism">4.5. List (Masterlist, Blacklist, etc.) mechanism</a></li>
 <li><a href="#cluster-mechanism">4.6. Cluster mechanism</a></li>
 <li><a href="#filter-by-tags-mechanism">4.7. Filter by tags mechanism</a></li>
 <li><a href="#login-logout-mechanism">4.8. Login/logout mechanism</a></li>
@@ -504,7 +504,7 @@ Note how the event is propagated through the <code>EventsCenter</code> to the <c
 <p>The command execution can affect the <code>Model</code> (e.g. adding a person) and/or raise events.</p>
 </li>
 <li>
-<p>The result of the command execution is encapsulated as a <code>CommandResult</code> object which is passed back to the <code>Ui</code>.</p>
+<p>The result of the command execution is encapsulated as a <code>CommandResult</code> object which is passed back to the <code>UI</code>.</p>
 </li>
 </ol>
 </div>
@@ -790,20 +790,20 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 <hr>
 <div class="paragraph">
 <p><strong>Aspect:</strong> How undo &amp; redo executes<br>
-<strong>Alternative 1 (current choice):</strong> Saves the entire address book.<br>
+<strong>Alternative 1 (current choice):</strong> Saves the entire address book<br>
 <strong>Pros:</strong> Easy to implement.<br>
 <strong>Cons:</strong> May have performance issues in terms of memory usage.<br>
-<strong>Alternative 2:</strong> Individual command knows how to undo/redo by itself.<br>
+<strong>Alternative 2:</strong> Individual command knows how to undo/redo by itself<br>
 <strong>Pros:</strong> Will use less memory (e.g. for <code>delete</code>, just save the person being deleted).<br>
 <strong>Cons:</strong> We must ensure that the implementation of each individual command are correct.</p>
 </div>
 <hr>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Type of commands that can be undone/redone<br>
-<strong>Alternative 1 (current choice):</strong> Only include commands that modifies the address book (<code>add</code>, <code>clear</code>, <code>edit</code>).<br>
+<strong>Alternative 1 (current choice):</strong> Only include commands that modifies the address book (e.g. <code>add</code>, <code>clear</code>, <code>edit</code>)<br>
 <strong>Pros:</strong> We only revert changes that are hard to change back (the view can easily be re-modified as no data are lost).<br>
 <strong>Cons:</strong> User might think that undo also applies when the list is modified (undoing filtering for example), only to realize that it does not do that, after executing <code>undo</code>.<br>
-<strong>Alternative 2:</strong> Include all commands.<br>
+<strong>Alternative 2:</strong> Include all commands<br>
 <strong>Pros:</strong> Might be more intuitive for the user.<br>
 <strong>Cons:</strong> User have no way of skipping such commands if he or she just want to reset the state of the address book and not the view.<br>
 <strong>Additional Info:</strong> See our discussion  <a href="https://github.com/se-edu/addressbook-level4/issues/390#issuecomment-298936672">here</a>.</p>
@@ -823,16 +823,18 @@ If the <code>redoStack</code> is empty, then there are no other commands left to
 <div class="sect2">
 <h3 id="borrow-payback-command-mechanism"><a class="link" href="#borrow-payback-command-mechanism">4.2. Borrow/payback command mechanism</a></h3>
 <div class="paragraph">
-<p>The <code>borrow</code> command allows users to increase the debt of a person should he/she borrow more money. On the other hand, when a debtor repays a specified amount, the <code>payback</code> command is used to deduct that amount from his/her current debt. The <code>BorrowCommand</code> and <code>PaybackCommand</code> classes, which handle the updating of the <code>Debt</code> field in a <code>Person</code> object, extends <code>UndoableCommand</code> so that these commands can be undone or redone if necessary.</p>
+<p>The <code>borrow</code> command allows users to increase the debt of a person should he/she borrow more money. On the other hand, when a debtor repays a specified amount, the <code>payback</code> command is used to deduct that amount from his/her current debt. The <code>BorrowCommand</code> and <code>PaybackCommand</code> classes, which handle the updating of the <code>Debt</code> fields in a <code>Person</code> object, extend <code>UndoableCommand</code> so that both of these commands can be undone or redone if necessary.</p>
 </div>
 <div class="paragraph">
 <p>These two commands require one compulsory argument which is the amount that is borrowed/paid back. Indicating the index (as listed in the person list panel on the left side of the application window) of the person who borrowed or paid back money is optional. If no index is specified, the command will be executed for the person that is currently selected in the person list.
-The arguments (index and amount borrowed/paid back) are separated by a whitespace instead of special prefixes (e.g. prefix <code>p/</code> used for phone number). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 4.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor. Input for the <code>payback</code> command is tokenized in the same manner.</p>
+The arguments (index and amount borrowed/paid back) are separated by a whitespace instead of special prefixes (e.g. prefix <code>n/</code> used for name). Hence, the <code>String#split</code> method is used to tokenize the input using a single whitespace as the delimiter. As seen in Figure 4.2.1, the tokenized inputs (index and amount borrowed) are then converted to their appropriate <code>Object</code> types and supplied as arguments to the <code>BorrowCommand</code> constructor. Input for the <code>payback</code> command is tokenized and supplied to the <code>PaybackCommand</code> constructor in the same manner.</p>
 </div>
 <div class="paragraph">
 <p>The <code>BorrowCommand</code> and <code>PaybackCommand</code> are executed in <code>LogicManager</code>.
-<code>BorrowCommand</code> updates the <code>debt</code> and <code>totalDebt</code> attributes in the target <code>Person</code> object in the <code>AddressBook</code> class (which is in the <code>Model</code> component). A new <code>Person</code> object is created with the updated <code>debt</code> and <code>totalDebt</code> amount. The target <code>Person</code> object is then replaced with this new <code>Person</code> object.
-<code>PaybackCommand</code> updates the target person&#8217;s debt in the same manner as the <code>BorrowCommand</code>. However, only the <code>debt</code> attribute is updated.</p>
+<code>BorrowCommand</code> updates the <code>debt</code>, <code>totalDebt</code> and <code>dateRepaid</code> attributes in the target <code>Person</code> object through the <code>ModelManager#addDebtToPerson()</code> which calls <code>AddressBook#addDebtToPerson()</code>. A new <code>Person</code> object is then created with the updated <code>debt</code> and <code>totalDebt</code> amount. Also, the <code>dateRepaid</code> field is set to <code>NOT REPAID</code>.  The target <code>Person</code> object is then replaced with this new <code>Person</code> object.</p>
+</div>
+<div class="paragraph">
+<p><code>PaybackCommand</code> updates the target person&#8217;s debt in the same manner as the <code>BorrowCommand</code>. However, only the <code>debt</code> attribute is updated. If the person has fully repaid his/her debts, the <code>PaybackCommand</code> will set the date repaid to the day the <code>PaybackCommand</code> was executed. The person will also be listed in the whitelist.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -841,7 +843,7 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<code>DateBorrow</code> field in the new <code>Person</code> object needs to be updated to match the <code>DateBorrow</code> field in the target <code>Person</code> object. This is because the date when the <code>Person</code> object was created is set as the date for the <code>DateBorrow</code> field.
+For the <code>BorrowCommand</code>, the <code>DateBorrow</code> field in the new <code>Person</code> object needs to be updated to match the <code>DateBorrow</code> field in the target <code>Person</code> object. This is because the date of creation of the <code>Person</code> object is assigned to the <code>DateBorrow</code> field when a <code>Person</code> object is created.
 </td>
 </tr>
 </table>
@@ -855,7 +857,7 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 </div>
 </div>
 <div class="paragraph">
-<p><em>Figure 4.2.1 : Sequence diagram of how the <code>Borrow</code> command works</em></p>
+<p><em>Figure 4.2.1 : Sequence diagram of how the <code>borrow</code> command works</em></p>
 </div>
 <div class="paragraph">
 <p>The <code>payback</code> command works in a similar way to the <code>borrow</code> command.</p>
@@ -863,35 +865,30 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 <div class="sect3">
 <h4 id="design-considerations-2"><a class="link" href="#design-considerations-2">4.2.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code> and <code>PaybackCommandParser</code>+
-<strong>Alternative 1 (current choice):</strong> Tokenize arguments using <code>String#split</code> method<br>
-<strong>Pros:</strong> Easier to parse arguments using <code>String#split</code> method since there are no prefixes in the command input. It is also easier to validate the number of arguments entered by the user. This can be done through checking the length of the <code>String</code> array return by <code>String#split</code>.<br>
-<strong>Cons:</strong> User has to follow the format for entering the command strictly as an extra whitespace between the index and the amount borrowed would invoke a <code>ParseException</code>.<br>
-<strong>Alternative 2:</strong> Modify <code>ArgumentTokenizer#tokenize</code> method to tokenize arguments<br>
-<strong>Pros:</strong> Better modularity<br>
-<strong>Cons:</strong> Requires modifications of <code>ArgumentTokenizer#tokenize</code> method since supplying whitespace as a prefix to the current <code>ArgumentTokenizer#tokenize</code> method incorrectly tokenizes arguments.</p>
+<p><strong>Aspect:</strong> Implementation of <code>BorrowCommandParser</code> and <code>PaybackCommandParser</code><br>
+<strong>Alternative 1 (current choice):</strong> Tokenize arguments using <code>String#split()</code><br>
+<strong>Pros:</strong> Easier to parse arguments using <code>String#split</code> method since there are no prefixes in the command input. It is also easier to validate the number of arguments entered by the user. This can be done through checking the length of the <code>String</code> array returned by <code>String#split</code>.<br>
+<strong>Alternative 2:</strong> Modify <code>ArgumentTokenizer#tokenize()</code> to tokenize arguments<br>
+<strong>Pros:</strong> Better modularity.<br>
+<strong>Cons:</strong> Requires modifications to <code>ArgumentTokenizer#tokenize()</code> since supplying whitespace as a prefix to the current <code>ArgumentTokenizer#tokenize()</code> method incorrectly tokenizes arguments.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
 </div>
 <div class="paragraph">
-<p>Entered command: <code>borrow 1 500</code></p>
-</div>
-<div class="paragraph">
-<p>Prefixes supplied to <code>ArgumentTokenizer#tokenize</code> method: " "</p>
-</div>
-<div class="paragraph">
-<p>Outcome: prefix <code>" "</code> will be mapped to <code>1 500</code> in <code>argMultimap</code>. Index and amount borrowed are not separated.</p>
+<p>Entered command: <code>borrow 1 500</code><br>
+Prefix supplied to <code>ArgumentTokenizer#tokenize</code> method: <code>" "</code><br>
+Outcome: prefix <code>" "</code> will be mapped to <code>1 500</code> in <code>argMultimap</code>. Index and amount borrowed are not separated.<br></p>
 </div>
 <hr>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Updating <code>Debt</code> field<br>
-<strong>Alternative 1 (current choice):</strong> Create a new <code>Person</code> object, called <code>editedPerson</code>, by supplying the target <code>ReadOnlyPerson</code> object to constructor <code>Person::new</code>.<br>
-<strong>Pros:</strong> Straightforward and simple to implement<br>
-<strong>Cons:</strong> <code>Debt</code> class would need to have another constructor that takes in a <code>Double</code> parameter for easier implementation of <code>AddressBook#addDebtToPerson()</code> method.<br>
-<strong>Alternative 2:</strong> Reusing the <code>updatePerson()</code> method in <code>AddressBook.java</code><br>
-<strong>Pros:</strong> Do not have to code the method from scratch<br>
-<strong>Cons:</strong> A new <code>Person</code> object have to be created in order to edit the <code>Debt</code> field. Since the <code>updatePerson()</code> method only accepts <code>ReadOnlyPerson</code> objects as parameters, more code has to be written to convert the <code>Person</code> object to be a <code>ReadOnlyPerson</code> object.<br></p>
+<strong>Alternative 1 (current choice):</strong> Create a new <code>Person</code> object, called <code>editedPerson</code>, by supplying the target <code>ReadOnlyPerson</code> object to constructor <code>Person::new</code><br>
+<strong>Pros:</strong> Straightforward and simple to implement.<br>
+<strong>Cons:</strong> <code>Debt</code> class will need to have another constructor that takes in a <code>Double</code> parameter for simpler implementation of <code>AddressBook#addDebtToPerson()</code>.<br>
+<strong>Alternative 2:</strong> Reusing the <code>AddressBook#updatePerson()</code> method<br>
+<strong>Pros:</strong> Do not have to write the method from scratch.<br>
+<strong>Cons:</strong> A new <code>Person</code> object still has to be created in order to edit the <code>Debt</code> field. Since <code>Addressbook#updatePerson()</code> only accepts <code>ReadOnlyPerson</code> objects as parameters, more code has to be written to convert the <code>Person</code> object to be a <code>ReadOnlyPerson</code> object.<br></p>
 </div>
 </div>
 </div>
@@ -917,11 +914,11 @@ The arguments (index and amount borrowed/paid back) are separated by a whitespac
 <p><strong>Aspect:</strong> When to create the backup<br>
 <strong>Alternative 1 (current choice):</strong> on startup of the application<br>
 <strong>Pros:</strong> Guarantees that a backup is made only of a working version of the address book that the user can easily revert to, should he/she mess up the main copy while using the application.<br>
-<strong>Cons:</strong> If the user tends to make many changes within one session, none of the changes are saved in the backup.
-<strong>Alternative 2:</strong> Implement a command to create backup.<br>
+<strong>Cons:</strong> If the user tends to make many changes within one session, none of the changes are saved in the backup.<br>
+<strong>Alternative 2:</strong> Implement a command to create backup<br>
 <strong>Pros:</strong> The backup is only created when the user desires to.<br>
 <strong>Cons:</strong> This makes the implementation pointless altogether as it is meant as a safety net for clumsy users. This alternative would only benefit the careful users, who do not require it as much in the first place.<br>
-<strong>Alternative 3:</strong> Create a backup after a fixed number of commands that change the address book.<br>
+<strong>Alternative 3:</strong> Create a backup after a fixed number of commands that change the address book<br>
 <strong>Pros:</strong> This will create backups that are guaranteed to be recent.<br>
 <strong>Cons:</strong> It is difficult to determine the ideal number of commands to ensure that the backup is both recent enough, yet outdated enough for the user to want to restore state to should he/she mess up a command at some point.<br></p>
 </div>
@@ -990,10 +987,10 @@ This is because the above mentioned constructor was meant to make a copy of the 
 <h4 id="design-considerations-4"><a class="link" href="#design-considerations-4">4.4.1. Design Considerations</a></h4>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Implementation of <code>DateBorrow</code><br>
-<strong>Alternative 1(current choice):</strong> Create a <code>DateBorrow</code> class as such but modify the constructor to maintain consistency.<br>
+<strong>Alternative 1(current choice):</strong> Create a <code>DateBorrow</code> class as such but modify the constructor to maintain consistency<br>
 <strong>Pros:</strong> Blends well with existing coding style and how the commands work.<br>
 <strong>Cons:</strong> As of now there is no problems with the implementation.<br>
-<strong>Alternative 2:</strong> Have the user manually key in the date.<br>
+<strong>Alternative 2:</strong> Have the user manually key in the date<br>
 <strong>Pros:</strong> Implementation is very simple as the developer could just follow current coding style to create a new field.<br>
 <strong>Cons:</strong> Such an implementation would not be as user-friendly as the first alternative. Currently the amount of fields for the user to key in
 is rather high. Implementing alternative 2 would be more tedious on the user&#8217;s side.</p>
@@ -1001,7 +998,7 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 </div>
 </div>
 <div class="sect2">
-<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">4.5. List (Masterlist, Blacklist etc) mechanism</a></h3>
+<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">4.5. List (Masterlist, Blacklist, etc.) mechanism</a></h3>
 <div class="paragraph">
 <p>Having multiple lists is useful for debt collectors to view debtors of different categories. Currently, these different lists include masterlist and blacklist.</p>
 </div>
@@ -1020,7 +1017,7 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 <p><em>Figure 4.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 4.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
+<p>The following sequence diagram, Figure 4.5.2, shows further details of the interaction between <code>ModelManager</code> and <code>ReadOnlyAddressBook</code> to obtain the blacklist:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1074,11 +1071,11 @@ is rather high. Implementing alternative 2 would be more tedious on the user&#82
 <div class="sect3">
 <h4 id="design-considerations-5"><a class="link" href="#design-considerations-5">4.5.1. Design Considerations:</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command).<br>
-<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list.<br>
+<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command)<br>
+<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list<br>
 <strong>Pros:</strong> Easy to implement.<br>
 <strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
-<strong>Alternative 2:</strong> Restrict other command usages in certain lists.<br>
+<strong>Alternative 2:</strong> Restrict other command usages in certain lists<br>
 <strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
 <strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
 </div>
@@ -1151,16 +1148,16 @@ Part of the code from <code>ClusterUtil</code> for retrieving the <code>cluster<
 <div class="sect3">
 <h4 id="design-considerations-6"><a class="link" href="#design-considerations-6">4.6.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Grouping of contacts.<br>
-<strong>Alternative 1 (current choice):</strong> Create a field that contains the name and district number of the postal districts, based on postal code.<br>
+<p><strong>Aspect:</strong> Grouping of contacts<br>
+<strong>Alternative 1 (current choice):</strong> Create a field that contains the name and district number of the postal districts, based on postal code<br>
 <strong>Pros:</strong> Easy to implement and extend, requires minimal user input.<br>
 <strong>Cons:</strong> Requires developer to update <code>ClusterUtil</code> whenever a new postal district is drawn by the government, and
 requires users to reset their contacts' <code>cluster</code> via deletion and addition or via editing their <code>postal codes</code>.<br>
-<strong>Alternative 2:</strong> Import contacts' location and find their proximity from one another using Google Maps API.<br>
+<strong>Alternative 2:</strong> Import contacts' location and find their proximity from one another using Google Maps API<br>
 <strong>Pros:</strong> Higher precision of geographical location and proximity.<br>
 <strong>Cons:</strong> Tedious to implement proximity. Either takes up too much time in generating nearby contacts or too much space
  in storing them.<br>
-<strong>Alternative 3:</strong> Assign general location to each contact upon addition into the address book or via editing.<br>
+<strong>Alternative 3:</strong> Assign general location to each contact upon addition into the address book or via editing<br>
 <strong>Pros:</strong> Easy to implement.<br>
 <strong>Cons:</strong> Tedious for users. They also have to ensure that they do not make spelling mistakes.</p>
 </div>
@@ -1172,11 +1169,18 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 <p>The <code>filter</code> command allows the user to filter contacts by tags. Multiple tags can be entered. The command returns a list of contacts that match <strong>at least one</strong> of the tags that is specified by the user.</p>
 </div>
 <div class="paragraph">
-<p>A <code>PersonContainsTagPredicate</code> is created to check if a person contains the tags of interest. The code implementation below shows how the <code>PersonContainsTagPredicate</code> is implemented to sieve out the relevant contacts. The <code>anyMatch</code> method ensures that the filtered list contains persons who have at least one tag specified by the user.</p>
+<p>Since the filtered person list stored in the <code>ModelManager</code> class is of the type FilteredList&lt;&gt;, filtering of the list can be done easily using Java’s <code>FilteredList#setPredicate()</code> method.
+Hence, a <code>PersonContainsTagPredicate</code> is created to check if a <code>Person</code> object contains the tags of interest. The code snippet below shows how the <code>PersonContainsTagPredicate</code> is implemented to sieve out the relevant contacts. The <code>Stream#anyMatch()</code> method ensures that the filtered list contains persons who have at least one tag specified by the user.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Override</span>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/**
+ * Evaluates this predicate on the given {@code person}. This predicate tests if a person contains at least one tag
+ * from {@code tagKeywords}.
+ * @return {@code true} if the person matches the predicate,
+ * otherwise {@code false}
+ */</span>
+<span class="annotation">@Override</span>
 <span class="directive">public</span> <span class="type">boolean</span> test(ReadOnlyPerson person) {
     <span class="predefined-type">Set</span>&lt;Tag&gt; tagList = person.getTags();
     <span class="keyword">for</span> (Tag tag : tagList) {
@@ -1189,58 +1193,68 @@ requires users to reset their contacts' <code>cluster</code> via deletion and ad
 </div>
 </div>
 <div class="paragraph">
-<p>The list is filtered and updated through the <code>ListObserver#updateCurrentFilteredList</code> method in the <code>Logic</code> component so that it works across all lists (master list, blacklist, whitelist and overdue list). Since the person list is of a <code>FilteredList&lt;&gt;</code> type, filtering of the list can be handled by Java&#8217;s <code>FilteredList</code> class method called <code>setPredicate</code>.</p>
+<p>The list is filtered and updated through <code>ListObserver#updateCurrentFilteredList()</code> in the <code>seedu.addressbook.commons</code> package, instead of <code>ModelManager#updateFilteredPersonList()</code>, so that it works across all lists (masterlist, blacklist, whitelist and overdue list).</p>
 </div>
 <div class="sect3">
 <h4 id="design-considerations-7"><a class="link" href="#design-considerations-7">4.7.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Implementation of <code>PersonContainsTagPredicate</code> predicate<br>
+<p><strong>Aspect:</strong> Implementation of <code>PersonContainsTagPredicate</code><br>
 <strong>Alternative 1 (current choice):</strong> Predicate returns true if at least one tag matches the list of tags specified by the user<br>
-<strong>Pros:</strong> User will have more contacts to work with. The additional information may help the user make better decisions.<br>
+<strong>Pros:</strong> More contacts will be shown to the user. The additional information may be useful to the user.<br>
 <strong>Cons:</strong> The user may find some of the filtered contacts irrelevant.<br>
 <strong>Alternative 2:</strong> Predicate returns true only if the person contains the exact tags that are specified by the user<br>
 <strong>Pros:</strong> Shows the most relevant results if the user wants to search for an exact match.<br>
-<strong>Cons:</strong> If the user remembers one of the tags wrongly (but it is still a valid tag), there will be no contacts found.</p>
+<strong>Cons:</strong> If the contacts have multiple tags and the user remembers just one of the tags wrongly, the <code>filter</code> command will return zero results.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="login-logout-mechanism"><a class="link" href="#login-logout-mechanism">4.8. Login/logout mechanism</a></h3>
 <div class="paragraph">
-<p>After a user enters a valid <code>login</code> command, verification of the login information will take place in the <code>Model</code> component. The username and password are verified against the information stored in <code>preferences.json</code>.</p>
+<p>Although there are two versions for login, the Graphic User Interface(GUI) version and the Command Line Interface(CLI) version, they both use the same login mechanism (see Figure 4.8.1 below). The GUI login is recommended over the CLI login because it has better password masking capabilities.
+This is because the password field in the GUI login is implemented using JavaFX 8&#8217;s <code>PasswordField</code>. The CLI login exists, despite the inconsistent password masking, to allow the user to log into the app faster since using a one-shot command is faster than a multi-step command.
+The bugs in the CLI login could be resolved by removing password masking. However, this would have security implications because the password is not concealed.</p>
+</div>
+<div class="paragraph">
+<p>After a user logs in using either the CLI or GUI login, verification of the login information will take place in the <code>Model</code> component. The username and password are verified against the information stored in <code>preferences.json</code>.</p>
 </div>
 <div class="paragraph">
 <p>The password is stored as a SHA-512 hash to conceal the actual password. The salt that is used to generate the hashed password is also stored. Since the stored hash cannot be converted back to the original password, the password that is entered by the user needs to be hashed and verified against the stored hash. Thus, the same salt needs to be used to generate a hash to match with the stored hash. If a different salt is used, then the generated hash will be different from the stored hash even if the password provided is correct.</p>
 </div>
 <div class="paragraph">
-<p>After verifying that the username and password matches the information stored in <code>preferences.json</code>, an event is raised to notify the <code>UI</code> component of the user authentication results. If the user has successfully logged in, the <code>UI</code> component will display the person list, info panel and allow other commands to be executed from the command box.</p>
+<p>After verifying that the username and password matches the information stored in <code>preferences.json</code>, an event is raised to notify the <code>UI</code> component of the user authentication result. If the user has successfully logged in, the <code>UI</code> component will display the person list, info panel and allow other commands (such as <code>list</code>, <code>edit, `add</code>, etc.) to be executed from the command box.</p>
 </div>
 <div class="paragraph">
-<p>When a user enters the <code>logout</code> command, the <code>LogoutCommand</code> class in the <code>Logic</code> component will raise an even to notify the <code>UI</code> component to go back to the welcome page.</p>
+<p>The activity diagram below, Figure 4.8.1, shows the overall flow of the command execution for both GUI and CLI login:
+image::LoginActivityDiagram.PNG[width="800"]
+<em>Figure 4.8.1 : Activity diagram of how the <code>login</code> command works for both CLI and GUI version</em></p>
+</div>
+<div class="paragraph">
+<p>When a user enters the <code>logout</code> command, the <code>LogoutCommand</code> class in the <code>Logic</code> component will call the <code>ModelManager#logout()</code> method. Two events will be raised: <code>LoginAppRequestEvent</code> and <code>LogoutAppRequestEvent</code>. <code>LoginAppRequestEvent</code> is to set the <code>isLoggedIn</code> variable in <code>LoginCommand</code> to <code>false</code> and <code>LogoutAppRequestEvent</code> is to set the <code>isLoggedOut</code> variable in <code>LogoutCommand</code> to <code>true</code>. Both events need to be raised to notify the <code>UI</code> component to go back to the welcome page and restrict the commands that are allowed to be executed.</p>
 </div>
 <div class="sect3">
 <h4 id="design-considerations-8"><a class="link" href="#design-considerations-8">4.8.1. Design Considerations</a></h4>
 <div class="paragraph">
 <p><strong>Aspect:</strong> Implementation of password masking<br>
 <strong>Alternative 1(current choice):</strong> Use the unicode character 'BLACK CIRCLE' (●) for password masking<br>
-<strong>Pros:</strong> Allows other characters to be detected as password input<br>
-<strong>Cons:</strong> None<br>
+<strong>Pros:</strong> Other characters can be detected as password input, such as the asterisk character '*' which is commonly used for password masking.<br>
 <strong>Alternative 2:</strong> Use the asterisk character (*) for password masking<br>
-<strong>Pros:</strong> User may use the asterisk character when entering the password. The asterisk character will be ignored and will not show in the text field when it is entered. This is because the method that handles password masking ignores the character used to mask the password. Refer to the code below for more details:<br></p>
+<strong>Pros:</strong> User may use the asterisk character when entering the password. The asterisk character will be ignored and will not show in the text field when it is entered. This is because the method that handles password masking ignores the character used to mask the password. Refer to the code snippet below for the implementation:<br></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// starts masking password after the second whitespace and prevent the reading of the BLACK_CIRCLE after</span>
-<span class="comment">// replacing a character in the command box text field with a BLACK_CIRCLE</span>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">/*
+ * mask password after the second whitespace and prevent the reading of the BLACK_CIRCLE after replacing
+ * a character in the command box text field with a BLACK_CIRCLE
+ */</span>
 <span class="keyword">if</span> (numOfSpaces &gt;= <span class="integer">2</span> &amp;&amp; currentInput.charAt(currentInput.length() - <span class="integer">1</span>) != <span class="string"><span class="delimiter">'</span><span class="content"> </span><span class="delimiter">'</span></span>
         &amp;&amp; currentInput.charAt(currentInput.length() - <span class="integer">1</span>) != BLACK_CIRCLE) {
     maskPasswordInput(currentInput);
-
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Cons:</strong> Although '*' is an invalid password character, the user may still use it while entering the password. If the user types '*', the cursor will remain at its original position. The user will be under the impression that the command box is not registering what was typed.</p>
+<p><strong>Cons:</strong> Although '*' is an invalid password character, the user may still use it while entering the password. Hence, if the user types '*', the cursor will remain at its original position. The user will be under the impression that the command box is not registering what was typed.</p>
 </div>
 </div>
 </div>
@@ -1324,7 +1338,7 @@ specified, the contacts will be sorted by ascending lexicographical order by def
 <strong>Alternative 2:</strong> <code>Sort</code> by <code>debt</code> by default<br>
 <strong>Pros:</strong> Equally easy to implement.<br>
 <strong>Cons:</strong> Slightly less intuitive as sorting by <code>name</code> is the most prevalent way of sorting contacts.<br>
-<strong>Alternative 3:</strong> No default <code>sort</code>.<br>
+<strong>Alternative 3:</strong> No default <code>sort</code><br>
 <strong>Pros:</strong> Extremely easy to implement.<br>
 <strong>Cons:</strong> Not user-friendly.</p>
 </div>
@@ -1390,12 +1404,12 @@ the currently selected person to apply the command on if no index is provided.</
 <div class="sect3">
 <h4 id="design-considerations-10"><a class="link" href="#design-considerations-10">4.10.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Executing index-based commands without index.<br>
-<strong>Alternative 1 (current choice):</strong> These person to apply the commands on are determined in the constructors.<br>
+<p><strong>Aspect:</strong> Executing index-based commands without index<br>
+<strong>Alternative 1 (current choice):</strong> The person to apply the commands on are determined in the constructors<br>
 <strong>Pros:</strong> Allows for proper <code>redo</code>.<br>
 <strong>Cons:</strong> Hard to test as Command Exceptions are being thrown from the constructors.<br>
 <strong>Alternative 2:</strong> Calling a constructor of the <code>command</code> without an <code>Index</code> initialises its <code>targetIndex</code>
-to null, and the null index is handled as a special value during execution.<br>
+to null, and the null index is handled as a special value during execution<br>
 <strong>Pros:</strong> Easy to implement, easy to extend.<br>
 <strong>Cons:</strong> Although highly unlikely, it may be possible for a <code>command</code> to have an unintended null <code>targetIndex</code>, which
 will then cause it to behave as an indexless command instead of an error. May also cause problems with <code>redo</code>.</p>
@@ -1485,11 +1499,11 @@ handler than calls another method to update the <code>Person</code> 's debt by p
 <div class="sect3">
 <h4 id="design-considerations-11"><a class="link" href="#design-considerations-11">4.11.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> When to update / check a Person&#8217;s debt.<br>
-<strong>Alternative 1 (Current choice):</strong> Check through the <code>AddressBook</code> in the <code>Model</code> component every time the user logs in.<br>
+<p><strong>Aspect:</strong> When to update / check a Person&#8217;s debt<br>
+<strong>Alternative 1 (Current choice):</strong> Check through the <code>AddressBook</code> in the <code>Model</code> component every time the user logs in<br>
 <strong>Pros:</strong> Convenient and intuitive to implement for developer.<br>
 <strong>Cons:</strong> If user never logs out, the debt would not be accrued.<br>
-<strong>Alternative 2:</strong> Create a <code>Refresh</code> command that does the checking instead of relying on the <code>LoginAppRequestEvent</code>.<br>
+<strong>Alternative 2:</strong> Create a <code>Refresh</code> command that does the checking instead of relying on the <code>LoginAppRequestEvent</code><br>
 <strong>Pros:</strong> User can have the most up-to-date debt as long as he / she remembers to always enter the <code>Refresh</code> command.<br>
 <strong>Cons:</strong> Not convenient for user at all. It is also unlikely that the user would remain logged in for such a long duration.<br></p>
 </div>
@@ -1546,22 +1560,22 @@ handler than calls another method to update the <code>Person</code> 's debt by p
 <div class="sect3">
 <h4 id="design-considerations-12"><a class="link" href="#design-considerations-12">4.12.1. Design Considerations</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Condition for changing themes.<br>
-<strong>Alternative 1 (current choice):</strong> Use <code>String#endsWith()</code>.<br>
+<p><strong>Aspect:</strong> Condition for changing themes<br>
+<strong>Alternative 1 (current choice):</strong> Use <code>String#endsWith()</code><br>
 <strong>Pros:</strong> Foolproof, guaranteed to work if the theme exists.<br>
-<strong>Alternative 2:</strong> Use file paths.<br>
+<strong>Alternative 2:</strong> Use file paths<br>
 <strong>Pros:</strong> Likely to work most of the time if handled well.<br>
 <strong>Cons:</strong> When debugging, it was found that the path started in the <code>build</code> folder instead of the <code>src</code> folder. Using
 this method seemed to cause inconsistencies between running the app from an IDE and from the <code>.jar</code> file.</p>
 </div>
 <hr>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Switching of themes.<br>
-<strong>Alternative 1 (current choice):</strong> Simple toggle between two themes.<br>
+<p><strong>Aspect:</strong> Switching of themes<br>
+<strong>Alternative 1 (current choice):</strong> Simple toggle between two themes<br>
 <strong>Pros:</strong> Easy to implement.<br>
 <strong>Cons:</strong> Troublesome to extend.<br>
 <strong> Alternative 2:</strong> Use an <code>int</code> to keep track of the current theme, assign each theme to a number, and use <code>+</code> and <code>%</code>
-to cycle through the themes.<br>
+to cycle through the themes<br>
 <strong>Pros:</strong> Easy to extend.<br>
 <strong>Cons:</strong> Troublesome to implement considering that we intend to use only two themes.</p>
 </div>
@@ -2166,7 +2180,7 @@ Do take a look at the <a href="#ui-component">Design: UI Component</a> section b
 <p>Modify the constructor of <a href="https://github.com/CS2103AUG2017-T17-B1/main/src/main/java/seedu/address/ui/StatusBarFooter.java"><code>StatusBarFooter</code></a> to take in the number of persons when the application just started.</p>
 </li>
 <li>
-<p>Use <a href="https://github.com/CS2103AUG2017-T17-B1/main/src/main/java/seedu/address/ui/StatusBarFooter.java"><code>StatusBarFooter#handleAddressBookChangedEvent(AddressBookChangedEvent)</code></a> to update the number of persons whenever there are new changes to the addressbook.</p>
+<p>Use <a href="https://github.com/CS2103AUG2017-T17-B1/main/src/main/java/seedu/address/ui/StatusBarFooter.java"><code>StatusBarFooter#handleAddressBookChangedEvent(AddressBookChangedEvent)</code></a> to update the number of persons whenever there are new changes to the address book.</p>
 </li>
 <li>
 <p>See this <a href="https://github.com/se-edu/addressbook-level4/pull/596/files">PR</a> for the full solution.</p>
@@ -2718,7 +2732,7 @@ for <code>RemarkCommandParser</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>* *</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">security-concerned debt collector</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">have <a href="#2FA">two-FA</a> authentication for login and every other important action(exporting contacts)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">have <a href="#twoFA">2FA</a> authentication for login and every other important action(exporting contacts)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ensure that no one else is capable of accessing sensitive information</p></td>
 </tr>
 <tr>
@@ -2759,7 +2773,7 @@ for <code>RemarkCommandParser</code>.</p>
 <h2 id="use-cases"><a class="link" href="#use-cases">Appendix C: Use Cases</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>(For all use cases below, the <strong>System</strong> is the <code>AddressBook</code> and the <strong>Actor</strong> is the <code>user</code>, unless specified otherwise)</p>
+<p>(For all use cases below, the <strong>System</strong> is <code>Codii</code> and the <strong>Actor</strong> is the <code>user</code>, unless specified otherwise)</p>
 </div>
 <h3 id="use-case-delete-person" class="discrete">Use case: Delete person</h3>
 <div class="paragraph">
@@ -2771,13 +2785,13 @@ for <code>RemarkCommandParser</code>.</p>
 <p>User requests to list persons</p>
 </li>
 <li>
-<p>AddressBook shows a list of persons</p>
+<p>Codii shows a list of persons</p>
 </li>
 <li>
 <p>User requests to delete a specific person in the list</p>
 </li>
 <li>
-<p>AddressBook deletes the person</p>
+<p>Codii deletes the person</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2800,7 +2814,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>3a1. AddressBook shows an error message.</p>
+<p>3a1. Codii shows an error message.</p>
 <div class="paragraph">
 <p>Use case resumes at step 2.</p>
 </div>
@@ -2820,7 +2834,7 @@ for <code>RemarkCommandParser</code>.</p>
 <p>User requests to add a new tag to a person</p>
 </li>
 <li>
-<p>AddressBook adds the tag to the person</p>
+<p>Codii adds the tag to the person</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2834,10 +2848,10 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>User requests to sort AddressBook by name of persons</p>
+<p>User requests to sort person list by name of persons</p>
 </li>
 <li>
-<p>AddressBook shows a sorted list of persons</p>
+<p>Codii shows a sorted list of persons</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2850,36 +2864,36 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>2a. AddressBook is empty.</p>
+<p>2a. Codii is empty i.e. there are no contacts stored in Codii.</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
 </li>
 </ul>
 </div>
-<h3 id="use-case-add-a-person-to-favourite-list" class="discrete">Use case: Add a person to favourite list</h3>
+<h3 id="use-case-add-a-person-to-blacklist" class="discrete">Use case: Add a person to blacklist</h3>
 <div class="paragraph">
 <p><strong>MSS</strong></p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>User requests to list persons</p>
+<p>User requests to list all persons i.e. to show the masterlist</p>
 </li>
 <li>
-<p>AddressBook shows a list of persons</p>
+<p>Codii shows the masterlist</p>
 </li>
 <li>
-<p>User requests to favourite specific person in the list</p>
+<p>User requests to ban a specific person in the list</p>
 </li>
 <li>
-<p>AddressBook adds the person in the favourite list</p>
+<p>Codii adds the person into the blacklist</p>
 </li>
 <li>
-<p>User requests to list favourite contacts</p>
+<p>User requests to list blacklisted contacts</p>
 </li>
 <li>
-<p>AddressBook shows a list of favourite contacts</p>
+<p>Codii shows the blacklist</p>
 </li>
 </ol>
 </div>
@@ -2889,7 +2903,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>2a. The list is empty.</p>
+<p>2a. The masterlist is empty.</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2899,7 +2913,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>3a1. AddressBook shows an error message.</p>
+<p>3a1. Codii shows an error message.</p>
 <div class="paragraph">
 <p>Use case resumes at step 2.</p>
 </div>
@@ -2919,13 +2933,13 @@ for <code>RemarkCommandParser</code>.</p>
 <p>User requests to edit a person</p>
 </li>
 <li>
-<p>AddressBook displays the current information of the person</p>
+<p>Codii displays the current information of the person</p>
 </li>
 <li>
 <p>User edits the information in person</p>
 </li>
 <li>
-<p>AddressBook updates the information in person</p>
+<p>Codii updates the information in person</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2942,7 +2956,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>2a1. AddressBook shows an error message.</p>
+<p>2a1. Codii shows an error message.</p>
 <div class="paragraph">
 <p>Use case resumes at step 2.</p>
 </div>
@@ -2962,7 +2976,7 @@ for <code>RemarkCommandParser</code>.</p>
 <p>User requests to add a person in the list</p>
 </li>
 <li>
-<p>AddressBook adds the person</p>
+<p>Codii adds the person</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -2975,11 +2989,11 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>1a. The person already exists in the AddressBook.</p>
+<p>1a. The person already exists in the address book.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>1a1. AddressBook shows an error message.</p>
+<p>1a1. Codii shows an error message.</p>
 <div class="paragraph">
 <p>Use case resumes at step 1.</p>
 </div>
@@ -2988,11 +3002,11 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 </li>
 <li>
-<p>1b. The user enters the wrong format into AddressBook.</p>
+<p>1b. The user enters the command in a wrong format into the command box.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>1b1. AddressBook shows an error message.</p>
+<p>1b1. Codii shows an error message.</p>
 <div class="paragraph">
 <p>Use case resumes at step 1.</p>
 </div>
@@ -3009,10 +3023,10 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>User requests to find persons by name</p>
+<p>User requests to find person by name</p>
 </li>
 <li>
-<p>AddressBook shows a list of corresponding persons with matching case insensitive full words</p>
+<p>Codii shows a list of corresponding persons with any of the given keywords</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -3029,7 +3043,7 @@ for <code>RemarkCommandParser</code>.</p>
 <div class="ulist none">
 <ul class="none">
 <li>
-<p>1a1. AddressBook shows 0 persons found.</p>
+<p>1a1. Codii shows 0 persons found.</p>
 <div class="paragraph">
 <p>Use case ends.</p>
 </div>
@@ -3064,9 +3078,6 @@ for <code>RemarkCommandParser</code>.</p>
 <li>
 <p>The system should be usable by a novice who has never used an address book application before.</p>
 </li>
-<li>
-<p>Should log user out after 20 minutes of inactivity to protect privacy.</p>
-</li>
 </ol>
 </div>
 </div>
@@ -3088,7 +3099,7 @@ for <code>RemarkCommandParser</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Definition</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="two-FA"></a>2FA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="twoFA"></a>2FA</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An extra layer of security that is known as "multi factor authentication" that requires not only a password and username but also a token</p></td>
@@ -3257,7 +3268,7 @@ for <code>RemarkCommandParser</code>.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 10:02:05 +00:00
+Last updated 2017-11-13 11:22:44 +00:00
 </div>
 </div>
 </body>

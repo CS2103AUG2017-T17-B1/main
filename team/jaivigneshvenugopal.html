@@ -93,7 +93,7 @@ Format: <code>whitelist</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">List (Masterlist, Blacklist etc) mechanism</a></h3>
+<h3 id="list-masterlist-blacklist-etc-mechanism"><a class="link" href="#list-masterlist-blacklist-etc-mechanism">List (Masterlist, Blacklist, etc.) mechanism</a></h3>
 <div class="paragraph">
 <p>Having multiple lists is useful for debt collectors to view debtors of different categories. Currently, these different lists include masterlist and blacklist.</p>
 </div>
@@ -112,7 +112,7 @@ Format: <code>whitelist</code></p>
 <p><em>Figure 4.5.1 : Sequence diagram of how the <code>blacklist</code> command works</em></p>
 </div>
 <div class="paragraph">
-<p>The following sequence diagram, Figure 4.5.2, shows further details of the interaction between <code>ModelManager</code> and 'ReadOnlyAddressBook` to obtain the blacklist:</p>
+<p>The following sequence diagram, Figure 4.5.2, shows further details of the interaction between <code>ModelManager</code> and <code>ReadOnlyAddressBook</code> to obtain the blacklist:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -166,11 +166,11 @@ Format: <code>whitelist</code></p>
 <div class="sect3">
 <h4 id="design-considerations"><a class="link" href="#design-considerations">Design Considerations:</a></h4>
 <div class="paragraph">
-<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command).<br>
-<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list.<br>
+<p><strong>Aspect:</strong> Other commands still work in Blacklist mode(<code>Add</code>, <code>Delete</code> command)<br>
+<strong>Alternative 1 (current choice):</strong> Inform user in user guide to use only specific commands for that list<br>
 <strong>Pros:</strong> Easy to implement.<br>
 <strong>Cons:</strong> Performance issues as users are bound to make a mistake.<br>
-<strong>Alternative 2:</strong> Restrict other command usages in certain lists.<br>
+<strong>Alternative 2:</strong> Restrict other command usages in certain lists<br>
 <strong>Pros:</strong> Users will never make a mistake sending the wrong person to the wrong list.<br>
 <strong>Cons:</strong> Implementation is complicated and thus implementation has to revisited whenever new commands are introduced.</p>
 </div>
@@ -201,7 +201,7 @@ Format: <code>repaid [INDEX]</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Resets the debt of the person at the specified <code>INDEX</code> to zero. The index refers to the index number shown in the last person listing. The index must be a positive integer 1, 2, 3, …​</p>
+<p>Resets the debt of the person at the specified <code>INDEX</code> to zero. The index refers to the index number shown in the last person listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, …​)</p>
 </li>
 <li>
 <p>If no index is specified, the debt of the currently selected person is resetted instead.</p>
@@ -238,7 +238,7 @@ Format: <code>delete [INDEX]</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>Deletes the person at the specified <code>INDEX</code>. The index refers to the index number shown in the most recent listing. The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is deleted instead.</p>
@@ -288,7 +288,7 @@ Format: 'ban [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is banned instead.</p>
@@ -314,7 +314,7 @@ Adds the 1st person in the results of the <code>find</code> command to blacklist
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>ban</code>
+<code>ban</code><br>
 Adds the 3rd person in the address book to blacklist.</p>
 </li>
 </ul>
@@ -337,7 +337,7 @@ Format: 'unban [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the currently selected person is unbanned instead.</p>
@@ -363,7 +363,7 @@ Removes the 1st person in the results of the <code>find</code> command from blac
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>unban</code>
+<code>unban</code><br>
 Removes the 3rd person in the address book from blacklist.</p>
 </li>
 </ul>
@@ -386,7 +386,7 @@ Format: <code>select [INDEX]</code></p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the next person in the last person listing is selected instead.</p>
@@ -411,7 +411,7 @@ Selects the 2nd person in the address book.</p>
 <li>
 <p><code>find Betsy</code><br>
 <code>select 1</code><br>
-Selects the 1st person in the results of the <code>find</code> command.
+Selects the 1st person in the results of the <code>find</code> command.<br>
 <code>select</code><br>
 Selects the first person in the last person listing.</p>
 </li>
@@ -423,21 +423,6 @@ Selects the first person in the last person listing.</p>
 <div class="paragraph">
 <p>Selects the person identified by the index number used in the listing of nearby contacts of currently selected person,<br>
 Format: <code>nearby INDEX</code></p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you do not see a secondary person list panel labelled "All contacts in this area" at the bottom of the information
-of the currently selected contact, you might need to change your resolution settings to view it.<br>
-On Windows, go to Settings &#8594; Display &#8594; Set "Change the size of text, apps and other items" to 125%, then restart the
-app.
-</td>
-</tr>
-</table>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -453,7 +438,7 @@ app.
 <p>The index refers to the index number shown in the nearby contacts listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positice integer</strong> <code>1, 2, 3, &#8230;&#8203;</code></p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 </ul>
 </div>
@@ -466,10 +451,8 @@ app.
 <ul>
 <li>
 <p><code>list</code><br>
-<code>select 2</code><br></p>
-</li>
-<li>
-<p><code>nearby 1</code><br>
+<code>select 2</code><br>
+<code>nearby 1</code><br>
 Selects the 1st person in the same <code>cluster</code> as the previously selected person.</p>
 </li>
 </ul>
@@ -535,7 +518,7 @@ Sorts the contacts in the address book by their postal districts.</p>
 <div class="sect2">
 <h3 id="filter-contacts-by-tags-code-filter-code"><a class="link" href="#filter-contacts-by-tags-code-filter-code">Filter contacts by tags : <code>filter</code></a></h3>
 <div class="paragraph">
-<p>Filter contacts in the address book according to the tags specified.<br>
+<p>Filters contacts in the address book according to the tags specified.<br>
 Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
 </div>
 <div class="sidebarblock">
@@ -543,7 +526,7 @@ Format: <code>filter TAG1 TAG2 &#8230;&#8203;</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Contacts which contain at least one of the tags specified will be shown in the list.</p>
+<p>Contacts which contain <strong>at least one</strong> of the tags specified will be shown in the list.</p>
 <div class="ulist">
 <ul>
 <li>
@@ -741,7 +724,7 @@ The picture of the debtor should already be present in this folder and should be
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on the currently selected person.</p>
@@ -793,7 +776,7 @@ Format: 'delpic [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on currently selected person.</p>
@@ -819,7 +802,7 @@ Deletes the profile picture of the 1st person from the results of the <code>find
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>delpic</code>
+<code>delpic</code><br>
 Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
 </li>
 </ul>
@@ -934,7 +917,7 @@ If address book data can be loaded successfully, backup address book data is sav
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
-<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder.<br></p>
+<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous address book.<br></p>
 </div>
 <div class="paragraph">
 <p><strong>Q</strong>: What is the difference between <code>repaid</code> command and <code>payback</code> command?<br>
@@ -973,14 +956,17 @@ e.g. <code>login userAcc_123 pa$$_Word!@#&amp;</code></p>
 </li>
 <li>
 <p><strong>Login using GUI</strong> : <code>login</code><br>
-e.g.</p>
+e.g. See Figure 1.3:</p>
 </li>
 </ul>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../images/loginView.png" alt="loginView" width="790">
+<img src="../images/loginView.PNG" alt="loginView" width="790">
 </div>
+</div>
+<div class="paragraph">
+<p><em>Figure 1.3 : How the welcome screen looks like after <code>login</code> is entered in the command box</em></p>
 </div>
 <div class="ulist">
 <ul>
@@ -1202,31 +1188,31 @@ e.g <code>filter friendly cooperative</code></p>
 <div class="ulist">
 <ul>
 <li>
-<p>A feature to export a person&#8217;s contact in another format.</p>
+<p>Export a person&#8217;s contact in another format.</p>
 </li>
 <li>
 <p><code>Help</code> command that displays screenshots of positive examples.</p>
 </li>
 <li>
-<p>Able to view the last login time.</p>
+<p>View the last login time.</p>
 </li>
 <li>
-<p>Able to impose different periods of ban on a specified person in the blacklist</p>
+<p>Impose different periods of ban on a specified person in the blacklist</p>
 </li>
 <li>
-<p>Two FA authentication for login and every other important actions.</p>
+<p>2FA authentication for login and every other important action.</p>
 </li>
 <li>
 <p>Validity checks on client&#8217;s personal information.</p>
 </li>
 <li>
-<p>Email notifications when the user&#8217;s account in logged in from an unknown device.</p>
+<p>Send an email notification to the user when the user&#8217;s account is logged in from an unknown device.</p>
 </li>
 <li>
 <p>An automated journey scheduler.</p>
 </li>
 <li>
-<p>'Add-log' button that generates specific date and time.</p>
+<p>'Add log' button that generates specific date and time.</p>
 </li>
 <li>
 <p>A file uploading feature.</p>
@@ -1235,7 +1221,10 @@ e.g <code>filter friendly cooperative</code></p>
 <p>Random generation of a contact from the cleared list.</p>
 </li>
 <li>
-<p>Feature to create a custom field.</p>
+<p>Allow the creation a custom fields.</p>
+</li>
+<li>
+<p>Have unique tag colors for each tag and synchronise tag colors in the info panel with the ones in the person card.</p>
 </li>
 </ul>
 </div>
@@ -1300,7 +1289,7 @@ The picture of the debtor should already be present in this folder and should be
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on the currently selected person.</p>
@@ -1352,7 +1341,7 @@ Format: 'delpic [INDEX]'</p>
 <p>The index refers to the index number shown in the most recent listing.</p>
 </li>
 <li>
-<p>The index <strong>must be a positive integer</strong> 1, 2, 3, &#8230;&#8203;</p>
+<p>The index <strong>must be a positive integer</strong> (e.g. 1, 2, 3, &#8230;&#8203;)</p>
 </li>
 <li>
 <p>If no index is specified, the command acts on currently selected person.</p>
@@ -1378,7 +1367,7 @@ Deletes the profile picture of the 1st person from the results of the <code>find
 </li>
 <li>
 <p><code>select 3</code><br>
-<code>delpic</code>
+<code>delpic</code><br>
 Deletes the profile picture of the 3rd person from the masterlist in the address book.</p>
 </li>
 </ul>
@@ -1420,7 +1409,7 @@ Deletes the profile picture of the 3rd person from the masterlist in the address
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 10:02:05 +00:00
+Last updated 2017-11-13 11:22:44 +00:00
 </div>
 </div>
 </body>
