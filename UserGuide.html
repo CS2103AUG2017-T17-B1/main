@@ -588,7 +588,20 @@ Format: <code>payback [INDEX] AMOUNT</code></p>
 <p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code>.</p>
 </li>
 <li>
-<p>If a person fully repays his/her debts, the date repaid will be set to the day that this command was entered. Also, the person will be listed in the whitelist if he/she is not blacklisted.</p>
+<p>If a person fully repays his/her debts:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The person will be listed in the whitelist if he/she is not blacklisted.</p>
+</li>
+<li>
+<p>The person&#8217;s date repaid will be set to the day that this command was entered.</p>
+</li>
+<li>
+<p>If the person was in the overdue list, he/she would be removed.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -631,6 +644,9 @@ Format: <code>repaid [INDEX]</code></p>
 </li>
 <li>
 <p>If no index is specified, the debt of the currently selected person is resetted instead.</p>
+</li>
+<li>
+<p>The person will also be sent to the whitelist.</p>
 </li>
 </ul>
 </div>
@@ -908,7 +924,7 @@ Format: <code>history</code></p>
 <div class="sect2">
 <h3 id="sorting-all-contacts-code-sort-code"><a class="link" href="#sorting-all-contacts-code-sort-code">4.21. Sorting all contacts : <code>sort</code></a></h3>
 <div class="paragraph">
-<p>Sorts all the contacts in the address book in specified order. If no order is specified, the contacts are sorted in ascending lexographical order.<br>
+<p>Sorts all the contacts in the address book in specified order.<br>
 Format: <code>sort [ORDERING]</code></p>
 </div>
 <div class="sidebarblock">
@@ -919,7 +935,7 @@ Format: <code>sort [ORDERING]</code></p>
 <p>Valid orderings are: <code>name</code>, <code>cluster</code>, <code>deadline</code> and <code>debt</code>.</p>
 </li>
 <li>
-<p>If no ordering is specified, the address book will be sorted by name.</p>
+<p>If no ordering is specified, the address book will be sorted by name in lexicographical order.</p>
 </li>
 </ul>
 </div>
@@ -1702,7 +1718,7 @@ e.g <code>filter friendly cooperative</code></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 15:06:23 +00:00
+Last updated 2017-11-13 15:13:02 +00:00
 </div>
 </div>
 </body>

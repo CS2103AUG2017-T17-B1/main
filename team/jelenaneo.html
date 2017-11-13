@@ -298,7 +298,20 @@ Format: <code>payback [INDEX] AMOUNT</code></p>
 <p><code>AMOUNT</code> repaid cannot be more than the debt owed by the person at the specifiec <code>INDEX</code>.</p>
 </li>
 <li>
-<p>If a person fully repays his/her debts, the date repaid will be set to the day that this command was entered. Also, the person will be listed in the whitelist if he/she is not blacklisted.</p>
+<p>If a person fully repays his/her debts:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The person will be listed in the whitelist if he/she is not blacklisted.</p>
+</li>
+<li>
+<p>The person&#8217;s date repaid will be set to the day that this command was entered.</p>
+</li>
+<li>
+<p>If the person was in the overdue list, he/she would be removed.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -578,7 +591,7 @@ Hence, a <code>PersonContainsTagPredicate</code> is created to check if a <code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-13 15:06:23 +00:00
+Last updated 2017-11-13 15:13:02 +00:00
 </div>
 </div>
 </body>
